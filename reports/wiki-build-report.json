@@ -1,8 +1,8 @@
 {
-  "version": "2.3.3",
-  "builtAt": "2026-11-01T12:30:00.000Z",
-  "out": "build/wiki-异界版-v2.3.3.html",
-  "bytes": 4884352,
+  "version": "2.3.4",
+  "builtAt": "2026-11-01T22:30:00.000Z",
+  "out": "build/wiki-异界版-v2.3.4.html",
+  "bytes": 4890817,
   "counts": {
     "skills": 1,
     "supports": 1,
@@ -40,6 +40,10 @@
     {
       "label": "block_v19.js 暗金",
       "hits": 5
+    },
+    {
+      "label": "block_v19.js 腐化词缀池",
+      "hits": 23
     },
     {
       "label": "text:gem-cap-30",
