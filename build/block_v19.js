@@ -9911,12 +9911,18 @@ try {
     l9 = function (item, pity) {
       var res = __baseTA.apply(this, arguments);
       try {
-        if (item && item.kind === "item" && item.corrupted && !item.cimpl2 && Math.random() < 0.28) {
-          var pool = (typeof Xu !== "undefined" && Xu && Xu.length) ? Xu : null;
-          if (pool) {
+        // EMB-122：珠宝同样可以双瓦；用 cp(item) 取池以沿用「珠宝不出 skillLvl」的官版规则
+        if (item && (item.kind === "item" || item.kind === "jewel") && item.corrupted && !item.cimpl2 && I() < 0.28) {
+          var pool = (typeof cp === "function") ? cp(item) : ((typeof Xu !== "undefined" && Xu) ? Xu : null);
+          if (pool && pool.length) {
             var pick = oe(pool);
-            item.cimpl2 = { k: pick[0], v: de(pick[1][0], pick[1][1]) };
-            item.dc = true;
+            // 与已有第一条同 key 时跳过，避免一件装备上出现两条一模一样的腐化
+            if (!item.cimpl || pick[0] !== item.cimpl.k) {
+              item.cimpl2 = { k: pick[0], v: de(pick[1][0], pick[1][1]) };
+              // EMB-122：这里原先写 item.dc = true，而 dc 是余烬祭坛的「已献祭」标记，
+              // 导致瓦尔出双瓦的装备永久无法上祭坛。改用独立标记 dc2。
+              item.dc2 = true;
+            }
           }
         }
       } catch (e) {}
@@ -14402,3 +14408,239 @@ window.__SHOP = {
   idle: SHOP_HEAT.idle,
   decay: SHOP_HEAT.decay
 };
+/* ===== EMB-122 · 腐化词缀扩池 =====
+ * 瓦尔宝珠（l9）与余烬祭坛双瓦（Dv）共用 Xu 池，官版只有 10 条且等概率。
+ * 做法刻意保守：
+ *   1) 不重建抽取逻辑 —— 把 Xu 展开成「按权重重复」的数组，
+ *      官版 oe() 等概率抽一次 = 加权抽一次；cp() 的珠宝过滤自动沿用。
+ *   2) 数值型直接复用官版 statKey，进 l 表即生效，零结算改动。
+ *   3) 带代价 / 机制型用自定义 key，只在 stats:pre / stats:post 展开，
+ *      不去碰宿主那四处 cimpl 读取点。
+ *   4) 机制型效果全部挂官方事件总线（kill / hit:mods / hit:ailment）。
+ */
+(function () {
+  try {
+    if (window.__corruptPoolHooked) return;
+    window.__corruptPoolHooked = 1;
+
+    /* ---------- 1. 文案：只有自定义 key 需要，数值型复用官版模板 ---------- */
+    if (typeof JS === "object" && JS) {
+      // 官版池里有 skillLvl 却没有对应文案，抽到会显示裸 key「skillLvl 1」
+      if (!JS.skillLvl) JS.skillLvl = "所有技能等级 +{v}";
+      JS.corruptCruel = "暴击伤害 +{v}% · 最大生命总降 6%";
+      JS.corruptGluttony = "物品数量提高 {v}% · 物品稀有度总降 20%";
+      JS.corruptEmberBlood = "每秒回复 {v} 生命 · 最大能量护盾总降 10%";
+      JS.corruptBone = "击杀时 {v}% 几率留下 1 片余烬残片";
+      JS.corruptResonance = "每 1 条腐化词缀使伤害提高 {v}%";
+      JS.corruptScorch = "命中时 {v}% 几率使目标点燃";
+    }
+
+    /* ---------- 2. 池定义 ----------
+     * k=statKey  a/b=取值区间  w=权重  jewel=false 珠宝不抽  cap=机制型叠加上限
+     */
+    var POOL = [
+      // 官版 10 条，原样保留
+      { k: "skillLvl",  a: 1,   b: 1,   w: 10, jewel: false },
+      { k: "lifeInc",   a: 8,   b: 12,  w: 10 },
+      { k: "critInc",   a: 20,  b: 30,  w: 10 },
+      { k: "leech",     a: 1,   b: 2,   w: 10 },
+      { k: "resAll",    a: 8,   b: 12,  w: 10 },
+      { k: "moveInc",   a: 5,   b: 8,   w: 10 },
+      { k: "atkSpd",    a: 6,   b: 10,  w: 10 },
+      { k: "castSpd",   a: 6,   b: 10,  w: 10 },
+      { k: "spirit",    a: 10,  b: 20,  w: 10 },
+      { k: "rarity",    a: 10,  b: 15,  w: 10 },
+      // 新增数值型 7 条：key 均已在 JS 有中文且被派生属性 D 消费
+      { k: "critMulti", a: 15,  b: 25,  w: 14 },
+      { k: "ailment",   a: 8,   b: 12,  w: 14 },
+      { k: "armour",    a: 80,  b: 150, w: 13 },
+      { k: "esInc",     a: 12,  b: 18,  w: 12 },
+      { k: "manaRegen", a: 15,  b: 25,  w: 12 },
+      { k: "regen",     a: 2,   b: 4,   w: 11 },
+      { k: "projAdd",   a: 1,   b: 1,   w: 2  },
+      // 新增带代价 3 条：收益吃 {v}，代价固定，在 stats:post 里结算
+      { k: "corruptCruel",      a: 15, b: 25, w: 7 },
+      { k: "corruptGluttony",   a: 8,  b: 12, w: 6 },
+      { k: "corruptEmberBlood", a: 3,  b: 5,  w: 6 },
+      // 新增机制型 3 条：数值固定，cap 保证多来源只生效一次
+      { k: "corruptBone",      a: 4,  b: 4,  w: 3, cap: 4  },
+      { k: "corruptResonance", a: 6,  b: 6,  w: 3, cap: 6  },
+      { k: "corruptScorch",    a: 10, b: 10, w: 3, cap: 10 }
+    ];
+
+    var TOTAL = 0, i, j;
+    for (i = 0; i < POOL.length; i++) TOTAL += POOL[i].w;
+
+    /* ---------- 3. 展开并顶替官版 Xu ---------- */
+    if (typeof Xu !== "undefined" && Array.isArray(Xu)) {
+      var expanded = [];
+      for (i = 0; i < POOL.length; i++) {
+        var p = POOL[i];
+        // 每个副本独立建数组，避免宿主日后改写污染其他条目
+        for (j = 0; j < p.w; j++) expanded.push([p.k, [p.a, p.b]]);
+      }
+      Xu.length = 0;
+      for (i = 0; i < expanded.length; i++) Xu.push(expanded[i]);
+    }
+
+    /* ---------- 4. 机制型状态（只生效一次，不随装备件数叠加） ---------- */
+    var MECH = { bone: 0, resonance: 0, scorch: 0 };
+    var lastJewelCount = 0;
+
+    // 珠宝的腐化词缀条数：ay(e, t) 的 t 就是「已激活」集合，判据只认 cimpl 字段
+    if (typeof ay === "function" && typeof rs !== "undefined" && typeof Fa === "function") {
+      var __baseAy = ay;
+      ay = function (e, t) {
+        try {
+          var set = (t instanceof Set) ? t : new Set(t || []);
+          var n = 0;
+          for (var r = 0; r < rs; r++) {
+            var jb = (e && e.jw) ? e.jw[r] : null;
+            if (!jb || !set.has(Fa(r))) continue;
+            if (jb.cimpl) n++;
+            if (jb.cimpl2) n++;
+          }
+          lastJewelCount = n;
+        } catch (e2) {}
+        return __baseAy.apply(this, arguments);
+      };
+    }
+
+    function corruptCount() {
+      var n = lastJewelCount;
+      try {
+        if (u && u.equip) {
+          for (var s in u.equip) {
+            var it = u.equip[s];
+            if (!it) continue;
+            if (it.cimpl) n++;
+            if (it.cimpl2) n++;
+          }
+        }
+      } catch (e) {}
+      return n;
+    }
+
+    /* ---------- 5. 属性展开 ---------- */
+    if (typeof A === "function") {
+      A("stats:pre", function (p) {
+        try {
+          var L = p.a;
+          if (!L) return;
+          // 带代价的三条：收益转成官版标准属性，代价放到 stats:post
+          if (L.corruptCruel) p.add("critMulti", L.corruptCruel);
+          if (L.corruptGluttony) p.add("quant", L.corruptGluttony);
+          if (L.corruptEmberBlood) p.add("regen", L.corruptEmberBlood);
+          // 机制型：多来源取上限，只生效一次
+          MECH.bone = Math.min(L.corruptBone || 0, 4);
+          MECH.resonance = Math.min(L.corruptResonance || 0, 6);
+          MECH.scorch = Math.min(L.corruptScorch || 0, 10);
+        } catch (e) {}
+      });
+
+      A("stats:post", function (p) {
+        try {
+          var S = p.S, g = p.g;
+          if (!S || typeof g !== "function") return;
+          if (g("corruptCruel")) S.maxLife *= 0.94;
+          if (g("corruptGluttony")) S.rarity = Math.max(0, S.rarity * 0.8);
+          if (g("corruptEmberBlood")) S.maxES *= 0.9;
+        } catch (e) {}
+      });
+
+      // 烬骨：击杀时按概率留下余烬残片（喂祭坛经济闭环）
+      A("kill", function () {
+        try {
+          if (!MECH.bone) return;
+          if (I() * 100 < MECH.bone) u.cur.ash = (u.cur.ash || 0) + 1;
+        } catch (e) {}
+      });
+
+      // 腐化共鸣：自身每 1 条腐化词缀提高伤害
+      A("hit:mods", function (p) {
+        try {
+          if (!MECH.resonance || p.fixed) return;
+          var n = corruptCount();
+          if (n > 0) p.k *= 1 + MECH.resonance * n / 100;
+        } catch (e) {}
+      });
+
+      // 烬灼：命中时按概率强制点燃
+      A("hit:ailment", function (p) {
+        try {
+          if (!MECH.scorch) return;
+          if (I() * 100 < MECH.scorch) p.forceIgn = true;
+        } catch (e) {}
+      });
+    }
+
+    /* ---------- 6. 修祭坛覆盖已有第二条 ---------- */
+    if (typeof Dv === "function") {
+      var __baseDv = Dv;
+      Dv = function (item) {
+        var old2 = (item && item.cimpl2) ? { k: item.cimpl2.k, v: item.cimpl2.v } : null;
+        // 先摘掉，让官版 up 分支照常写一条新的；写完再按「不覆盖」改写
+        if (old2) { try { delete item.cimpl2; } catch (e) {} }
+        var res;
+        try {
+          res = __baseDv.apply(this, arguments);
+        } catch (err) {
+          if (old2 && item && !item.cimpl2) item.cimpl2 = old2;
+          throw err;
+        }
+        try {
+          if (old2 && res && res.cls === "up") {
+            var rng = null;
+            for (var n = 0; n < POOL.length; n++) {
+              if (POOL[n].k === old2.k) { rng = POOL[n]; break; }
+            }
+            var nv = rng ? de(rng.a, rng.b) : old2.v;
+            item.cimpl2 = { k: old2.k, v: nv };
+            res.sub = "重铸双重腐化: " + _a(old2.k, nv) + " · 全部词缀 +10%(至少 +1)";
+          } else if (old2 && item && !item.cimpl2) {
+            item.cimpl2 = old2;
+          }
+        } catch (e2) {}
+        return res;
+      };
+    }
+
+    /* ---------- 7. 导出，供门禁断言读取 ---------- */
+    window.__CORRUPT_POOL = {
+      version: "1.0",
+      pool: POOL,
+      weight: TOTAL,
+      cost: ["corruptCruel", "corruptGluttony", "corruptEmberBlood"],
+      mech: ["corruptBone", "corruptResonance", "corruptScorch"],
+      count: function () { return POOL.length; },
+      // 自检：只有块内能访问 JS / Xu / cp 这类宿主符号
+      audit: function () {
+        var missing = [], dup = [], seen = {}, n;
+        for (n = 0; n < POOL.length; n++) {
+          var k = POOL[n].k;
+          if (typeof JS !== "object" || !JS || !JS[k]) missing.push(k);
+          if (seen[k]) dup.push(k);
+          seen[k] = 1;
+        }
+        return {
+          count: POOL.length,
+          weight: TOTAL,
+          xuLen: (typeof Xu !== "undefined" && Xu) ? Xu.length : -1,
+          missingText: missing,
+          dupKey: dup,
+          jewelKeys: (typeof cp === "function")
+            ? (function () { var s = {}; cp({ kind: "jewel" }).forEach(function (t) { s[t[0]] = 1; }); return Object.keys(s); })()
+            : []
+        };
+      },
+      // 走官版真实抽取路径（cp + oe），用来验权重是否生效
+      rollOnce: function (isJewel) {
+        var fake = { kind: isJewel ? "jewel" : "item" };
+        var list = (typeof cp === "function") ? cp(fake) : Xu;
+        if (!list || !list.length) return null;
+        var pick = oe(list);
+        return { k: pick[0], v: de(pick[1][0], pick[1][1]) };
+      }
+    };
+  } catch (e) {}
+})();

@@ -9,7 +9,7 @@
  *   tools/wiki-exp-plugin.js                  浏览器端插件（并入数据 + 新增页面）
  *
  * 输出：
- *   build/wiki-异界版-v2.3.2.html             单文件 Wiki（离线可跑）
+ *   build/wiki-异界版-v2.3.3.html             单文件 Wiki（离线可跑）
  *   reports/wiki-build-report.json            构建报告（补丁命中数 / 内容统计）
  *
  * 用法：node tools/build-wiki.mjs [--out <path>]
@@ -26,13 +26,13 @@ const HOTFIX = path.join(PACK, "迁移工具", "hotfix", "hotfix.json");
 const BLOCK = path.join(W, "build", "block_v19.js");
 const PLUGIN = path.join(W, "tools", "wiki-exp-plugin.js");
 
-const VER = "2.3.2";
+const VER = "2.3.3";
 
 // 产物里的「构建时点」。默认写死为定版值，让 `npm run wiki` 不带任何环境变量
 // 也能与 Release 归档逐字节一致；发版时连同 VER 一起更新这一行。
 // 临时构建（不打算归档的那次）用 EMB_BUILD_AT=... 覆盖。
 // 注意不要改成 base 快照的 mtime：git 不保存 mtime，不同克隆出来的时间不同。
-const BUILT_AT = "2026-11-01T10:50:00.000Z";
+const BUILT_AT = "2026-11-01T12:30:00.000Z";
 
 const PLUGIN_TAG = "<!-- EMBER-EXP-PLUGIN -->";
 
