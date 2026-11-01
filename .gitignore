@@ -25,3 +25,11 @@ pack/**/迁移工具/out/cur.js
 # 日志与临时
 *.log
 npm-debug.log*
+
+# 大文件资产（EMB-106）：不进版本库，由 GitHub Release 承载
+# 干净克隆后执行 npm run assets:pull 取回，清单见 tools/assets.json
+base/*.html
+build/*.html
+cheat/cheat/wiki.html
+pack/**/余烬裂隙-异界内容扩展-v2.1.0.html
+

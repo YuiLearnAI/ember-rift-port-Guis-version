@@ -209,3 +209,78 @@ gh api -X PUT repos/YuiLearnAI/ember-rift-port-Guis-version/branches/main/protec
 2. 每个阶段一个子任务：符号重映射 / 移植块重写 / 构建 / 回归验证 / 修改器同步 / Wiki 同步
 3. 每阶段单独分支 + 单独 PR，禁止"一个大 PR 搞定升版"
 4. 回归验证（397 条断言）结果写入子任务评论，作为可审计证据
+
+---
+
+## 十、大文件资产：不进版本库（EMB-106 · 2026-11-01 起生效）
+
+### 规则
+
+Git 里只放**源码与可审阅文本**。任何 1MB 以上的 HTML（上游快照、构建产物、历史发行版）一律走 GitHub Release，
+由 `tools/assets.json` 登记，`npm run assets:pull` 取回并校验 sha256。
+
+```bash
+npm run assets:pull     # 取回缺失项
+npm run assets:check    # 只体检不下载（缺文件时退出码 1）
+npm run assets:pull -- --only wiki      # 只处理路径含 wiki 的条目
+npm run assets:pull -- --force          # 哈希不符时强制覆盖（本地改动会被丢弃）
+```
+
+当前外置清单（Release `assets-v2.2.0`）：
+
+| 落地路径 | 性质 | 是否可复现 |
+|---|---|---|
+| `base/v19-online.html` | 上游快照（构建输入） | 否，必须保全 |
+| `base/wiki-online.html` | 上游快照（Wiki 输入） | 否，必须保全 |
+| `cheat/cheat/wiki.html` | 与上一行同内容的副本 | 否，必须保全 |
+| `build/test-v19.html` | 构建产物 | ✅ `npm run build` |
+| `build/余烬裂隙-异界内容扩展-v2.2.0-v19.html` | 构建产物 | ✅ `npm run build` |
+| `build/wiki-异界版-v2.2.0.html` | 构建产物 | ✅ `npm run wiki`（固定 `EMB_BUILD_AT` 后字节一致） |
+| `pack/**/余烬裂隙-异界内容扩展-v2.1.0.html` | 历史发行版归档 | 否，仅留档 |
+
+**不可复现的三个上游快照必须保全**：删了 Release 就真没了，这是本仓库唯一的单点。
+
+### 为什么不能只 `git rm`
+
+`git rm` 只影响新的 tree，历史 blob 仍在 pack 里，`.git` 不会变小，clone 依旧慢。必须重写历史。
+本次执行的实测收益：
+
+| 指标 | 治理前 | 治理后 |
+|---|---|---|
+| `.git` 体积 | 13 MB | 3.3 MB |
+| 最大已跟踪文件 | 4.4 MB | 3.7 MB（`game.html`，测试夹具，不可删） |
+| 提交数 | 7 | 7（一一对应，信息未变） |
+
+### 可复现性验证（这是本方案成立的前提）
+
+产物能重建，外置才不丢东西。实测：
+
+```
+npm run build  → test-v19.html        sha256 65381d13…（与 Release 资产一致）
+npm run build  → 发布版 v19.html        sha256 6da90429…（与 Release 资产一致）
+npm run wiki   → wiki-异界版.html      见下方「构建时间」说明
+```
+
+`build-wiki.mjs` 会把构建时间写进产物，是唯一的不可复现来源。固定它即可字节一致：
+
+```bash
+EMB_BUILD_AT=2026-11-01T05:31:44.807Z node tools/build-wiki.mjs
+# → sha256 2691350f…（与 Release 归档完全一致）
+```
+
+> 副作用提醒：`npm run wiki` 不带 `EMB_BUILD_AT` 时产物哈希会变。这是**预期行为**，
+> `npm run assets:check` 会因此报 MISMATCH，用 `--force` 覆盖或删掉本地产物重新 pull 即可，不是数据损坏。
+
+### 改这些文件时的流程
+
+1. 内容变更 → 在同一 PR 里更新 `tools/assets.json` 的 `sha256`
+2. 打新 Release（tag 递增，如 `assets-v2.2.1`），同步改 `assets.json` 的 `tag`
+3. **绝不允许**为了让 CI 通过而把大文件 `git add -f` 回去
+
+### 历史改写记录
+
+- 备份：`backup-ember-pre-filter-20261101.bundle`（8.5 MB，`git bundle verify` 通过，含改写前完整历史）
+- 旧备份标签 `backup/pre-history-split-20261101` 已删除——它指向改写前提交，会把旧 blob 重新钉在远端
+- 恢复某个旧版本的命令：`git clone backup-ember-pre-filter-20261101.bundle recovered`
+- 本次改写使全部 commit hash 变化（`8f20733…` → `f1a4acc…`），旧 clone 必须重新克隆
+

@@ -34,6 +34,20 @@ function read(p) {
   return fs.readFileSync(p, "utf8");
 }
 
+/**
+ * 大文件资产不进版本库（EMB-106），缺失时给出可执行提示，不要去猜路径。
+ * 清单见 tools/assets.json。
+ */
+function requireAsset(p) {
+  if (fs.existsSync(p)) return;
+  throw new Error(
+    "缺少资产：" + path.relative(W, p) + "\n" +
+    "该文件由 GitHub Release 承载，不在版本库里。先执行：\n" +
+    "  npm run assets:pull\n" +
+    "（详见 docs/jira-delivery.md 第十节「大文件资产」）"
+  );
+}
+
 /* ---------- 在主脚本 IIFE 尾部找插入点 ---------- */
 function findInsertPoint(html) {
   const tagRe = /<script\b[^>]*>/gi;
@@ -80,6 +94,7 @@ function tryPatch(html, needle, replacement, label) {
 function main() {
   const mode = (process.argv.includes("--mode") && process.argv[process.argv.indexOf("--mode") + 1]) || "both";
 
+  requireAsset(BASE);
   let base = read(BASE);
   const baseLen0 = base.length;
 

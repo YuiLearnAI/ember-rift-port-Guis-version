@@ -42,7 +42,11 @@ function send(res, code, body, type = "text/html; charset=utf-8") {
 
 function sendFile(res, file) {
   if (!fs.existsSync(file) || !fs.statSync(file).isFile()) {
-    return send(res, 404, "404 — 文件不存在：" + path.relative(W, file), "text/plain; charset=utf-8");
+    const rel = path.relative(W, file);
+    // 大文件资产不进版本库（EMB-106），404 时直接给出可执行提示
+    const isAsset = /^(base[\\/]|build[\\/].*\.html$|cheat[\\/]cheat[\\/]wiki\.html$)/.test(rel);
+    const hint = isAsset ? "\n\n该文件由 GitHub Release 承载，先执行：npm run assets:pull" : "";
+    return send(res, 404, "404 — 文件不存在：" + rel + hint, "text/plain; charset=utf-8");
   }
   send(res, 200, fs.readFileSync(file), MIME[path.extname(file).toLowerCase()] || "application/octet-stream");
 }
