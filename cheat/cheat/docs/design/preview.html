@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>余烬裂隙修改器 · 面板预览（Apple 设计语言）</title>
+<!-- panel.css 由 scripts/extract-css.js 从 ember-rift-gui.user.js 抽取，预览与线上完全同源 -->
+<link rel="stylesheet" href="panel.css">
+<style>
+  /* 预览页自身外壳：模拟面板浮在深色游戏画面之上 */
+  body{margin:0;padding:32px;background:#101014;
+    font:14px/1.47 SF Pro Text,system-ui,-apple-system,sans-serif;color:#d8d8dd}
+  h1{font-size:21px;font-weight:600;letter-spacing:.231px;margin:0 0 8px;color:#fff}
+  .lead{color:#8e8e99;font-size:14px;margin:0 0 32px;max-width:720px}
+  .stage{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start}
+  .shot-label{color:#8e8e99;font-size:12px;letter-spacing:-.12px;margin:0 0 8px}
+  figure{margin:0}
+  /* 把 fixed 定位的面板放进静态流里排版 */
+  .er-gui.er-shot{position:relative!important;top:auto!important;right:auto!important;
+    max-height:none!important;width:360px;flex:0 0 360px}
+</style>
+</head>
+<body>
+
+<h1>余烬裂隙修改器 · 面板预览</h1>
+<p class="lead">样式来源：<code>docs/design/apple-DESIGN.md</code>（VoltAgent/awesome-design-md）。此页 DOM 与实际注入脚本的结构一致，用于 Impeccable 检测与教程配图。</p>
+
+<div class="stage">
+
+  <!-- ① 通货 · 分类（简介关闭，紧凑） -->
+  <figure>
+    <figcaption class="shot-label">① 通货 · 按游戏自身分组折叠</figcaption>
+    <div class="er-gui er-shot">
+      <div class="er-head">
+        <span class="er-title">余烬裂隙 修改器</span>
+        <span class="er-btn-min" title="折叠">–</span>
+        <span class="er-btn-x" title="关闭">✕</span>
+      </div>
+      <div class="er-tabs">
+        <div class="er-tab on" data-t="wallet">通货</div>
+        <div class="er-tab" data-t="items">装备</div>
+        <div class="er-tab" data-t="gamble">保底</div>
+        <div class="er-tab" data-t="audit">审查</div>
+        <div class="er-tab" data-t="status">状态</div>
+      </div>
+      <div class="er-body">
+        <input class="er-sel" type="search" placeholder="搜索名称 / 俗称 / 作用">
+        <div class="er-row">
+          <button class="er-btn er-mini">少量</button>
+          <button class="er-btn er-mini on">适中</button>
+          <button class="er-btn er-mini">充足</button>
+          <span class="er-wlv-note">一次给多少</span>
+        </div>
+        <div class="er-big"><button class="er-btn go">全部补给 · 适中</button></div>
+        <div class="er-row">
+          <button class="er-btn er-mini">展开全部</button>
+          <button class="er-btn er-mini">显示简介</button>
+          <button class="er-btn er-mini">清零</button>
+          <button class="er-btn er-mini">保存</button>
+        </div>
+        <div class="er-hint">补给量按官方估值分档：常见 40 颗 · 少见 15 颗 · 稀有 3 颗 · 珍贵 2 颗。<br>「+N」一次就加 N 颗；要任意数量直接在输入框里改数字后点「设」。</div>
+        <div class="er-wgrp">
+          <div class="er-wghead">
+            <span class="er-wgname">通货</span>
+            <span class="er-wgmeta">15 种 · 持有 342</span>
+            <span class="er-wgcaret">收起</span>
+          </div>
+          <div class="er-wgbody">
+            <div class="er-wrow">
+              <div class="er-wtop">
+                <span class="er-wdot" style="background:#8ab4dc"></span>
+                <span class="er-wname">蜕变石</span>
+                <input class="er-input er-win" type="number" value="128">
+                <span class="er-wacts"><button class="er-btn er-mini">+40</button><button class="er-btn er-mini">设</button></span>
+              </div>
+            </div>
+            <div class="er-wrow">
+              <div class="er-wtop">
+                <span class="er-wdot" style="background:#d4a43c"></span>
+                <span class="er-wname">混沌石</span>
+                <span class="er-wslang">C</span>
+                <input class="er-input er-win" type="number" value="42">
+                <span class="er-wacts"><button class="er-btn er-mini">+15</button><button class="er-btn er-mini">设</button></span>
+              </div>
+            </div>
+            <div class="er-wrow">
+              <div class="er-wtop">
+                <span class="er-wdot" style="background:#fff6dc"></span>
+                <span class="er-wname">神圣石</span>
+                <span class="er-wslang">D</span>
+                <input class="er-input er-win" type="number" value="3">
+                <span class="er-wacts"><button class="er-btn er-mini">+2</button><button class="er-btn er-mini">设</button></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="er-wgrp">
+          <div class="er-wghead">
+            <span class="er-wgname">符文</span>
+            <span class="er-wgmeta">6 种 · 持有 48</span>
+            <span class="er-wgcaret">展开</span>
+          </div>
+        </div>
+        <div class="er-wgrp">
+          <div class="er-wghead">
+            <span class="er-wgname">精华</span>
+            <span class="er-wgmeta">5 种 · 持有 12</span>
+            <span class="er-wgcaret">展开</span>
+          </div>
+        </div>
+        <div class="er-hint">改动会写入 localStorage 的 ember-rift-wallet，刷新后仍在。</div>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ①b 通货 · 简介模式（显示作用 / 掉落 / 估值） -->
+  <figure>
+    <figcaption class="shot-label">①b 通货 · 简介模式</figcaption>
+    <div class="er-gui er-shot">
+      <div class="er-head">
+        <span class="er-title">余烬裂隙 修改器</span>
+        <span class="er-btn-min" title="折叠">–</span>
+        <span class="er-btn-x" title="关闭">✕</span>
+      </div>
+      <div class="er-tabs">
+        <div class="er-tab on" data-t="wallet">通货</div>
+        <div class="er-tab" data-t="items">装备</div>
+        <div class="er-tab" data-t="gamble">保底</div>
+        <div class="er-tab" data-t="audit">审查</div>
+        <div class="er-tab" data-t="status">状态</div>
+      </div>
+      <div class="er-body">
+        <div class="er-row">
+          <button class="er-btn er-mini">少量</button>
+          <button class="er-btn er-mini on">适中</button>
+          <button class="er-btn er-mini">充足</button>
+          <span class="er-wlv-note">一次给多少</span>
+        </div>
+        <div class="er-wgrp">
+          <div class="er-wghead">
+            <span class="er-wgname">插槽</span>
+            <span class="er-wgmeta">4 种 · 持有 9</span>
+            <span class="er-wgcaret">收起</span>
+          </div>
+          <div class="er-wgbody">
+            <div class="er-wrow">
+              <div class="er-wtop">
+                <span class="er-wdot" style="background:#2ab0e8"></span>
+                <span class="er-wname">高级珠宝匠石</span>
+                <input class="er-input er-win" type="number" value="5">
+                <span class="er-wacts"><button class="er-btn er-mini">+15</button><button class="er-btn er-mini">设</button></span>
+              </div>
+              <div class="er-wmeta">掉落 0.79% · 2 c<br>主动技能宝石的辅助插槽 3 → 4</div>
+            </div>
+            <div class="er-wrow">
+              <div class="er-wtop">
+                <span class="er-wdot" style="background:#c070ff"></span>
+                <span class="er-wname">完美珠宝匠石</span>
+                <input class="er-input er-win" type="number" value="1">
+                <span class="er-wacts"><button class="er-btn er-mini">+3</button><button class="er-btn er-mini">设</button></span>
+              </div>
+              <div class="er-wmeta">掉落 0.13% · 15 c<br>主动技能宝石的辅助插槽 4 → 5</div>
+            </div>
+          </div>
+        </div>
+        <div class="er-wgrp">
+          <div class="er-wghead">
+            <span class="er-wgname">印记</span>
+            <span class="er-wgmeta">4 种 · 持有 0</span>
+            <span class="er-wgcaret">收起</span>
+          </div>
+          <div class="er-wgbody">
+            <div class="er-wrow">
+              <div class="er-wtop">
+                <span class="er-wdot" style="background:#c0b0e0"></span>
+                <span class="er-wname">主教印记</span>
+                <input class="er-input er-win" type="number" value="0">
+                <span class="er-wacts"><button class="er-btn er-mini">+3</button><button class="er-btn er-mini">设</button></span>
+              </div>
+              <div class="er-wmeta">T6+ 骸骨主教 · 25 c<br>骸骨主教(T6+)掉落。集齐四种印记可在地图装置开启裂隙之心</div>
+            </div>
+          </div>
+        </div>
+        <div class="er-hint">掉率 = 官方公式 w / Σw；没有掉落权重的（破溃石、余烬之心、四种印记）改显示官方给的获取途径。</div>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ② 装备列表 -->
+  <figure>
+    <figcaption class="shot-label">② 装备 · 列表</figcaption>
+    <div class="er-gui er-shot">
+      <div class="er-head">
+        <span class="er-title">余烬裂隙 修改器</span>
+        <span class="er-btn-min" title="折叠">–</span>
+        <span class="er-btn-x" title="关闭">✕</span>
+      </div>
+      <div class="er-tabs">
+        <div class="er-tab" data-t="wallet">通货</div>
+        <div class="er-tab on" data-t="items">装备</div>
+        <div class="er-tab" data-t="gamble">保底</div>
+        <div class="er-tab" data-t="audit">审查</div>
+        <div class="er-tab" data-t="status">状态</div>
+      </div>
+      <div class="er-body">
+        <div class="er-filter">
+          <input class="er-sel" placeholder="名称搜索">
+          <select class="er-sel"><option>全部部位</option><option selected>武器</option></select>
+          <select class="er-sel"><option>全部稀有度</option><option selected>全部</option></select>
+        </div>
+        <div class="er-item"><div class="nm">腐朽之牙</div><div class="meta">稀有 · 装备·武器 · 物品等级 5</div></div>
+        <div class="er-item"><div class="nm">学徒法杖</div><div class="meta">普通 · 背包#3 · 物品等级 12</div></div>
+        <div class="er-item"><div class="nm">秘术胸甲</div><div class="meta">魔法 · 背包#7 · 物品等级 20</div></div>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ③ 装备详情 -->
+  <figure>
+    <figcaption class="shot-label">③ 装备 · 详情（含新增的换基底）</figcaption>
+    <div class="er-gui er-shot">
+      <div class="er-head">
+        <span class="er-title">余烬裂隙 修改器</span>
+        <span class="er-btn-min" title="折叠">–</span>
+        <span class="er-btn-x" title="关闭">✕</span>
+      </div>
+      <div class="er-tabs">
+        <div class="er-tab" data-t="wallet">通货</div>
+        <div class="er-tab on" data-t="items">装备</div>
+        <div class="er-tab" data-t="gamble">保底</div>
+        <div class="er-tab" data-t="audit">审查</div>
+        <div class="er-tab" data-t="status">状态</div>
+      </div>
+      <div class="er-body">
+        <div class="er-big"><button class="er-btn">← 返回列表</button></div>
+        <div class="er-item"><div class="nm">腐朽之牙</div><div class="meta">稀有 · 物品等级 5</div></div>
+        <div class="er-warn">双手武器（法杖）：伤害类词缀效果 ×1.5。下面数值框显示的是倍率后的生效值（与游戏面板一致），直接照你想要的数值填写即可。</div>
+        <div class="er-row"><label>稀有度</label>
+          <select class="er-sel" style="width:auto"><option>普通</option><option>魔法</option><option selected>稀有</option><option>传奇</option></select>
+          <button class="er-btn er-mini">改</button>
+        </div>
+        <div class="er-row"><label>基底</label>
+          <select class="er-sel" style="flex:1"><option selected>学徒法杖（需求等级 1）</option><option>长老法杖（需求等级 55）</option></select>
+          <button class="er-btn er-mini">换</button>
+        </div>
+        <div class="er-row"><label>允许跨部位换基底（已装备时会自动挪到新部位）</label></div>
+        <div class="er-hint">基底决定部位、固有词缀、需求等级与是否为双手武器。<b>换基底会按新底材重算固有词缀</b>，你自己加的词缀保留不变。</div>
+        <div class="er-grp">词缀列表</div>
+        <div class="er-affix"><span class="tx">增加 34 点火焰伤害 <span class="er-sev th">×1.5</span></span><input class="er-input" value="34"><button class="er-btn er-mini">改</button><button class="er-btn er-mini">删</button></div>
+        <div class="er-affix"><span class="tx">法术伤害提高 62%</span><input class="er-input" value="62"><button class="er-btn er-mini">改</button><button class="er-btn er-mini">删</button></div>
+        <div class="er-grp">添加词缀</div>
+        <select class="er-sel"><option>· 按分类选择词缀 ·</option></select>
+        <div class="er-row"><label>或搜索词缀（中文显示名 / 英文 id）</label></div>
+        <input class="er-sel" placeholder="如 魔力回复 / 生命 / 火焰 / life">
+        <div class="er-row"><label>t 级（阶层，T1 最高）</label>
+          <select class="er-sel" style="width:auto"><option selected>T1 58~70</option><option>T2 48~57</option><option>T6 10~19</option></select>
+        </div>
+        <div class="er-row"><label>数值</label><select class="er-sel" style="width:auto"><option selected>70</option><option>64</option><option>58</option></select></div>
+        <div class="er-hint">正常区间 10~70 · 当前 T1 58~70</div>
+        <button class="er-btn go" style="margin-top:6px">＋ 添加词缀</button>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ④ 保底 -->
+  <figure>
+    <figcaption class="shot-label">④ 保底</figcaption>
+    <div class="er-gui er-shot">
+      <div class="er-head">
+        <span class="er-title">余烬裂隙 修改器</span>
+        <span class="er-btn-min" title="折叠">–</span>
+        <span class="er-btn-x" title="关闭">✕</span>
+      </div>
+      <div class="er-tabs">
+        <div class="er-tab" data-t="wallet">通货</div>
+        <div class="er-tab" data-t="items">装备</div>
+        <div class="er-tab on" data-t="gamble">保底</div>
+        <div class="er-tab" data-t="audit">审查</div>
+        <div class="er-tab" data-t="status">状态</div>
+      </div>
+      <div class="er-body">
+        <div class="er-filter"><input class="er-sel" placeholder="名称搜索"><select class="er-sel"><option selected>全部部位</option></select></div>
+        <div class="er-item"><div class="nm">幽魂之衣</div><div class="meta">稀有 · 物品等级 1 · 词缀 6 条</div></div>
+        <div class="er-row"><label>模拟真实消耗（扣除瓦尔宝珠 / 余烬之心，不足则免单）</label></div>
+        <div class="er-grp">① 数值保底（替代神圣石）</div>
+        <div class="er-hint">把每条词缀顶到当前阶层上限——游戏里这是完全随机的。双手武器会按 ×1.5 显示。</div>
+        <div class="er-row"><label>顺便把每条词缀升到 T1（最高阶层）</label></div>
+        <button class="er-btn go">数值拉满</button>
+        <div class="er-grp">② 瓦尔宝珠（腐化）</div>
+        <div class="er-row"><label>结果（自选，游戏中随机）</label></div>
+        <select class="er-sel"><option selected>获得腐化词缀（自选 + 拉满）</option></select>
+        <select class="er-sel" style="width:100%;margin-top:6px"><option selected>生命上限提高 12%（池内最大 12）</option></select>
+        <button class="er-btn go" style="margin-top:6px">执行腐化</button>
+        <div class="er-grp">⑤ 一键必胜</div>
+        <div class="er-hint">按顺序：全部词缀升 T1 并拉满 → 自选腐化词缀 → 祭坛升华（+10%）。</div>
+        <button class="er-btn go">一键必胜</button>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ⑤ 审查 -->
+  <figure>
+    <figcaption class="shot-label">⑤ 审查</figcaption>
+    <div class="er-gui er-shot">
+      <div class="er-head">
+        <span class="er-title">余烬裂隙 修改器</span>
+        <span class="er-btn-min" title="折叠">–</span>
+        <span class="er-btn-x" title="关闭">✕</span>
+      </div>
+      <div class="er-tabs">
+        <div class="er-tab" data-t="wallet">通货</div>
+        <div class="er-tab" data-t="items">装备</div>
+        <div class="er-tab" data-t="gamble">保底</div>
+        <div class="er-tab on" data-t="audit">审查</div>
+        <div class="er-tab" data-t="status">状态</div>
+      </div>
+      <div class="er-body">
+        <div class="er-audit bad">
+          <div class="ti">发现 2 项（错误 1 · 提醒 1）</div>
+          <div class="li"><span class="er-sev e">错误</span>背包#7 秘术胸甲：未知词缀 id「notExist12」<br><span class="er-sev w">提醒</span>装备·武器 腐朽之牙：addFire 数值 340 超出正常 15~105</div>
+        </div>
+        <div class="er-hint">提示：越界数值不影响生效，只是提醒你填了超出正常区间的值；非法词缀 id 才是真问题。</div>
+        <div class="er-grp">存档快照</div>
+        <div class="er-snap"><span class="tm">手动 · 01:12:33</span><button class="er-btn er-mini">还原</button></div>
+        <div class="er-snap"><span class="tm">换基底前 · 01:09:04</span><button class="er-btn er-mini">还原</button></div>
+        <div class="er-big"><button class="er-btn go">立即存快照</button><button class="er-btn">清空</button></div>
+      </div>
+    </div>
+  </figure>
+
+</div>
+</body>
+</html>

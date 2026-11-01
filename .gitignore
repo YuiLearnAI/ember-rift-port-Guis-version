@@ -1,0 +1,27 @@
+# 依赖
+node_modules/
+**/node_modules/
+
+# 系统文件
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# 历史快照（体量大，保留当前版本即可）
+pack/**/block_new-2026*.js
+pack/**/block_new-18.0.1.js
+pack/**/hotfix/hotfix-backup/
+
+# 构建中间产物（可由 base/ + build/block_v19.js 重新生成）
+build/_dev/
+**/build/_dev/
+_build/
+pack/**/迁移工具/out/old.js
+pack/**/迁移工具/out/new.js
+pack/**/迁移工具/out/cur.js
+**/test-build.html
+**/*-dev.html
+
+# 日志与临时
+*.log
+npm-debug.log*

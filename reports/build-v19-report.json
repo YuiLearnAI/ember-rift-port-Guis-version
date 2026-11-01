@@ -1,0 +1,60 @@
+{
+  "version": "2.2.0",
+  "baseBytes": 3678524,
+  "applied": [
+    {
+      "label": "res-cap-server",
+      "hits": 1
+    },
+    {
+      "label": "res-cap-ui",
+      "hits": 1
+    },
+    {
+      "label": "res-cap-badge",
+      "hits": 1
+    },
+    {
+      "label": "res-cap-badge2",
+      "hits": 1
+    },
+    {
+      "label": "gem-cap-lt",
+      "hits": 1
+    },
+    {
+      "label": "gem-cap-gte",
+      "hits": 3
+    },
+    {
+      "label": "guard:bg-draw",
+      "hits": 1
+    },
+    {
+      "label": "guard:loot-icon-cur",
+      "hits": 1
+    },
+    {
+      "label": "guard:loot-icon-base",
+      "hits": 1
+    },
+    {
+      "label": "guard:mon-sprite",
+      "hits": 1
+    }
+  ],
+  "skipped": [
+    {
+      "label": "guard:obj-loop",
+      "reason": "v19 渲染循环已重构，原锚点语义不存在；逐项判定已由 v19 自身承担"
+    },
+    {
+      "label": "guard:loot-loop",
+      "reason": "v19 渲染循环已重构，原锚点语义不存在；逐项判定已由 v19 自身承担"
+    },
+    {
+      "label": "guard:ent-loop",
+      "reason": "v19 渲染循环已重构，原锚点语义不存在；逐项判定已由 v19 自身承担"
+    }
+  ]
+}
