@@ -133,5 +133,25 @@ window.__erTest = {
   get atlasAll() { try { return typeof ATLAS_ALL !== "undefined" ? ATLAS_ALL : []; } catch (e) { return []; } },
   atlasAlloc: function (k) { try { return AtlasAlloc(k); } catch (e) { return null; } },
   atlasCount: function (k) { try { return AtlasCountAlloc(k); } catch (e) { return 0; } },
-  atlasRespec: function (k) { try { return AtlasRespec(k); } catch (e) { return null; } }
+  atlasRespec: function (k) { try { return AtlasRespec(k); } catch (e) { return null; } },
+  /* EMB-113：节点名排版的可测钩子（只有测试版有；发布版靠 AtlasDraw 自己排版） */
+  atlasDraw: function () { try { AtlasDraw(); return true; } catch (e) { return false; } },
+  atlasLabels: function () { try { return ATLAS_LAST_LABELS.slice(); } catch (e) { return []; } },
+  atlasHud: function () { try { return ATLAS_LAST_HUD; } catch (e) { return null; } },
+  atlasNodes: function () {
+    try {
+      AtlasEnsure();
+      return ATLAS_ALL.map(function (n) { return { k: n.k, n: n.n, x: n.x, y: n.y, tier: n.tier }; });
+    } catch (e) { return []; }
+  },
+  atlasViewSet: function (o) {
+    try {
+      o = o || {};
+      ATLAS_VIEW.init = true;
+      if (isFinite(o.s)) ATLAS_VIEW.s = o.s;
+      if (isFinite(o.x)) ATLAS_VIEW.x = o.x;
+      if (isFinite(o.y)) ATLAS_VIEW.y = o.y;
+      return true;
+    } catch (e) { return false; }
+  }
 };

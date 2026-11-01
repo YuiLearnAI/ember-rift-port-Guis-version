@@ -2013,6 +2013,129 @@ function AtlasShowTip(_v427, _v428) {
     _v429.style.top = Math.max(4, _v428.clientY - _v432.top + 12) + "px";
   }
 }
+var ATLAS_LAST_LABELS = [], ATLAS_LAST_HUD = null;
+/* 两个矩形（含各自的 p 内边距）的重叠面积，不相交返回 0。
+   留内边距是为了「刚好贴边」也算冲突 —— 标签紧贴着排一行虽然没压字，但读起来仍是一团。 */
+function AtlasRectOverlap(a, b) {
+  var pa = a.p || 0, pb = b.p || 0;
+  var ax = a.x - pa, ay = a.y - pa, aw = a.w + pa * 2, ah = a.h + pa * 2;
+  var bx = b.x - pb, by = b.y - pb, bw = b.w + pb * 2, bh = b.h + pb * 2;
+  var ow = Math.min(ax + aw, bx + bw) - Math.max(ax, bx);
+  var oh = Math.min(ay + ah, by + bh) - Math.max(ay, by);
+  return ow > 0 && oh > 0 ? ow * oh : 0;
+}
+/* 给节点名找位置：以节点圆心为原点，按「上 / 下 / 右 / 左」四方向 × 三档距离 × 三种错位，
+   共 36 个候选；取重叠面积最小的那个（同分则取更靠前、也就是更贴近节点的候选）。
+   入参都在屏幕坐标里，blocked 是已被占用的矩形（节点圆、HUD、已摆放的标签）。
+   之所以改到屏幕坐标：旧的写法在世界坐标里画标签、字号随缩放变化，中心区节点间距只有
+   42 世界单位，中文名却宽 40–60px，必然压字；固定字号 + 避让才能既读得清又不叠。 */
+function AtlasLabelCandidates(it) {
+  var bh = (it.fs || 10) + 4, bw = Math.max(10, it.w), rad = it.r || 6, gap = 5;
+  var dirs = [[0, -1], [0, 1], [1, 0], [-1, 0]];
+  var shifts = [0, -1, 1];
+  var out = [];
+  for (var di = 0; di < dirs.length; di++) {
+    for (var step = 0; step < 5; step++) {
+      for (var si = 0; si < shifts.length; si++) {
+        var far = rad + gap + step * 16;
+        var cx = it.x + dirs[di][0] * far, cy = it.y + dirs[di][1] * far;
+        var ox, oy;
+        if (dirs[di][0] === 0) {
+          // 上 / 下：标签水平居中，shift 让它在左右错一档
+          ox = -bw / 2 + shifts[si] * 11;
+          oy = dirs[di][1] > 0 ? 0 : -bh;
+        } else {
+          // 右 / 左：标签竖直居中，shift 让它在上下错一档
+          ox = dirs[di][0] > 0 ? 0 : -bw;
+          oy = -bh / 2 + shifts[si] * (bh + 1);
+        }
+        out.push([cx + ox, cy + oy]);
+      }
+    }
+  }
+  return out;
+}
+/* 在 36 个候选里挑一个：先夹进画布，再按「与其他矩形的重叠面积」打分 */
+function AtlasPickLabelSpot(it, taken, cw, ch) {
+  var bh = (it.fs || 10) + 4, bw = Math.max(10, it.w);
+  var cands = AtlasLabelCandidates(it);
+  var best = null, bestCost = Infinity;
+  for (var c = 0; c < cands.length; c++) {
+    var box = { x: Math.round(cands[c][0]), y: Math.round(cands[c][1]), w: Math.ceil(bw), h: bh, p: 2 };
+    if (box.x < 3) box.x = 3;
+    if (box.x + box.w > cw - 3) box.x = Math.max(3, cw - 3 - box.w);
+    if (box.y < 3) box.y = 3;
+    if (box.y + box.h > ch - 3) box.y = Math.max(3, ch - 3 - box.h);
+    // 候选序号只作极小的偏好项：只要有完全不重叠的候选，就一定压过任何带重叠的
+    var cost = c * 0.02;
+    for (var k = 0; k < taken.length; k++) {
+      cost += AtlasRectOverlap(box, taken[k]);
+      // 已经比当前最优差了就停：拖拽时每帧都要排一次，早退能省掉大半计算
+      if (cost >= bestCost) break;
+    }
+    if (cost < bestCost) {
+      bestCost = cost;
+      best = box;
+    }
+    if (bestCost <= c * 0.02) break;
+  }
+  return best;
+}
+function AtlasPlaceLabels(items, blocked, cw, ch) {
+  var out = [];
+  var taken = blocked.slice();
+  var i, k;
+  for (i = 0; i < items.length; i++) {
+    var it = items[i];
+    if (!it || !it.t) continue;
+    var bw = Math.max(10, it.w);
+    if (it.x + bw < -16 || it.x - bw > cw + 16 || it.y < -32 || it.y > ch + 32) continue;
+    var box = AtlasPickLabelSpot(it, taken, cw, ch);
+    if (!box) continue;
+    box.t = it.t;
+    box.fs = it.fs || 10;
+    box.strong = !!it.strong;
+    box.ax = it.x;
+    box.ay = it.y;
+    box.rad = it.r || 6;
+    out.push(box);
+    taken.push(box);
+  }
+  // 二次修复：先放的标签可能占了后来者唯一空位，把仍有重叠的摘出来重放一遍。
+  // 三轮足够收敛（每轮至少减少一个重叠，否则提前退出）。
+  for (var pass = 0; pass < 3; pass++) {
+    var moved = 0;
+    for (i = 0; i < out.length; i++) {
+      var cur = out[i], hit = false;
+      for (k = 0; k < taken.length; k++) {
+        if (taken[k] === cur) continue;
+        if (AtlasRectOverlap(cur, taken[k]) > 0) {
+          hit = true;
+          break;
+        }
+      }
+      if (!hit) continue;
+      var idx = taken.indexOf(cur);
+      if (idx >= 0) taken.splice(idx, 1);
+      var spot = AtlasPickLabelSpot({ x: cur.ax, y: cur.ay, r: cur.rad, w: cur.w, fs: cur.fs }, taken, cw, ch);
+      if (!spot) {
+        taken.push(cur);
+        continue;
+      }
+      spot.t = cur.t;
+      spot.fs = cur.fs;
+      spot.strong = cur.strong;
+      spot.ax = cur.ax;
+      spot.ay = cur.ay;
+      spot.rad = cur.rad;
+      out[i] = spot;
+      taken.push(spot);
+      moved++;
+    }
+    if (!moved) break;
+  }
+  return out;
+}
 function AtlasDraw() {
   try {
     AtlasEnsure();
@@ -2061,18 +2184,51 @@ function AtlasDraw() {
       _v436.strokeStyle = _v447 ? "#fff0c0" : _v446.col || "#4a4258";
       _v436.lineWidth = (_v447 ? 1.8 : 1) / _v437;
       _v436.stroke();
-      if (_v447 || _v446.tier === "keystone" || _v437 > 0.85) {
-        _v436.font = (_v446.tier === "keystone" ? "700 11px " : "10px ") + "monospace";
-        _v436.textAlign = "center";
-        _v436.fillStyle = _v447 ? "#f0e8d0" : "#8e98b0";
-        _v436.fillText(_v446.n, _v446.x, _v446.y - _v449 - 5 / _v437);
-      }
     }
+    /* ---- 节点名与 HUD：改到屏幕坐标里排版（EMB-113） ----
+       旧写法把名字一律画在节点正上方、字号随缩放变化：中心区节点间距只有 42 世界单位，
+       中文名宽 40–60px，于是互相压字；左上角那行「可用 / 已获得 / 已分配」也压在第一批
+       名字上。现在固定字号放进屏幕坐标，交给 AtlasPlaceLabels 做避让，HUD 自带底片。 */
     _v436.setTransform(1, 0, 0, 1, 0, 0);
-    _v436.fillStyle = "#8e98b0";
+    var labelItems = [], blocked = [];
+    for (var _vN = 0; _vN < ATLAS_ALL.length; _vN++) {
+      var nd = ATLAS_ALL[_vN];
+      var ndR = nd.tier === "core" ? 16 : nd.tier === "keystone" ? 13 : nd.tier === "sig" ? 9 : 6;
+      var ndX = nd.x * _v437 + _v438, ndY = nd.y * _v437 + _v439, ndS = ndR * _v437;
+      if (ndX + ndS < -24 || ndX - ndS > _v434 + 24 || ndY + ndS < -24 || ndY - ndS > _v435 + 24) continue;
+      blocked.push({ x: ndX - ndS - 1, y: ndY - ndS - 1, w: ndS * 2 + 2, h: ndS * 2 + 2, p: 1 });
+      var ndOn = !!AtlasCountAlloc(nd.k);
+      if (!(ndOn || nd.tier === "keystone" || _v437 > 0.85)) continue;
+      var ndFs = nd.tier === "keystone" ? 11 : 10;
+      _v436.font = (nd.tier === "keystone" ? "700 " : "") + ndFs + "px monospace";
+      labelItems.push({ t: nd.n, x: ndX, y: ndY, r: ndS, w: _v436.measureText(nd.n).width, fs: ndFs, strong: ndOn });
+    }
+    var hudTxt = "可用 " + AtlasAvailable() + " · 已获得 " + AtlasEarned() + "/" + Br + " · 已分配 " + AtlasUsed() + "/" + ATLAS_SPEND;
     _v436.font = "11px monospace";
+    var hudBox = { x: 6, y: 5, w: Math.ceil(_v436.measureText(hudTxt).width) + 14, h: 19, p: 2 };
+    blocked.push(hudBox);
+    var placed = AtlasPlaceLabels(labelItems, blocked, _v434, _v435);
     _v436.textAlign = "left";
-    _v436.fillText("可用 " + AtlasAvailable() + " · 已获得 " + AtlasEarned() + "/" + Br + " · 已分配 " + AtlasUsed() + "/" + ATLAS_SPEND, 10, 16);
+    _v436.textBaseline = "top";
+    _v436.lineJoin = "round";
+    for (var _vP = 0; _vP < placed.length; _vP++) {
+      var lb = placed[_vP];
+      _v436.font = (lb.strong ? "700 " : "") + lb.fs + "px monospace";
+      // 描边当底衬：压在连线或节点边缘上也读得清（比给每行加色块轻）
+      _v436.lineWidth = 3;
+      _v436.strokeStyle = "rgba(9,8,12,.92)";
+      _v436.strokeText(lb.t, lb.x, lb.y);
+      _v436.fillStyle = lb.strong ? "#f0e8d0" : "#8e98b0";
+      _v436.fillText(lb.t, lb.x, lb.y);
+    }
+    // HUD 最后画：它已经进了 blocked，不会有标签落在它身上
+    _v436.fillStyle = "rgba(11,10,16,.86)";
+    _v436.fillRect(hudBox.x, hudBox.y, hudBox.w, hudBox.h);
+    _v436.font = "11px monospace";
+    _v436.fillStyle = "#8e98b0";
+    _v436.fillText(hudTxt, hudBox.x + 7, hudBox.y + 4);
+    ATLAS_LAST_LABELS = placed;
+    ATLAS_LAST_HUD = hudBox;
   } catch (_v450) {}
 }
 function AtlasAfterRender() {

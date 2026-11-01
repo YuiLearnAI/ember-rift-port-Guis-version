@@ -97,5 +97,13 @@ jobs:
       - name: 基底一致性审计
         run: npm run audit
 
+      # EMB-113：天赋树节点名排版（标签之间 / 标签与 HUD / 标签与节点圆 都不重叠）
+      - name: 天赋树标签排版
+        run: npm run verify:atlas
+
+      # EMB-113：修改器（静态审查 + 逻辑断言 + jsdom 界面断言）
+      - name: 修改器门禁
+        run: npm run cheat:test
+
       - name: Wiki 构建与产物校验
         run: npm run wiki

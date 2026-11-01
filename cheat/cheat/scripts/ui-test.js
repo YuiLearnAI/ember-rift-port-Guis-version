@@ -18,8 +18,14 @@ let JSDOM;
 try {
   ({ JSDOM } = require('jsdom'));
 } catch (e) {
-  console.log('[ui] 跳过界面级测试（未安装 jsdom：npm i --no-save jsdom）');
-  process.exit(0);
+  // 仓库里 jsdom 装在 tools/node_modules（构建与玩法回归用同一份），这里回退过去，
+  // 免得为了界面测试再装一份。两处都没有才算“未安装”。
+  try {
+    ({ JSDOM } = require(path.join(ROOT, '..', '..', 'tools', 'node_modules', 'jsdom')));
+  } catch (e2) {
+    console.log('[ui] 跳过界面级测试（未安装 jsdom：npm i --no-save jsdom）');
+    process.exit(0);
+  }
 }
 
 let pass = 0, fail = 0;
@@ -44,9 +50,19 @@ const walletObj = { cur: { chaos: 10 } };
 const player = { inv: [], equip: {}, gems: [], jw: [] };
 const noop = () => {};
 const mkItem = () => ({ kind: 'item', mods: [] });
+// 扩展包新增传奇之一（时空之肌）：sr / srt 是「传奇专属数值」的区间与文案模板，
+// 游戏把它随在 item.ur 里，与物品种类的 mods 分开存 —— 修改器必须能改它（EMB-113）
+const UNIQ_TEMPORALIS = {
+  id: 'temporalis', n: '时空之肌', base: '秘法长袍', lv: 64,
+  mods: [['es', [100, 150]]],
+  st: ['将所受伤害的 5–30% 吸纳为生命', '技能的冷却时间 -2 ~ -1 秒'],
+  sr: [[5, 30], [-2, -1]],
+  srt: ['将所受伤害的 {0}% 吸纳为生命', '技能的冷却时间 {0} 秒'],
+  fl: '说书人最后掌握的元素，乃是时光本身。',
+};
 const rift = {
   CUR, CUR_ORDER, CUR_GRP, WALLET: walletObj, G: player,
-  AFF: {}, BASES: [], BASEMAP: {}, UNIQ: [], MI_LIST: [], SK: {}, SUP: {}, META: {}, BUFFS: {},
+  AFF: {}, BASES: [], BASEMAP: {}, UNIQ: [UNIQ_TEMPORALIS], MI_LIST: [], SK: {}, SUP: {}, META: {}, BUFFS: {},
   BEASTS: {}, JTH: {}, UJW: {}, THEMES: {}, MAPTHEMES: {}, CORRUPT: [], TH_MUL: 1.5, WT: {},
   TWO_HAND: new Set(), TH_AFF: new Set(),
   // 珠宝词缀表（本体 JAFF:()=>es，slots 全是 "J"）
@@ -240,6 +256,82 @@ setTimeout(() => {
   try { click($$('.er-tab').find(t => /保底/.test(t.textContent))); } catch (e) { threw = e; }
   ok('没有可选物品时不抛异常（wireGamble 容忍 null）',
     !threw && /请先在上方选一件装备/.test($('.er-body').textContent), threw && threw.message);
+
+  /* ---------------- EMB-113 · 提示气泡 ---------------- */
+  console.log('[ui] 提示气泡可读性');
+  const cssText = $$('style').map(s => s.textContent || '').join('\n');
+  const toastRule = (cssText.match(/\.er-toast\{[\s\S]*?\}/) || [''])[0];
+  ok('气泡样式不再引用面板作用域的 CSS 变量（挂 body 上取不到）',
+    !!toastRule && !/var\(--/.test(toastRule), toastRule.replace(/\s+/g, ' ').slice(0, 120));
+  ok('气泡是深底浅字（原先是浅底浅字 → 什么也看不见）',
+    /background:\s*rgba\(29,29,31/.test(toastRule) && /color:\s*#f5f5f7/.test(toastRule),
+    toastRule.replace(/\s+/g, ' ').slice(0, 120));
+
+  click($$('.er-tab').find(t => /通货/.test(t.textContent)));
+  click($('#er-clearwallet'));
+  const toastEl = $('.er-toast');
+  ok('操作后生成了气泡元素', !!toastEl);
+  ok('气泡里有文字', !!toastEl && toastEl.textContent.trim().length > 0, toastEl && toastEl.textContent);
+  const toastCs = toastEl ? win.getComputedStyle(toastEl) : {};
+  ok('气泡文字色是具体颜色（不是空/继承）', /^rgba?\(/.test(toastCs.color || ''), toastCs.color);
+  ok('气泡不再拦截鼠标（pointer-events:none）', toastCs.pointerEvents === 'none', toastCs.pointerEvents);
+
+  /* ---------------- EMB-113 · 传奇专属数值 ---------------- */
+  console.log('[ui] 装备页 · 传奇数值可改');
+  const temp = {
+    uid: 880001, kind: 'item', base: '秘法长袍', slot: 'B', ilvl: 80, rarity: 3,
+    uniq: 'temporalis', name: '时空之肌', impl: [],
+    mods: [{ id: 'es', t: 'U', ur: [100, 150], v: [150] }],
+    ur: [20, -1], rsock: 1, runes: [],
+  };
+  player.inv.push(temp);
+  click($$('.er-tab').find(t => /装备/.test(t.textContent)));
+  const card = $$('.er-item').find(el => /时空之肌/.test(el.textContent));
+  ok('背包里能看到这件传奇', !!card);
+  click(card);
+  ok('出现「传奇数值」编辑区', /传奇数值（时空之肌）/.test($('.er-body').textContent));
+  ok('两条 sr 各一个输入框', !!$('#u-0') && !!$('#u-1'));
+  ok('输入框里是当前值', $('#u-0').value === '20' && $('#u-1').value === '-1',
+    $('#u-0').value + '/' + $('#u-1').value);
+
+  $('#u-0').value = '27';
+  click($$('[data-uset]').find(b => b.dataset.uset === '0'));
+  ok('item.ur[0] 被改写', temp.ur[0] === 27, String(temp.ur[0]));
+  ok('ur 长度保持不变（长度变了扩展块会按 uid 重随）', temp.ur.length === 2, String(temp.ur.length));
+  ok('改完给出「已修改」提示', /已修改/.test(($('.er-toast') || {}).textContent || ''));
+
+  $('#u-0').value = '99';
+  click($$('[data-uset]').find(b => b.dataset.uset === '0'));
+  ok('越界值仍写入但会标出来', temp.ur[0] === 99 && /越界/.test(($('.er-toast') || {}).textContent || ''),
+    String(temp.ur[0]));
+
+  $('#u-1').value = 'abc';
+  click($$('[data-uset]').find(b => b.dataset.uset === '1'));
+  ok('非法输入被拒、数据不动', temp.ur[1] === -1, String(temp.ur[1]));
+
+  /* ---------------- EMB-113 · 符文插槽 ---------------- */
+  console.log('[ui] 装备页 · 插槽数量可改');
+  ok('出现符文插槽编辑区', !!$('#er-rsock'));
+  ok('初始值取自 item.rsock', $('#er-rsock').value === '1', $('#er-rsock').value);
+
+  $('#er-rsock').value = '4';
+  click($('#er-setrsock'));
+  ok('插槽数写到 item.rsock', temp.rsock === 4, String(temp.rsock));
+  ok('加出来的槽是空槽（不补假符文）', Array.isArray(temp.runes) && temp.runes.length === 0, JSON.stringify(temp.runes));
+
+  temp.runes = ['rune_fire', 'rune_ice', 'rune_storm'];
+  $('#er-rsock').value = '2';
+  click($('#er-setrsock'));
+  ok('减少插槽时裁剪 runes（与官方 setter 一致）',
+    temp.rsock === 2 && temp.runes.length === 2, String(temp.rsock) + '/' + JSON.stringify(temp.runes));
+
+  $('#er-rsock').value = '9';
+  click($('#er-setrsock'));
+  ok('超过上限被拒（仍是 2）', temp.rsock === 2, String(temp.rsock));
+
+  $('#er-rsock').value = '0';
+  click($('#er-setrsock'));
+  ok('可以减到 0 槽', temp.rsock === 0 && temp.runes.length === 0, String(temp.rsock));
 
   console.log('-'.repeat(50));
   console.log(`[ui] 通过 ${pass} · 失败 ${fail}`);

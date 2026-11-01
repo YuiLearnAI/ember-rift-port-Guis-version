@@ -315,7 +315,19 @@ EMB_BUILD_AT=2026-11-01T05:31:44.807Z node tools/build-wiki.mjs
 | `npm run audit:runtime` | 同一段探针分别注入官方基底与产物，在 jsdom 里各跑一次，比对 10 张核心数据表的键集合与逐键内容 | 官方数据被扩展改写或删除（新增键、仅掉落权重 `w` 变化属允许项） |
 | `npm run verify:jewel` | 三件官方传奇珠宝 + 一件扩展珠宝，28 条断言：tooltip 文案 / 转换表 / 风味文字 / `jwc`、`r3` 样式类 / 图标非空 | 珠宝渲染判据又放宽了，官方珠宝再次被吞 |
 
-前两道已并入 `npm run verify`；第三道也在 `verify` 里。
+三道门全部并入 `npm run verify`。
+
+### 画布排版门（EMB-113 起）
+
+| 命令 | 检查什么 | 失败含义 |
+|---|---|---|
+| `npm run verify:atlas` | 真跑产物，在 5 组缩放/平移下取出天赋树每个节点名的最终矩形，断言「标签之间 / 标签与 HUD / 标签与节点圆」重叠面积恒为 0，且都在画布内 | 标签排版退化：候选位被减到只剩「正上方」时该测试立刻 23/32 失败（已做红绿对照） |
+
+### 修改器门（EMB-113 起）
+
+| 命令 | 检查什么 | 失败含义 |
+|---|---|---|
+| `npm run cheat:test` | `cheat:review`（静态审查：未核对导出键 / 无参 updPlayer / XSS / 存档键）+ `cheat:smoke`（161 条逻辑断言，含「panel.css 与脚本一致」）+ `cheat:ui`（jsdom 里真点面板，69 条界面断言） | 修改器改坏了，或面板 CSS 与 `docs/design/panel.css` 漂移（动 CSS 后必须跑 `node cheat/cheat/scripts/extract-css.js`） |
 
 ### 白名单补丁
 

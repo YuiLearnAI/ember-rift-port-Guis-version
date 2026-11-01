@@ -78,11 +78,15 @@
 .er-status b{color:var(--blue);font-weight:600}
 .er-big{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
 .er-big .er-btn{flex:1}
-/* floating：毛玻璃提示条，高度感来自模糊层 */
-.er-toast{font-family:SF Pro Text,system-ui,-apple-system,sans-serif;position:fixed;bottom:20px;right:20px;background:rgba(245,245,247,.9);border:1px solid var(--divide);
-  color:var(--ink);padding:12px 17px;border-radius:18px;z-index:2147483647;font-size:12px;letter-spacing:-.12px;
+/* floating：毛玻璃提示条，高度感来自模糊层。
+   EMB-113：气泡挂到 body 上，不继承 #er-gui 的 CSS 变量；原来写 color:var(--ink) 在面板外
+   取不到变量 → 整条声明失效 → 颜色回退成继承色（游戏页面的浅色），浅字压浅底什么也看不见。
+   所以这里不能用变量，且要压过游戏自身的样式表，配色写死并加 !important。 */
+.er-toast{font-family:SF Pro Text,system-ui,-apple-system,sans-serif;position:fixed;bottom:20px;right:20px;
+  background:rgba(29,29,31,.95)!important;border:1px solid rgba(255,255,255,.22);
+  color:#f5f5f7!important;padding:12px 17px;border-radius:18px;z-index:2147483647;font-size:12px;letter-spacing:-.12px;
   -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
-  opacity:0;transition:opacity .2s ease;max-width:320px;line-height:1.5}
+  opacity:0;transition:opacity .2s ease;max-width:320px;line-height:1.5;pointer-events:none}
 /* 筛选栏 */
 .er-filter{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
 .er-filter .er-sel{width:auto;flex:1;min-width:88px}
