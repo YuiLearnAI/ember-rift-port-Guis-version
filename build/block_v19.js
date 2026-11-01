@@ -9911,6 +9911,17 @@ try {
     l9 = function (item, pity) {
       var res = __baseTA.apply(this, arguments);
       try {
+        // EMB-126：传奇专属腐化 → 单瓦出词缀（impl）时「替换一条原生词缀」
+        // 官版 l9 的 up 分支返回 "impl" 并写 cimpl；这里补上「移除一条 st/mods 原生词缀」。
+        if (res === "impl" && item && item.uniq) {
+          var __uPool = null;
+          try { __uPool = (window.__CORRUPT_POOL && window.__CORRUPT_POOL.unique) || null; } catch (eU) {}
+          if (__uPool && __uPool[item.uniq]) {
+            try { if (typeof window.__CORRUPT_POOL.replaceUnique === "function") window.__CORRUPT_POOL.replaceUnique(item); } catch (eR) {}
+          }
+        }
+      } catch (e) {}
+      try {
         // EMB-122：珠宝同样可以双瓦；用 cp(item) 取池以沿用「珠宝不出 skillLvl」的官版规则
         if (item && (item.kind === "item" || item.kind === "jewel") && item.corrupted && !item.cimpl2 && I() < 0.28) {
           var pool = (typeof cp === "function") ? cp(item) : ((typeof Xu !== "undefined" && Xu) ? Xu : null);
@@ -14509,6 +14520,37 @@ window.__SHOP = {
       UNIQUE_EXPANDED[uk] = uexp;
     }
 
+    /* ---------- 2c. 传奇腐化「替换原生词缀」（EMB-126 修复） ----------
+     * 官版腐化（l9 单瓦 / Dv 双瓦）的 up 分支是「新增 cimpl/cimpl2」，从不替换原生词缀。
+     * 需求要求「通过替代原生词条瓦出专属词缀」：腐化时从传奇的 st（固定词缀）
+     * 与 mods（随机词缀）里随机移除一条，被移除词缀的数值/文本效果随之消失，
+     * 专属词缀效果叠加（走 cimpl/cimpl2 → stats:pre 折算通道）。
+     * 返回被替换的词缀描述，供面板文案展示；无可替换词缀时返回 null。
+     */
+    function __uniqueReplace(item) {
+      try {
+        if (!item) return null;
+        var st = (item.st && item.st.length) ? item.st : null;
+        var mods = (item.mods && item.mods.length) ? item.mods : null;
+        var stN = st ? st.length : 0;
+        var modN = mods ? mods.length : 0;
+        if (stN + modN === 0) return null;
+        // 在 st 与 mods 之间按条目数均匀随机选一条（覆盖最全）
+        var pick = Math.floor(I() * (stN + modN));
+        if (pick < stN) {
+          // 命中 st：移除该条固定词缀文本
+          var removed = st[pick];
+          item.st.splice(pick, 1);
+          return { src: "st", text: removed };
+        }
+        // 命中 mods：移除该条随机词缀（o8 不再读取，数值随之消失）
+        var mi = pick - stN;
+        var mremoved = item.mods[mi];
+        item.mods.splice(mi, 1);
+        return { src: "mods", text: (mremoved && mremoved.id) ? mremoved.id : String(mi) };
+      } catch (e) { return null; }
+    }
+
     /* ---------- 3. 展开并顶替官版 Xu ---------- */
     if (typeof Xu !== "undefined" && Array.isArray(Xu)) {
       var expanded = [];
@@ -14668,6 +14710,17 @@ window.__SHOP = {
           throw err;
         }
         try {
+          // EMB-126：传奇专属腐化 → 双瓦 up 分支「继续替换一条原生词缀」
+          // 官版 up 分支会新增 cimpl2，这里补上「移除一条 st/mods 原生词缀」，
+          // 使双重腐化表现为「替换」而非「平白多一条」。
+          if (res && res.cls === "up" && item && item.uniq && UNIQUE_POOL[item.uniq]) {
+            var repl = __uniqueReplace(item);
+            if (repl) {
+              res.sub = "替换原生词缀: " + repl.text + " · 全部词缀 +10%(至少 +1)";
+            }
+          }
+        } catch (e2) {}
+        try {
           if (old2 && res && res.cls === "up") {
             var rng = null;
             for (var n = 0; n < POOL.length; n++) {
@@ -14692,6 +14745,8 @@ window.__SHOP = {
       cost: ["corruptCruel", "corruptGluttony", "corruptEmberBlood"],
       mech: ["corruptBone", "corruptResonance", "corruptScorch"],
       unique: UNIQUE_POOL,
+      // EMB-126：替换原生词缀（供 l9 单瓦劫持跨 IIFE 调用，与 Dv 双瓦共用同一实现）
+      replaceUnique: __uniqueReplace,
       count: function () { return POOL.length; },
       // 自检：只有块内能访问 JS / Xu / cp 这类宿主符号
       audit: function () {
