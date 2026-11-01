@@ -14433,6 +14433,11 @@ window.__SHOP = {
       JS.corruptBone = "击杀时 {v}% 几率留下 1 片余烬残片";
       JS.corruptResonance = "每 1 条腐化词缀使伤害提高 {v}%";
       JS.corruptScorch = "命中时 {v}% 几率使目标点燃";
+      // EMB-125 传奇专属腐化词缀（献祭之心 / rathpith_globe）
+      JS.rpgRathCastSpd = "非吟唱法术的施法速度提高 {v}%";
+      JS.rpgRathAilLife = "每 50 点生命上限使非吟唱法术的异常状态强度提高 {v}%";
+      JS.rpgRathCritMana = "每 50 点魔力上限使非吟唱技能的法术暴击几率提高 {v}%";
+      JS.rpgRathDmgMana = "每 50 点魔力上限使非吟唱法术的伤害提高 {v}%";
     }
 
     /* ---------- 2. 池定义 ----------
@@ -14471,6 +14476,39 @@ window.__SHOP = {
     var TOTAL = 0, i, j;
     for (i = 0; i < POOL.length; i++) TOTAL += POOL[i].w;
 
+    /* ---------- 2b. 传奇专属腐化词缀（EMB-125） ----------
+     * 有原型的传奇装备，腐化时（瓦尔 / 祭坛双瓦都算）额外抽专属池：
+     *   专属 4 条高权重 + 通用 23 条低权重兜底。
+     * 首单只做献祭之心（rathpith_globe）当样板，其余传奇后续逐个补。
+     * 专属词缀用自定义 key，stats:post 里按 S.maxLife / S.maxMana 折算。
+     */
+    var UNIQUE_POOL = {
+      rathpith_globe: {
+        n: "献祭之心",
+        pool: [
+          { k: "rpgRathCastSpd",  a: 4,  b: 8,  w: 10 },  // 非吟唱法术施法速度
+          { k: "rpgRathAilLife",  a: 3,  b: 3,  w: 10 },  // 每 50 生命 → 异常强度
+          { k: "rpgRathCritMana", a: 3,  b: 3,  w: 10 },  // 每 50 魔力 → 法术暴击
+          { k: "rpgRathDmgMana",  a: 6,  b: 6,  w: 10 }   // 每 50 魔力 → 法术伤害
+        ],
+        // 通用池兜底权重：专属 4 条合计 40，通用 23 条按原权重摊（合计 ~206 中的 206），
+        // 这里把通用池整体压到一个较低权重，让专属词缀占主导。
+        fallbackScale: 0.5
+      }
+    };
+
+    // 为每个传奇的专属池预展开（按权重重复），供 cp 劫持时直接拼装
+    var UNIQUE_EXPANDED = {};
+    for (var uk in UNIQUE_POOL) {
+      var udef = UNIQUE_POOL[uk];
+      var uexp = [];
+      for (j = 0; j < udef.pool.length; j++) {
+        var up = udef.pool[j];
+        for (var uw = 0; uw < up.w; uw++) uexp.push([up.k, [up.a, up.b]]);
+      }
+      UNIQUE_EXPANDED[uk] = uexp;
+    }
+
     /* ---------- 3. 展开并顶替官版 Xu ---------- */
     if (typeof Xu !== "undefined" && Array.isArray(Xu)) {
       var expanded = [];
@@ -14481,6 +14519,34 @@ window.__SHOP = {
       }
       Xu.length = 0;
       for (i = 0; i < expanded.length; i++) Xu.push(expanded[i]);
+    }
+
+    /* ---------- 3b. 劫持 cp：传奇专属腐化词缀（EMB-125） ----------
+     * 官版 cp=e=>e&&e.kind==="jewel"?Xu.filter(t=>t[0]!=="skillLvl"):Xu
+     * 瓦尔 l9 与祭坛 Dv 都调 cp(e)，e 是完整 item（含 uniq）。
+     * 这里在官版结果之上，若 e.uniq 命中专属池，则返回「专属词缀 + 通用兜底」。
+     * 传奇本身不是珠宝，所以跳过官版的珠宝过滤路径，直接拼装。
+     */
+    if (typeof cp === "function") {
+      var __baseCp = cp;
+      cp = function (e) {
+        var base = __baseCp.call(this, e);
+        try {
+          if (e && e.uniq && UNIQUE_POOL[e.uniq]) {
+            var uexp = UNIQUE_EXPANDED[e.uniq];
+            // 通用兜底：把官版 Xu（已展开的加权数组）按 fallbackScale 抽样压缩权重，
+            // 实现「专属优先、通用兜底」——专属 40 份 vs 通用 ~103 份。
+            var fallback = base || Xu || [];
+            var merged = uexp.slice();
+            for (var f = 0; f < fallback.length; f++) {
+              // fallbackScale=0.5：每 2 条通用保留 1 条，权重减半
+              if (f % 2 === 0) merged.push(fallback[f]);
+            }
+            return merged;
+          }
+        } catch (e2) {}
+        return base;
+      };
     }
 
     /* ---------- 4. 机制型状态（只生效一次，不随装备件数叠加） ---------- */
@@ -14535,6 +14601,19 @@ window.__SHOP = {
           MECH.bone = Math.min(L.corruptBone || 0, 4);
           MECH.resonance = Math.min(L.corruptResonance || 0, 6);
           MECH.scorch = Math.min(L.corruptScorch || 0, 10);
+          // EMB-125 传奇专属腐化词缀：跨属性折算（按最终生命/魔力上限）
+          // 重算 maxLife / maxMana（与宿主 D 的公式一致，见 3771061）
+          var lvl = (typeof p.level === "number") ? p.level : 0;
+          var maxLife = (50 + 9 * lvl + (L.life || 0)) * (1 + (L.lifeInc || 0) / 100);
+          var maxMana = 60 + 5 * lvl + (L.mana || 0);
+          // 第 1 条：非吟唱法术施法速度（v 即施法速度 %）
+          if (L.rpgRathCastSpd) p.add("castSpd", L.rpgRathCastSpd);
+          // 第 2 条：每 50 生命上限 → 元素异常效果（v=3）
+          if (L.rpgRathAilLife) p.add("ailEff", Math.floor(maxLife / 50) * L.rpgRathAilLife);
+          // 第 3 条：每 50 魔力上限 → 法术暴击率（v=3）
+          if (L.rpgRathCritMana) p.add("critInc", Math.floor(maxMana / 50) * L.rpgRathCritMana);
+          // 第 4 条：每 50 魔力上限 → 法术伤害（v=6）
+          if (L.rpgRathDmgMana) p.add("spellInc", Math.floor(maxMana / 50) * L.rpgRathDmgMana);
         } catch (e) {}
       });
 
@@ -14607,11 +14686,12 @@ window.__SHOP = {
 
     /* ---------- 7. 导出，供门禁断言读取 ---------- */
     window.__CORRUPT_POOL = {
-      version: "1.0",
+      version: "1.1",
       pool: POOL,
       weight: TOTAL,
       cost: ["corruptCruel", "corruptGluttony", "corruptEmberBlood"],
       mech: ["corruptBone", "corruptResonance", "corruptScorch"],
+      unique: UNIQUE_POOL,
       count: function () { return POOL.length; },
       // 自检：只有块内能访问 JS / Xu / cp 这类宿主符号
       audit: function () {
@@ -14622,12 +14702,23 @@ window.__SHOP = {
           if (seen[k]) dup.push(k);
           seen[k] = 1;
         }
+        // 传奇专属池的文案也查一遍
+        for (var uk in UNIQUE_POOL) {
+          var upool = UNIQUE_POOL[uk].pool;
+          for (n = 0; n < upool.length; n++) {
+            var uk2 = upool[n].k;
+            if (typeof JS !== "object" || !JS || !JS[uk2]) missing.push(uk2);
+            if (seen[uk2]) dup.push(uk2);
+            seen[uk2] = 1;
+          }
+        }
         return {
           count: POOL.length,
           weight: TOTAL,
           xuLen: (typeof Xu !== "undefined" && Xu) ? Xu.length : -1,
           missingText: missing,
           dupKey: dup,
+          uniqueCount: (function () { var c = 0; for (var k in UNIQUE_POOL) c++; return c; })(),
           jewelKeys: (typeof cp === "function")
             ? (function () { var s = {}; cp({ kind: "jewel" }).forEach(function (t) { s[t[0]] = 1; }); return Object.keys(s); })()
             : []
@@ -14636,6 +14727,14 @@ window.__SHOP = {
       // 走官版真实抽取路径（cp + oe），用来验权重是否生效
       rollOnce: function (isJewel) {
         var fake = { kind: isJewel ? "jewel" : "item" };
+        var list = (typeof cp === "function") ? cp(fake) : Xu;
+        if (!list || !list.length) return null;
+        var pick = oe(list);
+        return { k: pick[0], v: de(pick[1][0], pick[1][1]) };
+      },
+      // 传奇专属池抽取（验专属词缀是否被抽到）
+      rollUnique: function (uniqId, isJewel) {
+        var fake = { kind: isJewel ? "jewel" : "item", uniq: uniqId };
         var list = (typeof cp === "function") ? cp(fake) : Xu;
         if (!list || !list.length) return null;
         var pick = oe(list);

@@ -2,8 +2,8 @@
 
 把「余烬裂隙 PoE2 内容扩展包 v2.0.5」（原底包 18.0.3）移植到 <https://ember-rift.pages.dev/> 当前线上版本（**v19.2 踏麟 · 真言**）的完整工程：符号重映射 → 移植块重写 → 构建 → 回归验证 → 修改器同步。
 
-- **发布版**：`build/余烬裂隙-异界内容扩展-v2.3.4-v19.html`
-- **改版 Wiki**：`build/wiki-异界版-v2.3.4.html`
+- **发布版**：`build/余烬裂隙-异界内容扩展-v2.3.5-v19.html`
+- **改版 Wiki**：`build/wiki-异界版-v2.3.5.html`
 - **核心资产**：`out/symbol_map_19to192.json`（1946 条符号映射，v19.1 → v19.2）；历史：`out/symbol_map_18to19.json`（1697 条）
 - **修改器**：`cheat/ember-rift-gui.user.js`（已支持 `ember-rift.pages.dev`）
 
@@ -22,8 +22,8 @@ port/
 │   ├─ block_v19.js               ★ v19 版移植块（唯一手改源，符号面向 v19.2）
 │   ├─ expose_v19.js              测试 API 桥
 │   ├─ test-v19.html              测试版（含 expose，无热修）
-│   ├─ 余烬裂隙-异界内容扩展-v2.3.4-v19.html   ★ 发布版
-│   └─ wiki-异界版-v2.3.4.html                  ★ 改版 Wiki（单文件）
+│   ├─ 余烬裂隙-异界内容扩展-v2.3.5-v19.html   ★ 发布版
+│   └─ wiki-异界版-v2.3.5.html                  ★ 改版 Wiki（单文件）
 ├─ out/
 │   ├─ symbol_map_19to192.json    1946 条符号映射（核心资产，v19.1→v19.2）
 │   └─ symbol_map_18to19.json     1697 条符号映射（历史，v18→v19）
