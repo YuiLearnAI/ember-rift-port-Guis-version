@@ -21,7 +21,7 @@ const EXPOSE = path.join(W, "build", "expose_v19.js");
 const CSSF = path.join(W, "pack", "余烬裂隙-PoE2内容扩展包v2.0.5", "迁移工具", "build", "port_css.css");
 const MODS_DIR = path.join(W, "pack", "余烬裂隙-PoE2内容扩展包v2.0.5", "mods");
 const HOTFIX_DIR = path.join(W, "pack", "余烬裂隙-PoE2内容扩展包v2.0.5", "迁移工具", "hotfix");
-const VERSION = "2.3.1";
+const VERSION = "2.3.2";
 const REPORT = path.join(W, "reports", "build-v19-report.json");
 
 const MOD_FILES = ["skills.js", "supports.js", "currencies.js", "star_effects.js", "runewords.js", "jewels.js"];
