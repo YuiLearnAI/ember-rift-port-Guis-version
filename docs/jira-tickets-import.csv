@@ -1,0 +1,6 @@
+Summary,Issue Type,Issue Key,Description,Labels,Priority,Epic Link
+"工程可移植性：清理工具链硬编码绝对路径",Task,EMB-101,"tools/_review_probe.cjs、_review_repro.mjs、verify_map.mjs 存在 /Users/yu/WorkBuddy/余烬/port 硬编码路径，换机器即失效。改为基于 import.meta.url / __dirname 的相对解析，并在 jstools 锁定 acorn 8.19.0。验收：npm run verify 在新路径下全绿。","tooling,portability",High,
+"本地开发体验：npm 脚本 + 零依赖预览服务器 + 使用文档",Task,EMB-102,"新增仓库根 package.json 统一 build/check/test/smoke/verify/dev/cheat:* 入口；新增 tools/dev-server.mjs 提供 / /test /base 三入口预览；补充 docs/本地使用与二次开发.md 并更新 README。验收：干净克隆后三步装依赖即可跑通全部脚本。","dx,docs,tooling",Medium,
+"Wiki 异界扩展版构建管线",Story,EMB-103,"以官方 Wiki 快照 base/wiki-online.html 为基底，合并扩展包 mods 数据（技能/辅助/通货/符文之语/星图/珠宝/暗金），产出单文件离线 Wiki。新增 tools/build-wiki.mjs 与 tools/wiki-exp-plugin.js。验收：产物无外链、断网可跑、内容计数与构建报告一致。","wiki,build",Medium,
+"Wiki 产物校验与构建报告",Task,EMB-104,"新增 tools/verify-wiki.mjs 对产物做结构断言；输出 reports/wiki-build-report.json 记录补丁命中与内容统计。需决策：4.6MB 产物是否进版本库，或改为 CI 重建 + Release 附件。验收：校验脚本全绿且报告字段完整。","wiki,qa",Medium,
+"交付门禁：提交/分支校验钩子与 PR 模板",Task,EMB-105,"建立 docs/jira-delivery.md 作为交付唯一事实来源；新增 tools/hooks/commit-msg 与 install-hooks.sh 强制 Jira 锚点与提交格式；新增 .github/pull_request_template.md。验收：不合规提交被拦截，合规提交放行。","process,git",High,

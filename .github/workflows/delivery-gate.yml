@@ -1,0 +1,92 @@
+name: 交付门禁
+
+# 与 .git/hooks/commit-msg 同源的双保险：钩子只在本地生效，CI 兜住绕过与网页提交。
+# 规范：docs/jira-delivery.md
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  naming:
+    name: 分支与 PR 标题合规
+    runs-on: ubuntu-latest
+    steps:
+      - name: 校验分支名
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          branch_regex='^(feature|bugfix|hotfix)/[A-Z]+-[0-9]+-[a-z0-9-]+$|^release/v?[0-9]+\.[0-9]+\.[0-9]+$'
+          if [ -z "$BRANCH" ]; then
+            echo "::error::触发来源没有分支名（是否直接向 main 提交？main 只接受 PR）"
+            exit 1
+          fi
+          if [[ ! "$BRANCH" =~ $branch_regex ]]; then
+            echo "::error::分支名不合规：$BRANCH"
+            echo "要求：feature|bugfix|hotfix/EMB-<编号>-<slug> 或 release/vX.Y.Z"
+            exit 1
+          fi
+          echo "分支名合规：$BRANCH"
+
+      - name: 校验 PR 标题
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          title_regex='^(🚀|✨|🐛|♻️|📚|🧪|💄|🔧|📦|⚡|🔥|🚑|🔒) [A-Z]+-[0-9]+: .+$'
+          if [[ ! "$TITLE" =~ $title_regex ]]; then
+            echo "::error::PR 标题不合规：$TITLE"
+            echo "要求：<gitmoji> EMB-<编号>: <描述>"
+            exit 1
+          fi
+          echo "PR 标题合规：$TITLE"
+
+      - name: 校验 PR 描述含工单与回滚
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          missing=""
+          grep -qiE '\b[A-Z]+-[0-9]+\b' <<< "$BODY" || missing="$missing 工单链接"
+          grep -qE '回滚' <<< "$BODY" || missing="$missing 回滚方式"
+          if [ -n "$missing" ]; then
+            echo "::error::PR 描述缺少：$missing"
+            exit 1
+          fi
+          echo "PR 描述完整"
+
+  verify:
+    name: 三层门禁（语法 / 玩法回归 / 发布版冒烟）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 安装依赖
+        run: |
+          cd tools && npm ci
+          cd jstools && npm ci
+
+      - name: 语法门 + 符号映射
+        run: npm run check
+
+      - name: 玩法回归（397 条断言）
+        run: npm run test
+
+      - name: 发布版冒烟
+        run: npm run smoke
+
+      - name: Wiki 产物校验（存在则跑）
+        run: |
+          wiki="build/wiki-异界版-v2.2.0.html"
+          if [ -f "$wiki" ]; then
+            node tools/verify-wiki.mjs "$wiki"
+          else
+            echo "未发现 wiki 产物，跳过（该分支不涉及 EMB-103/104）"
+          fi
