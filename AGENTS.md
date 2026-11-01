@@ -28,7 +28,7 @@ npm run build && npm run verify                        # 3. 期望 ALL OK / ALL 
 ## 工单：编号的唯一来源
 
 - 载体是 **GitHub Issues**（无 Jira 连接器），标题前缀 `EMB-nnn`
-- 编号已用到 **EMB-116**，**下一个从 EMB-117 起**；建单后请同步改这一行
+- 编号已用到 **EMB-117**，**下一个从 EMB-118 起**；建单后请同步改这一行
 - 分支：`feature|bugfix|hotfix/EMB-nnn-<小写连字符 slug>`
 - 提交：`<gitmoji> EMB-nnn: 一句话描述`，一个提交只做一件事
 - **没有工单号，不建分支、不提交、不开 PR。** 缺号就问，不猜、不编
@@ -53,7 +53,7 @@ npm run build && npm run verify                        # 3. 期望 ALL OK / ALL 
 - `git filter-branch` 后必须清 `refs/original` + reflog + `gc --prune=now`，否则体积不减
 - 改写历史前先删掉指向旧提交的 tag，否则旧 blob 被钉在远端
 - `package.json` **不得**加 `"type": "module"`，否则 `cheat/cheat/scripts/*.js`（CJS）全废
-- 扩展块与宿主共享作用域，**劫持宿主函数时的判据必须只认扩展自己的数据**。用宽判据（例如 `kind==="jewel"`）会把官方同名类型整类吃掉——EMB-112 就是这么让 v19.2 传奇珠宝在背包里失明的。改完跑 `npm run verify:jewel`
+- 扩展块与宿主共享作用域，**劫持宿主函数时的判据必须只认扩展自己的数据**。用宽判据（例如 `kind==="jewel"`）会把官方同名类型整类吃掉——EMB-112 就是这么让 v19.2 传奇珠宝在背包里失明的。改完跑 `npm run verify:jewel`。**顶层 `var`/`function` 重名同样会静默覆盖宿主实现**，由 `npm run check` 里的 `shadow_check.mjs` 拦（EMB-117）
 - 画布上排文字要按**屏幕坐标 + 碰撞检测**排：世界坐标里画、字号随缩放变，看着能跑，一密集就压字（EMB-113 的天赋树标签）。改完跑 `npm run verify:atlas`
 - 修改器 `ember-rift-gui.user.js` 挂了事件后要跑 `npm run cheat:test`；**动了面板 CSS 必须 `node cheat/cheat/scripts/extract-css.js`** 重导 `docs/design/panel.css`，否则 `cheat:smoke` 会报「CSS 漂移」
 - 产物字节一变，`npm run assets:check` 就会报 MISMATCH。这不是损坏，是清单滞后：**补丁位版本号 + 新 Release 整套上传**是唯一正解（EMB-114）。只改 sha256 不改版本号，会让同一文件名在不同 Release 里对应两份内容
@@ -64,7 +64,7 @@ npm run build && npm run verify                        # 3. 期望 ALL OK / ALL 
 
 ```bash
 npm run dev        # 本地预览 http://127.0.0.1:8787/ （/test /base /wiki）
-npm run verify     # check + 玩法断言 + 冒烟 + 珠宝回归 + 天赋树标签 + 基底一致性两道审计
+npm run verify     # check（语法 / 映射 / 顶层重名）+ 玩法断言 + 冒烟 + 珠宝回归 + 天赋树标签 + 基底一致性两道审计
 npm run verify:atlas   # 单独跑天赋树节点名排版（5 组缩放/平移，矩形容差为 0）
 npm run cheat:test     # 修改器：静态审查 + 逻辑断言 + jsdom 界面断言
 npm run audit      # 单独跑基底一致性：逐字节比对 + 运行时数据表比对

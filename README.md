@@ -34,6 +34,7 @@ port/
 │   ├─ harness_v19.cjs            玩法回归（399 条断言）
 │   ├─ smoke-v19.cjs              发布版冒烟
 │   ├─ verify_map.mjs             映射目标合法性校验
+│   ├─ shadow_check.mjs           移植块与宿主顶层声明重名检查（npm run check 的一环）
 │   ├─ dev-server.mjs             本地预览服务器（零依赖）
 │   ├─ build-wiki.mjs             改版 Wiki 构建（官方快照 + 扩展数据）
 │   ├─ wiki-exp-plugin.js         改版 Wiki 浏览器端插件（新增页面 + 数据合并）
