@@ -144,6 +144,71 @@
       return '<tr><td style="white-space:nowrap"><b style="color:var(--gold)">' + esc(p.n) + '</b></td><td class="t-num mute">' + esc(p.from) + '</td><td class="t-num"><b style="color:var(--good)">' + esc(p.to) + '</b></td><td>' + esc(p.d) + '</td></tr>';
     }).join('');
 
+    /* 腐化词缀扩池（EMB-122）：数据来自 E.corruptPool，由 build-wiki.mjs 从 block_v19.js 实时解析 */
+    var corruptHtml = '';
+    (function () {
+      var cp = E.corruptPool;
+      if (!cp || !cp.entries || !cp.entries.length) return;
+      var CORT = {
+        skillLvl: '所有技能等级 +{v}', lifeInc: '最大生命提高 {v}%', critInc: '暴击率提高 {v}%',
+        leech: '击中偷取 {v}% 伤害为生命', resAll: '+{v}% 所有元素抗性', moveInc: '移动速度提高 {v}%',
+        atkSpd: '攻击速度提高 {v}%', castSpd: '施法速度提高 {v}%', spirit: '+{v} 精魂', rarity: '物品稀有度提高 {v}%',
+        critMulti: '+{v}% 暴击伤害加成', ailment: '元素异常几率 +{v}%', armour: '+{v} 护甲', esInc: '最大能量护盾提高 {v}%',
+        manaRegen: '魔力回复速度提高 {v}%', regen: '每秒回复 {v} 生命', projAdd: '投射物技能 +{v} 枚投射物',
+        corruptCruel: '暴击伤害 +{v}% · 最大生命总降 6%', corruptGluttony: '物品数量提高 {v}% · 物品稀有度总降 20%',
+        corruptEmberBlood: '每秒回复 {v} 生命 · 最大能量护盾总降 10%', corruptBone: '击杀时 {v}% 几率留下 1 片余烬残片',
+        corruptResonance: '每 1 条腐化词缀使伤害提高 {v}%', corruptScorch: '命中时 {v}% 几率使目标点燃'
+      };
+      var CGRP = {
+        skillLvl: 'legacy', lifeInc: 'legacy', critInc: 'legacy', leech: 'legacy', resAll: 'legacy', moveInc: 'legacy',
+        atkSpd: 'legacy', castSpd: 'legacy', spirit: 'legacy', rarity: 'legacy',
+        critMulti: 'num', ailment: 'num', armour: 'num', esInc: 'num', manaRegen: 'num', regen: 'num', projAdd: 'num',
+        corruptCruel: 'cost', corruptGluttony: 'cost', corruptEmberBlood: 'cost',
+        corruptBone: 'mech', corruptResonance: 'mech', corruptScorch: 'mech'
+      };
+      var GRPLABEL = { legacy: '官版保留', num: '新增数值', cost: '带代价', mech: '机制型' };
+      var GRPORDER = ['legacy', 'num', 'cost', 'mech'];
+      var total = cp.total || cp.entries.reduce(function (s, p) { return s + (p.w || 0); }, 0);
+      var fmtRange = function (a, b) { return (a === b) ? String(a) : (a + '–' + b); };
+      var fmtTxt = function (k, a, b) {
+        var t = CORT[k];
+        if (!t) return k + ' ' + fmtRange(a, b);
+        return t.replace(/\{v\}/g, fmtRange(a, b));
+      };
+      var byGrp = {};
+      cp.entries.forEach(function (p) {
+        var g = CGRP[p.k] || 'num';
+        (byGrp[g] = byGrp[g] || []).push(p);
+      });
+      var groupHtml = GRPORDER.map(function (g) {
+        var list = byGrp[g] || [];
+        var body = list.map(function (p) {
+          var pct = total ? (p.w / total * 100).toFixed(1) : '0';
+          var tags = '';
+          if (p.jewel === false) tags += '<span class="tag" style="background:#3a2a16;color:#e0b070">珠宝禁抽</span>';
+          if (p.cap) tags += '<span class="tag" style="background:#16303a;color:#7fc8e0">多来源不叠加</span>';
+          return '<tr><td>' + esc(fmtTxt(p.k, p.a, p.b)) + '</td>' +
+            '<td class="t-num">' + esc(fmtRange(p.a, p.b)) + '</td>' +
+            '<td class="t-num">' + p.w + '</td>' +
+            '<td class="t-num">' + pct + '%</td>' +
+            '<td>' + tags + '</td></tr>';
+        }).join('');
+        return '<h3 style="margin-top:14px;color:var(--gold)">' + esc(GRPLABEL[g]) + '（' + list.length + ' 条）</h3>' +
+          '<div class="tw"><table><tr><th>词缀</th><th class="t-num">数值区间</th><th class="t-num">权重</th><th class="t-num">占池</th><th>标记</th></tr>' +
+          body + '</table></div>';
+      }).join('');
+      var jewelCount = cp.entries.filter(function (p) { return p.jewel !== false; }).length;
+      var legacyW = cp.entries.filter(function (p) { return CGRP[p.k] === 'legacy'; }).reduce(function (s, p) { return s + (p.w || 0); }, 0);
+      corruptHtml =
+        '<p class="cap">共 <b>' + cp.entries.length + '</b> 条 · 总权重 <b>' + total + '</b> · 官版 10 条占池约 <b>' +
+        (total ? Math.round(legacyW / total * 100) : 0) + '%</b> · 珠宝可抽 <b>' + jewelCount + '</b> 条（不含技能等级）。</p>' +
+        groupHtml +
+        '<p class="cap" style="margin-top:12px">抽取按权重进行：池子展开成「按权重重复」的数组后等概率抽取，所以高权重词缀更常见（极稀有如额外投射物仅 2 权重）。' +
+        '机制型（击杀掉残片 / 共鸣 / 点燃）在多件装备或珠宝同时出现时只生效一次（取上限），不会线性叠加失控。</p>' +
+        '<p class="cap">本改版一并修复 3 处官版/历史缺陷：① 技能等级词缀原本显示裸 key「skillLvl 1」，已补中文；' +
+        '② 祭坛升华前判空，已有第二条腐化时改为原区间重铸，不再被顶掉；③ 瓦尔宝珠出双瓦后不再写「已献祭」标记，解除被永久锁死在祭坛外的 bug。</p>';
+    })();
+
     /* 暗金卡片 */
     var uniqCards = (E.uniques || []).map(function (u) {
       var b = R.BASEMAP[u.base] || {};
@@ -240,6 +305,9 @@
 
       secH('exp-num', 'BALANCE', '数值与机制改动', '以下改动由扩展包的构建补丁与热修配置落实，官方原版没有。') +
       '<div class="tw"><table><tr><th>项目</th><th class="t-num">官方 v19</th><th class="t-num">异界扩展</th><th>说明</th></tr>' + patchRows + '</table></div>' +
+
+      secH('exp-corrupt', 'CORRUPTION', '腐化词缀扩池（瓦尔宝珠 · 祭坛双瓦）', '瓦尔宝珠与余烬祭坛双瓦共用同一个词缀池；本改版把它从 10 条扩到 23 条并引入权重。下方数据与游戏内一致（由构建脚本从扩展块实时解析）。') +
+      corruptHtml +
 
       secH('exp-uniq', 'ITEMS', '新增暗金', '基底均取自当前底包，掉落概率写在扩展包的平衡表里。') +
       '<div class="cards">' + uniqCards + '</div>' +

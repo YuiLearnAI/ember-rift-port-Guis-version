@@ -9,7 +9,7 @@
  *   tools/wiki-exp-plugin.js                  浏览器端插件（并入数据 + 新增页面）
  *
  * 输出：
- *   build/wiki-异界版-v2.3.3.html             单文件 Wiki（离线可跑）
+ *   build/wiki-异界版-v2.3.4.html             单文件 Wiki（离线可跑）
  *   reports/wiki-build-report.json            构建报告（补丁命中数 / 内容统计）
  *
  * 用法：node tools/build-wiki.mjs [--out <path>]
@@ -26,13 +26,13 @@ const HOTFIX = path.join(PACK, "迁移工具", "hotfix", "hotfix.json");
 const BLOCK = path.join(W, "build", "block_v19.js");
 const PLUGIN = path.join(W, "tools", "wiki-exp-plugin.js");
 
-const VER = "2.3.3";
+const VER = "2.3.4";
 
 // 产物里的「构建时点」。默认写死为定版值，让 `npm run wiki` 不带任何环境变量
 // 也能与 Release 归档逐字节一致；发版时连同 VER 一起更新这一行。
 // 临时构建（不打算归档的那次）用 EMB_BUILD_AT=... 覆盖。
 // 注意不要改成 base 快照的 mtime：git 不保存 mtime，不同克隆出来的时间不同。
-const BUILT_AT = "2026-11-01T12:30:00.000Z";
+const BUILT_AT = "2026-11-01T22:30:00.000Z";
 
 const PLUGIN_TAG = "<!-- EMBER-EXP-PLUGIN -->";
 
@@ -92,6 +92,30 @@ function loadUniques() {
   return arr;
 }
 
+/* ---------- 2b. 从移植块里取出腐化词缀池（EMB-122） ---------- */
+function loadCorruptPool() {
+  const src = read(BLOCK);
+  const mark = "/* ===== EMB-122 · 腐化词缀扩池 =====";
+  const segStart = src.indexOf(mark);
+  if (segStart < 0) throw new Error("在 block_v19.js 中找不到 EMB-122 扩池段");
+  const pStart = src.indexOf("var POOL = [", segStart);
+  if (pStart < 0) throw new Error("在 EMB-122 段中找不到 POOL 数组");
+  const open = src.indexOf("[", pStart);
+  let depth = 0, end = -1;
+  for (let i = open; i < src.length; i++) {
+    const c = src[i];
+    if (c === "[") depth++;
+    else if (c === "]") { depth--; if (depth === 0) { end = i; break; } }
+  }
+  if (end < 0) throw new Error("POOL 数组括号不匹配");
+  const literal = src.slice(open, end + 1);
+  const arr = new Function("return " + literal + ";")();
+  if (!Array.isArray(arr) || !arr.length) throw new Error("POOL 解析为空");
+  const total = arr.reduce((s, p) => s + (p.w || 0), 0);
+  applied.push({ label: "block_v19.js 腐化词缀池", hits: arr.length });
+  return { entries: arr, total };
+}
+
 /* ---------- 3. 文本补丁（官方文案里被扩展改掉的数值） ---------- */
 function patchHtml(html) {
   const patch = (needle, repl, label, expect) => {
@@ -138,6 +162,7 @@ function main() {
 
   const mods = loadMods();
   const uniques = loadUniques();
+  const corruptPool = loadCorruptPool();
   const hotfix = JSON.parse(read(HOTFIX));
 
   const EXP = {
@@ -148,6 +173,7 @@ function main() {
     builtAt: process.env.EMB_BUILD_AT || BUILT_AT,
     mods,
     uniques,
+    corruptPool,
     summary: {
       skills: mods.skills.length,
       supports: mods.supports.length,
@@ -169,6 +195,7 @@ function main() {
       { n: "技能宝石等级上限", from: "20 级", to: "30 级", d: "升级判定与界面文案同步提升" },
       { n: "符文阶梯", from: "6 种符文通货", to: "40 级阶梯", d: "新增 rune_01–rune_40、合成与定向配方、词缀倍率" },
       { n: "暗金掉落", from: "—", to: "5 件", d: "独立概率表，只在高稀有度击杀时额外结算，不挤占原有掉落池" },
+      { n: "腐化词缀池（瓦尔宝珠 · 祭坛双瓦）", from: "10 条等概率", to: "23 条带权重", d: "两套系统共用池，新增 13 条（数值/代价/机制），并修 3 处缺陷（详见本页「腐化词缀扩池」节）" },
     ],
     guards: [
       { n: "抗性上限 75% → 85%", d: "四处锚点同时改，避免显示与实际不一致", applied: true },
