@@ -46,15 +46,30 @@ port/
     └─ CODE-REVIEW.md             评审结论
 ```
 
+## 大文件资产（必读）
+
+`base/*.html`、`build/*.html`、`cheat/cheat/wiki.html` 等 4MB 级文件**不在版本库里**——它们由 GitHub Release 承载，
+以控制仓库体积（详见 [docs/jira-delivery.md](docs/jira-delivery.md) 第十节）。
+
+**干净克隆后第一步**：
+
+```bash
+npm run assets:pull    # 从 Release 取回并按 sha256 校验，缺什么补什么
+```
+
+不做这一步，`npm run build` / `npm run wiki` / `npm run dev` 的 `/base` `/wiki` 都会失败并提示同一条命令。
+清单与哈希在 `tools/assets.json`。
+
 ## 常用命令
 
 ```bash
-cd tools
-node syntax.mjs  ../build/test-v19.html        # 语法门
-node harness_v19.cjs ../build/test-v19.html    # 玩法回归（要求 ALL PASS）
-node smoke-v19.cjs "../build/余烬裂隙-异界内容扩展-v2.2.0-v19.html"   # 发布版冒烟
-node verify_map.mjs                            # 映射目标合法性
-node build-v19.mjs --mode both                 # 重建 test + release
+npm run assets:pull                            # 取回大文件资产（新克隆必做一次）
+npm run build                                  # 出包（产物与当前提交字节级一致）
+npm run verify                                 # check + test + smoke 三道门禁，必须全绿
+node tools/syntax.mjs  build/test-v19.html     # 语法门
+node tools/harness_v19.cjs build/test-v19.html # 玩法回归（要求 ALL PASS）
+node tools/smoke-v19.cjs "build/余烬裂隙-异界内容扩展-v2.2.0-v19.html"   # 发布版冒烟
+node tools/verify_map.mjs                      # 映射目标合法性
 ```
 
 ## 本地环境（已配置，仓库根目录可直接跑）
@@ -63,6 +78,7 @@ node build-v19.mjs --mode both                 # 重建 test + release
 在仓库根目录：
 
 ```bash
+npm run assets:pull  # 首次/新克隆：取回大文件资产
 npm run build        # 出包（产物与当前提交字节级一致）
 npm run verify       # check + test + smoke 三道门禁，必须全绿
 npm run dev          # 本地预览：http://127.0.0.1:8787/  （/test 测试版，/base 官方底包，/wiki 改版 Wiki）

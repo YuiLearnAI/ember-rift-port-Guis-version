@@ -37,6 +37,17 @@ function read(p) {
   return fs.readFileSync(p, "utf8");
 }
 
+/** 大文件资产不进版本库（EMB-106），缺失时给出可执行提示 */
+function requireAsset(p) {
+  if (fs.existsSync(p)) return;
+  throw new Error(
+    "缺少资产：" + path.relative(W, p) + "\n" +
+    "该文件由 GitHub Release 承载，不在版本库里。先执行：\n" +
+    "  npm run assets:pull\n" +
+    "（详见 docs/jira-delivery.md 第十节「大文件资产」）"
+  );
+}
+
 /* ---------- 1. 收集扩展数据（直接执行扩展包源文件，避免手抄） ---------- */
 function loadMods() {
   const win = {};
@@ -118,7 +129,10 @@ function main() {
   const EXP = {
     ver: VER,
     baseVer: "v19.0.1",
-    builtAt: new Date().toISOString(),
+    // 构建时间会写进产物，是唯一的不可复现来源。
+    // 需要字节级可复现时（CI 比对、与 Release 归档核对）固定它：
+    //   EMB_BUILD_AT=2026-11-01T05:31:44.807Z node tools/build-wiki.mjs
+    builtAt: process.env.EMB_BUILD_AT || new Date().toISOString(),
     mods,
     uniques,
     summary: {
@@ -155,6 +169,7 @@ function main() {
     hotfixVersion: hotfix.version || "",
   };
 
+  requireAsset(BASE);
   let html = read(BASE);
 
   // 数据 + 插件：插在 </body> 之前（此时官方 app 脚本已执行完毕）

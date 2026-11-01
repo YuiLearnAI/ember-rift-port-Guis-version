@@ -4,6 +4,8 @@
   "private": true,
   "description": "余烬裂隙 PoE2 内容扩展包 · v19 迁移与二次开发工程",
   "scripts": {
+    "assets:pull": "node tools/fetch-assets.mjs",
+    "assets:check": "node tools/fetch-assets.mjs --check",
     "build": "node tools/build-v19.mjs --mode both",
     "check": "node tools/syntax.mjs build/test-v19.html && node tools/verify_map.mjs",
     "test": "node tools/harness_v19.cjs build/test-v19.html",

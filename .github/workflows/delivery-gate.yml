@@ -73,6 +73,14 @@ jobs:
           cd tools && npm ci
           cd jstools && npm ci
 
+      # 大文件资产不进版本库（EMB-106），CI 从 Release 取回并校验 sha256
+      - name: 取回大文件资产
+        run: npm run assets:pull
+
+      # 产物不再提交，门禁必须自己构建，否则 verify 检查的是空气
+      - name: 构建测试版与发布版
+        run: npm run build
+
       - name: 语法门 + 符号映射
         run: npm run check
 
@@ -82,11 +90,5 @@ jobs:
       - name: 发布版冒烟
         run: npm run smoke
 
-      - name: Wiki 产物校验（存在则跑）
-        run: |
-          wiki="build/wiki-异界版-v2.2.0.html"
-          if [ -f "$wiki" ]; then
-            node tools/verify-wiki.mjs "$wiki"
-          else
-            echo "未发现 wiki 产物，跳过（该分支不涉及 EMB-103/104）"
-          fi
+      - name: Wiki 构建与产物校验
+        run: npm run wiki
