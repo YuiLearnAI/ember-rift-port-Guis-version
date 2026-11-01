@@ -37,7 +37,7 @@
       "path": "build/wiki-异界版-v2.3.1.html",
       "asset": "wiki-exp-v2.3.1.html",
       "sha256": "cefa2e65bf817af6df77e1c1dc04a03859599607c5f88286c35e3ccf85ab2526",
-      "role": "Wiki 扩展版产物，npm run wiki:build 可复现（需固定 EMB_BUILD_AT=2026-11-01T09:20:00.000Z）"
+      "role": "Wiki 扩展版产物，npm run wiki:build 默认可复现（builtAt 定版 2026-11-01T09:20:00.000Z，见 build-wiki.mjs 的 BUILT_AT）"
     },
     {
       "path": "pack/余烬裂隙-PoE2内容扩展包v2.0.5/余烬裂隙-异界内容扩展-v2.1.0.html",

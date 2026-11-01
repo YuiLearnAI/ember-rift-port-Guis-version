@@ -244,7 +244,7 @@ npm run assets:pull -- --force          # 哈希不符时强制覆盖（本地�
 | `cheat/cheat/wiki.html` | 与上一行同内容的副本 | 否，必须保全 |
 | `build/test-v19.html` | 构建产物 | ✅ `npm run build` |
 | `build/余烬裂隙-异界内容扩展-v2.3.1-v19.html` | 构建产物 | ✅ `npm run build` |
-| `build/wiki-异界版-v2.3.1.html` | 构建产物 | ✅ `npm run wiki`（固定 `EMB_BUILD_AT` 后字节一致） |
+| `build/wiki-异界版-v2.3.1.html` | 构建产物 | ✅ `npm run wiki`（默认即字节一致，builtAt 已定版） |
 | `pack/**/余烬裂隙-异界内容扩展-v2.1.0.html` | 历史发行版归档 | 否，仅留档 |
 
 当前 Release 标签：`assets-v2.3.1`。上一版 `assets-v2.3.0`、`assets-v2.2.0` 全部保留，**不要删**——
@@ -273,26 +273,31 @@ npm run assets:pull -- --force          # 哈希不符时强制覆盖（本地�
 ```
 npm run build  → test-v19.html        sha256 5c60b079…（与 Release 资产一致）
 npm run build  → 发布版 v2.3.1 产物     sha256 3bf68684…（与 Release 资产一致）
-npm run wiki   → wiki-异界版.html      见下方「构建时间」说明
+npm run wiki   → wiki-异界版-v2.3.1.html sha256 cefa2e65…（与 Release 资产一致）
 ```
 
-`build-wiki.mjs` 会把构建时间写进产物，是唯一的不可复现来源。固定它即可字节一致：
+**三条都是默认命令，不需要任何环境变量**（EMB-115）。`build-wiki.mjs` 把构建时点写进产物，
+曾经是唯一的不可复现来源；现在它的默认值是脚本里的定版常量 `BUILT_AT`：
 
-```bash
-EMB_BUILD_AT=2026-11-01T09:20:00.000Z node tools/build-wiki.mjs
-# → build/wiki-异界版-v2.3.1.html sha256 cefa2e65…（与 Release 归档完全一致）
+```js
+const BUILT_AT = "2026-11-01T09:20:00.000Z";   // 发版时连同 VER 一起更新
+builtAt: process.env.EMB_BUILD_AT || BUILT_AT,
 ```
 
-实测（v2.3.1）：同一 `EMB_BUILD_AT` 连跑两遍 `build` + `wiki`，三份产物哈希逐字节一致。
+- **发版**：更新 `VER` 那一行时，把它一起改成这次的定版时间，再跑 `npm run wiki`。
+- **临时构建**（改了内容先看效果、不归档）：`EMB_BUILD_AT=$(date -u +%Y-%m-%dT%H:%M:%S.000Z) node tools/build-wiki.mjs`，
+  此时产物哈希会与归档不同，`assets:check` 报 MISMATCH 属预期。
 
-> 副作用提醒：`npm run wiki` 不带 `EMB_BUILD_AT` 时产物哈希会变。这是**预期行为**，
-> `npm run assets:check` 会因此报 MISMATCH，用 `--force` 覆盖或删掉本地产物重新 pull 即可，不是数据损坏。
+> 反面教材：别想着把默认值钉成 `base/wiki-online.html` 的 mtime。git 不保存 mtime，
+> 每个克隆出来的时间都不一样，那样反而**更**不可复现。
 
 ### 改这些文件时的流程
 
-1. 内容变更 → 在同一 PR 里更新 `tools/assets.json` 的 `sha256`
-2. 打新 Release（tag 递增，如 `assets-v2.2.1`），同步改 `assets.json` 的 `tag`
-3. **绝不允许**为了让 CI 通过而把大文件 `git add -f` 回去
+1. 内容变更 → 在同一 PR 里更新 `tools/assets.json` 的 `sha256`、版本号与 `BUILT_AT`
+2. **先建新 Release**（tag 递增，如 `assets-v2.3.2`），把 7 项资产整套传完，再推分支看 CI
+   —— 顺序反了，CI 的 `assets:pull` 一定拉不到新 tag（EMB-114 实测），第一次跑必红
+3. 同步改 `assets.json` 的 `tag`
+4. **绝不允许**为了让 CI 通过而把大文件 `git add -f` 回去
 
 ### 历史改写记录
 
