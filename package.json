@@ -1,6 +1,6 @@
 {
   "name": "ember-rift-port",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "private": true,
   "description": "余烬裂隙 PoE2 内容扩展包 · v19 迁移与二次开发工程",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "node tools/build-v19.mjs --mode both",
     "check": "node tools/syntax.mjs build/test-v19.html && node tools/verify_map.mjs",
     "test": "node tools/harness_v19.cjs build/test-v19.html",
-    "smoke": "node tools/smoke-v19.cjs \"build/余烬裂隙-异界内容扩展-v2.2.0-v19.html\"",
+    "smoke": "node tools/smoke-v19.cjs",
     "verify": "npm run check && npm run test && npm run smoke",
     "dev": "node tools/dev-server.mjs",
     "cheat:review": "node cheat/cheat/scripts/review.js",

@@ -15,10 +15,26 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const W = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const REL = path.join(W, "build", "余烬裂隙-异界内容扩展-v2.2.0-v19.html");
+
+/**
+ * 产物路径按「模式取最新」解析，不写死版本号——
+ * 每次官方升版都会换产物文件名，写死就得跟着改，改了忘改就 404。
+ */
+function newest(prefix, fallback) {
+  const dir = path.join(W, "build");
+  if (!fs.existsSync(dir)) return fallback;
+  const cands = fs
+    .readdirSync(dir)
+    .filter((f) => f.startsWith(prefix) && f.endsWith(".html"))
+    .map((f) => ({ f, t: fs.statSync(path.join(dir, f)).mtimeMs }))
+    .sort((a, b) => b.t - a.t);
+  return cands.length ? path.join(dir, cands[0].f) : fallback;
+}
+
+const REL = newest("余烬裂隙-异界内容扩展-", path.join(W, "build", "余烬裂隙-异界内容扩展-v19.html"));
 const TEST = path.join(W, "build", "test-v19.html");
 const BASE = path.join(W, "base", "v19-online.html");
-const WIKI = path.join(W, "build", "wiki-异界版-v2.2.0.html");
+const WIKI = newest("wiki-异界版-", path.join(W, "build", "wiki-异界版.html"));
 
 const portArg = process.argv.indexOf("--port");
 const PORT = Number(portArg > -1 ? process.argv[portArg + 1] : process.env.PORT || 8787);

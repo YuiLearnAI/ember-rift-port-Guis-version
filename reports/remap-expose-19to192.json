@@ -1,0 +1,334 @@
+{
+  "generatedAt": "2026-11-01T07:37:31.222Z",
+  "source": "build/expose_v19.js",
+  "totalFreeRefs": 137,
+  "distinctFree": 130,
+  "replacedOccurrences": 66,
+  "unresolved": [
+    {
+      "name": "u",
+      "count": 5,
+      "conf": null
+    },
+    {
+      "name": "ATLAS_ALL",
+      "count": 2,
+      "conf": null
+    },
+    {
+      "name": "AdvBuild",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "ADV_NODES",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AdvStatTotals",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "pe",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "OmToggle",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "OmTake",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "OmHas",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "OmActive",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "OmDrop",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "OmHint",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "OmWhittle",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "OmBenchRow",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "ExCalc",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "ExAll",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AbyssMake",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AbyssUpdate",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AbyssOnKill",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AbyssOpenPit",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AbyssSeal",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AbyssMods",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AbyssModRoll",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "ABMODS",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AbyssOmenDrop",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DsDesecrate",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DsOptions",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DsReveal",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DsReroll",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DsWell",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DsMapChaos",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DsBoneDrop",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DelDRMul",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DelDRPct",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "SimDmgMul",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DelRarityBonus",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DelDepthNow",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "UniqueResCap",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "SimulacrumInteract",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "SimulacrumEnter",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "SimEnterLayer",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "SimBossKilled",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "SimulacrumUpdate",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "SimulacrumNext",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "SimulacrumFinish",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DeliriumStart",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DeliriumUpdate",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DeliriumEnd",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DelEnterLayer",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "DelHpBonus",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "RitualMake",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "RitTribute",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "RitAddTribute",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "RitSpendTribute",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "RitualStart",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "RitualUpdate",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "RitualShop",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "RitualInteract",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "RitualOffers",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "RitualBuy",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "RitualWave",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AtlasAlloc",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AtlasCountAlloc",
+      "count": 1,
+      "conf": null
+    },
+    {
+      "name": "AtlasRespec",
+      "count": 1,
+      "conf": null
+    }
+  ],
+  "mediumConfidence": [
+    "wu",
+    "$h",
+    "C0"
+  ]
+}

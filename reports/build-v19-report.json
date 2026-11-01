@@ -1,6 +1,6 @@
 {
-  "version": "2.2.0",
-  "baseBytes": 3678524,
+  "version": "2.3.0",
+  "baseBytes": 3814739,
   "applied": [
     {
       "label": "res-cap-server",

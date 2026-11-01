@@ -1,43 +1,43 @@
 {
   "repo": "YuiLearnAI/ember-rift-port-Guis-version",
-  "tag": "assets-v2.2.0",
+  "tag": "assets-v2.3.0",
   "note": "大文件资产清单。这些文件不进版本库，由 GitHub Release 承载，npm run assets:pull 取回并校验 sha256。改文件内容时必须同步更新 sha256，否则取回会失败。",
   "assets": [
     {
       "path": "base/v19-online.html",
       "asset": "v19-online.html",
-      "sha256": "5443d7d335d728843b59a01b615de8f9eb4fc2e7493c30c6be98fad2094b41f4",
-      "role": "官方 v19 底包快照，npm run build 的输入"
+      "sha256": "c27a7d1103a1779a7ac23316b7610bd767074cfd0b390e01f7d70c15db856696",
+      "role": "官方底包快照（当前为 v19.2 踏麟·真言），npm run build 的输入"
     },
     {
       "path": "base/wiki-online.html",
       "asset": "wiki-online.html",
-      "sha256": "77e767aa9da0c926db9d229bdaa799cd0e936967b553db2d7ef313a6a96757fa",
-      "role": "官方 Wiki 快照，npm run wiki:build 的输入"
+      "sha256": "02aadec113daba815aa10ce6b81cb9ab9fa3b2f6623fb3301f9b6267594510db",
+      "role": "官方 Wiki 快照（当前为 v19.2），npm run wiki:build 的输入"
     },
     {
       "path": "cheat/cheat/wiki.html",
       "asset": "wiki-online.html",
-      "sha256": "77e767aa9da0c926db9d229bdaa799cd0e936967b553db2d7ef313a6a96757fa",
+      "sha256": "02aadec113daba815aa10ce6b81cb9ab9fa3b2f6623fb3301f9b6267594510db",
       "role": "与 base/wiki-online.html 同内容的副本，cheat 工具沿用原路径"
     },
     {
       "path": "build/test-v19.html",
       "asset": "test-v19.html",
-      "sha256": "65381d1303b0f163720fac8b69a7ebc70e0a5ee719d839b0551ed8859b7ead61",
+      "sha256": "5a25b740bc248fefa0f2da5587b81eb5231b70fe8577c9d95c9e9bc0372840ff",
       "role": "测试版产物，npm run build 可复现"
     },
     {
-      "path": "build/余烬裂隙-异界内容扩展-v2.2.0-v19.html",
-      "asset": "release-v2.2.0-v19.html",
-      "sha256": "6da904296c943519de8ba5ddc5f53d4af6b39f39caadf7116ee4160966a2b2bc",
+      "path": "build/余烬裂隙-异界内容扩展-v2.3.0-v19.html",
+      "asset": "release-v2.3.0-v19.html",
+      "sha256": "9af1a8321c71d474b703a88f8a86db221af5bf4485e86704ccbe86b19a4ac840",
       "role": "发布版产物，npm run build 可复现"
     },
     {
-      "path": "build/wiki-异界版-v2.2.0.html",
-      "asset": "wiki-exp-v2.2.0.html",
-      "sha256": "2691350fab58ecc109fbc0cdc8f0a5dee18123cb209942f80523e612dc244dc6",
-      "role": "Wiki 扩展版产物，npm run wiki:build 可复现"
+      "path": "build/wiki-异界版-v2.3.0.html",
+      "asset": "wiki-exp-v2.3.0.html",
+      "sha256": "558f938f3983d64242a3842459011d6df595b3ba20349fec66413f269a520d27",
+      "role": "Wiki 扩展版产物，npm run wiki:build 可复现（需固定 EMB_BUILD_AT=2026-11-01T07:45:00.000Z）"
     },
     {
       "path": "pack/余烬裂隙-PoE2内容扩展包v2.0.5/余烬裂隙-异界内容扩展-v2.1.0.html",
