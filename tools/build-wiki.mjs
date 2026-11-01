@@ -9,7 +9,7 @@
  *   tools/wiki-exp-plugin.js                  浏览器端插件（并入数据 + 新增页面）
  *
  * 输出：
- *   build/wiki-异界版-v2.3.0.html             单文件 Wiki（离线可跑）
+ *   build/wiki-异界版-v2.3.1.html             单文件 Wiki（离线可跑）
  *   reports/wiki-build-report.json            构建报告（补丁命中数 / 内容统计）
  *
  * 用法：node tools/build-wiki.mjs [--out <path>]
@@ -26,7 +26,7 @@ const HOTFIX = path.join(PACK, "迁移工具", "hotfix", "hotfix.json");
 const BLOCK = path.join(W, "build", "block_v19.js");
 const PLUGIN = path.join(W, "tools", "wiki-exp-plugin.js");
 
-const VER = "2.3.0";
+const VER = "2.3.1";
 const PLUGIN_TAG = "<!-- EMBER-EXP-PLUGIN -->";
 
 const applied = [];
