@@ -52,10 +52,10 @@ npm run build && npm run verify                        # 3. 期望 ALL OK / ALL 
 - bash `grep` 对本仓库部分中文文件返回空 → 用 Grep 工具
 - `git filter-branch` 后必须清 `refs/original` + reflog + `gc --prune=now`，否则体积不减
 - 改写历史前先删掉指向旧提交的 tag，否则旧 blob 被钉在远端
-- `package.json` **不得**加 `"type": "module"`，否则 `cheat/cheat/scripts/*.js`（CJS）全废
+- `package.json` **不得**加 `"type": "module"`，否则 `cheat/scripts/*.js`（CJS）全废
 - 扩展块与宿主共享作用域，**劫持宿主函数时的判据必须只认扩展自己的数据**。用宽判据（例如 `kind==="jewel"`）会把官方同名类型整类吃掉——EMB-112 就是这么让 v19.2 传奇珠宝在背包里失明的。改完跑 `npm run verify:jewel`。**顶层 `var`/`function` 重名同样会静默覆盖宿主实现**，由 `npm run check` 里的 `shadow_check.mjs` 拦（EMB-117）
 - 画布上排文字要按**屏幕坐标 + 碰撞检测**排：世界坐标里画、字号随缩放变，看着能跑，一密集就压字（EMB-113 的天赋树标签）。改完跑 `npm run verify:atlas`
-- 修改器 `ember-rift-gui.user.js` 挂了事件后要跑 `npm run cheat:test`；**动了面板 CSS 必须 `node cheat/cheat/scripts/extract-css.js`** 重导 `docs/design/panel.css`，否则 `cheat:smoke` 会报「CSS 漂移」
+- 修改器 `ember-rift-gui.user.js` 挂了事件后要跑 `npm run cheat:test`；**动了面板 CSS 必须 `node cheat/scripts/extract-css.js`** 重导 `docs/design/panel.css`，否则 `cheat:smoke` 会报「CSS 漂移」
 - 产物字节一变，`npm run assets:check` 就会报 MISMATCH。这不是损坏，是清单滞后：**补丁位版本号 + 新 Release 整套上传**是唯一正解（EMB-114）。只改 sha256 不改版本号，会让同一文件名在不同 Release 里对应两份内容
 - 换 `assets.json` 的 `tag` 时，新 Release 必须把 7 项**全部**重新上传；`fetch-assets.mjs` 不会跨 Release 找文件。顺序也要对：**先建 Release、再推分支看 CI**，反了的话 CI 的 `assets:pull` 拉不到新 tag，第一次跑必红
 - 三份产物默认命令即可字节复现（`npm run build` / `npm run wiki`）。`build-wiki.mjs` 的构建时点走 `BUILT_AT` 定版常量，**发版时要连同 `VER` 一起改**；别改成 base 快照的 mtime——git 不保存 mtime，克隆时间各不相同，那样反而不可复现（EMB-115）

@@ -21,7 +21,7 @@ try {
   // 仓库里 jsdom 装在 tools/node_modules（构建与玩法回归用同一份），这里回退过去，
   // 免得为了界面测试再装一份。两处都没有才算“未安装”。
   try {
-    ({ JSDOM } = require(path.join(ROOT, '..', '..', 'tools', 'node_modules', 'jsdom')));
+    ({ JSDOM } = require(path.join(ROOT, '..', 'tools', 'node_modules', 'jsdom')));
   } catch (e2) {
     console.log('[ui] 跳过界面级测试（未安装 jsdom：npm i --no-save jsdom）');
     process.exit(0);

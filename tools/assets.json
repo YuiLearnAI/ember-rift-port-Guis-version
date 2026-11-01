@@ -16,10 +16,10 @@
       "role": "官方 Wiki 快照（当前为 v19.2），npm run wiki:build 的输入"
     },
     {
-      "path": "cheat/cheat/wiki.html",
+      "path": "cheat/wiki.html",
       "asset": "wiki-online.html",
       "sha256": "02aadec113daba815aa10ce6b81cb9ab9fa3b2f6623fb3301f9b6267594510db",
-      "role": "与 base/wiki-online.html 同内容的副本，cheat 工具沿用原路径"
+      "role": "与 base/wiki-online.html 同内容的副本，路径由 cheat 工具固定引用"
     },
     {
       "path": "build/test-v19.html",

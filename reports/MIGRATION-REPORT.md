@@ -104,7 +104,7 @@ block_new.js (18.0.3 符号)
 | `tools/harness_v19.cjs` | macOS 可跑的 jsdom 回归 |
 | `tools/smoke-v19.cjs` | 发布版冒烟（无测试钩子） |
 | `out/symbol_map_18to19.json` | 1696 条符号映射（下次升版的核心资产） |
-| `cheat/cheat/ember-rift-gui.user.js` | 修改器 v1.1 |
+| `cheat/ember-rift-gui.user.js` | 修改器 v1.1 |
 
 ### 下次官方再升版时怎么做
 
