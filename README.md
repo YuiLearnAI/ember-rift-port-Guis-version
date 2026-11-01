@@ -26,9 +26,7 @@ port/
 │   └─ wiki-异界版-v2.3.1.html                  ★ 改版 Wiki（单文件）
 ├─ out/
 │   ├─ symbol_map_19to192.json    1946 条符号映射（核心资产，v19.1→v19.2）
-│   ├─ symbol_map_18to19.json     1697 条符号映射（历史，v18→v19）
-│   ├─ remap_report.json          重映射统计
-│   └─ build-v19-report.json      构建补丁应用/跳过清单
+│   └─ symbol_map_18to19.json     1697 条符号映射（历史，v18→v19）
 ├─ tools/
 │   ├─ remap.mjs                  符号重映射（作用域安全）
 │   ├─ build-v19.mjs              构建
@@ -44,8 +42,10 @@ port/
 ├─ package.json                   npm 脚本（build / verify / dev / cheat:*）
 └─ reports/
     ├─ MIGRATION-REPORT.md        迁移报告
-    ├─ HANDOFF.md                 评审交接
-    └─ CODE-REVIEW.md             评审结论
+    ├─ build-v19-report.json      构建补丁应用/跳过清单
+    ├─ remap-19to192.json         v19.1→v19.2 重映射统计
+    ├─ remap-expose-19to192.json  测试 API 桥重映射统计
+    └─ wiki-build-report.json     改版 Wiki 构建统计
 ```
 
 ## 大文件资产（必读）
