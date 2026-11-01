@@ -9,7 +9,7 @@
  *   tools/wiki-exp-plugin.js                  浏览器端插件（并入数据 + 新增页面）
  *
  * 输出：
- *   build/wiki-异界版-v2.2.0.html             单文件 Wiki（离线可跑）
+ *   build/wiki-异界版-v2.3.0.html             单文件 Wiki（离线可跑）
  *   reports/wiki-build-report.json            构建报告（补丁命中数 / 内容统计）
  *
  * 用法：node tools/build-wiki.mjs [--out <path>]
@@ -26,7 +26,7 @@ const HOTFIX = path.join(PACK, "迁移工具", "hotfix", "hotfix.json");
 const BLOCK = path.join(W, "build", "block_v19.js");
 const PLUGIN = path.join(W, "tools", "wiki-exp-plugin.js");
 
-const VER = "2.2.0";
+const VER = "2.3.0";
 const PLUGIN_TAG = "<!-- EMBER-EXP-PLUGIN -->";
 
 const applied = [];
@@ -88,7 +88,12 @@ function loadUniques() {
 /* ---------- 3. 文本补丁（官方文案里被扩展改掉的数值） ---------- */
 function patchHtml(html) {
   const patch = (needle, repl, label, expect) => {
-    const n = typeof needle === "string" ? html.split(needle).length - 1 : (html.match(needle) || []).length;
+    // 注意：正则带捕获组时 String.match 返回 [整体, g1, g2...]，长度不是命中次数。
+    // 这里统一按「全局匹配」计数，避免捕获组把计数算错。
+    const n =
+      typeof needle === "string"
+        ? html.split(needle).length - 1
+        : (html.match(new RegExp(needle.source, needle.flags.includes("g") ? needle.flags : needle.flags + "g")) || []).length;
     if (n === 0) { failed.push({ label, reason: "锚点未命中" }); return html; }
     if (expect != null && n !== expect) { failed.push({ label, reason: `命中 ${n} 次，预期 ${expect} 次` }); }
     applied.push({ label, hits: n });
@@ -100,9 +105,11 @@ function patchHtml(html) {
 
   // 标题与描述标明这是改版
   html = patch("<title>余烬裂隙 Wiki</title>", "<title>余烬裂隙 Wiki · 异界扩展版</title>", "title", 1);
+  // 官方每次升版都会改这行 description（v19.0.1 万象 → v19.2 踏麟 · 真言），
+  // 所以锚点按「整行前缀」匹配，只把版本别名换成本改版标识，不去猜后面列了哪些页签。
   html = patch(
-    'content="余烬裂隙玩家百科(v19.0.1 万象): 新手上手、做装入门、做装模拟器、词缀 / 传奇 / 天赋珠宝 / 异种底材 / 地图契约资料库。"',
-    'content="余烬裂隙玩家百科（异界内容扩展 v2.2.0 改版，基底 v19.0.1）: 新手上手、做装入门、做装模拟器、词缀 / 传奇 / 天赋珠宝 / 异种底材 / 地图契约资料库，附扩展新增符文之语 / 星图联动 / 暗金。"',
+    /(<meta name="description" content="余烬裂隙玩家百科\()v[\d.]+ [^)]*(\): )/,
+    '$1异界内容扩展 v' + VER + ' 改版 · 基底 v19.2 踏麟 · 真言$2',
     "meta:description",
     1
   );
@@ -128,7 +135,7 @@ function main() {
 
   const EXP = {
     ver: VER,
-    baseVer: "v19.0.1",
+    baseVer: "v19.2 踏麟 · 真言",
     // 构建时间会写进产物，是唯一的不可复现来源。
     // 需要字节级可复现时（CI 比对、与 Release 归档核对）固定它：
     //   EMB_BUILD_AT=2026-11-01T05:31:44.807Z node tools/build-wiki.mjs
