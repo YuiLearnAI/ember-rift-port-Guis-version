@@ -13,6 +13,7 @@
 ```
 port/
 ├─ base/v19-online.html        官方 v19 原始底包（回滚基线，勿改）
+├─ base/wiki-online.html       官方 Wiki 快照（改版 Wiki 的基底，勿改）
 ├─ pack/                       原扩展包副本（含 block_new.js 历史快照）
 ├─ cheat/                      修改器副本
 ├─ build/
@@ -20,7 +21,8 @@ port/
 │   ├─ block_v19.js               ★ v19 版移植块（唯一手改源）
 │   ├─ expose_v19.js              测试 API 桥
 │   ├─ test-v19.html              测试版（含 expose，无热修）
-│   └─ 余烬裂隙-异界内容扩展-v2.2.0-v19.html   ★ 发布版
+│   ├─ 余烬裂隙-异界内容扩展-v2.2.0-v19.html   ★ 发布版
+│   └─ wiki-异界版-v2.2.0.html                  ★ 改版 Wiki（单文件）
 ├─ out/
 │   ├─ symbol_map_18to19.json     1697 条符号映射（核心资产）
 │   ├─ remap_report.json          重映射统计
@@ -31,7 +33,13 @@ port/
 │   ├─ syntax.mjs                 语法门
 │   ├─ harness_v19.cjs            玩法回归（397 条断言）
 │   ├─ smoke-v19.cjs              发布版冒烟
-│   └─ verify_map.mjs             映射目标合法性校验
+│   ├─ verify_map.mjs             映射目标合法性校验
+│   ├─ dev-server.mjs             本地预览服务器（零依赖）
+│   ├─ build-wiki.mjs             改版 Wiki 构建（官方快照 + 扩展数据）
+│   ├─ wiki-exp-plugin.js         改版 Wiki 浏览器端插件（新增页面 + 数据合并）
+│   └─ verify-wiki.mjs            改版 Wiki 运行时验收（jsdom）
+├─ docs/本地使用与二次开发.md      使用 + 二次开发说明
+├─ package.json                   npm 脚本（build / verify / dev / cheat:*）
 └─ reports/
     ├─ MIGRATION-REPORT.md        迁移报告
     ├─ HANDOFF.md                 评审交接
@@ -48,6 +56,24 @@ node smoke-v19.cjs "../build/余烬裂隙-异界内容扩展-v2.2.0-v19.html"   
 node verify_map.mjs                            # 映射目标合法性
 node build-v19.mjs --mode both                 # 重建 test + release
 ```
+
+## 本地环境（已配置，仓库根目录可直接跑）
+
+依赖已装在 `tools/`（jsdom）、`tools/jstools/`（acorn）、`cheat/cheat/`（jsdom，可选）。
+在仓库根目录：
+
+```bash
+npm run build        # 出包（产物与当前提交字节级一致）
+npm run verify       # check + test + smoke 三道门禁，必须全绿
+npm run dev          # 本地预览：http://127.0.0.1:8787/  （/test 测试版，/base 官方底包，/wiki 改版 Wiki）
+npm run cheat:review # 修改器静态审查
+npm run cheat:smoke  # 修改器逻辑 + 界面断言
+npm run wiki         # 构建「异界扩展版」Wiki 并跑运行时验收
+```
+
+完整使用与二次开发说明（怎么玩、改哪个文件、下次官方升版怎么迁、坑在哪）见
+**[docs/本地使用与二次开发.md](docs/本地使用与二次开发.md)**。
+
 
 ## 改玩法的正确姿势
 
