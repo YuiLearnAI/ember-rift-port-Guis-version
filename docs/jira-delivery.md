@@ -95,6 +95,10 @@ git push --force-with-lease origin main   # 需先临时摘除分支保护，见
 
 > ⚠️ 遗留未闭环：`base/wiki-online.html`（4.4MB）与 `build/wiki-异界版-v2.2.0.html`（4.6MB）仍在 Git 历史中。移出需 `git filter-repo`，仅 `git rm` 无效。**已开 EMB-106 跟进**。
 
+> 本表是**追溯记录**：EMB-101 里那两个 `tools/_review_*.{mjs,cjs}` 是评审期一次性脚本，
+> 后由 EMB-116 / EMB-117 分两批删除（连同 `tools/override_audit.py`）。此处不删行，
+> 因为「哪个工单动过哪个文件」本身是交付审计的证据。
+
 ---
 
 ## 五、历史拆分执行记录（已完成，保留供下次参考）
@@ -330,6 +334,14 @@ builtAt: process.env.EMB_BUILD_AT || BUILT_AT,
 | `npm run verify:jewel` | 三件官方传奇珠宝 + 一件扩展珠宝，28 条断言：tooltip 文案 / 转换表 / 风味文字 / `jwc`、`r3` 样式类 / 图标非空 | 珠宝渲染判据又放宽了，官方珠宝再次被吞 |
 
 三道门全部并入 `npm run verify`。
+
+### 顶层重名门（EMB-117 起）
+
+| 命令 | 检查什么 | 失败含义 |
+|---|---|---|
+| `npm run check`（内含 `tools/shadow_check.mjs`） | 用 acorn 解析宿主主脚本与 `build/block_v19.js`，比对两者**顶层声明**的名字集合 | 移植块顶层的 `var` / `function` 与宿主同名，会静默覆盖宿主实现——正是 EMB-112 那类「零报错、功能消失」事故的另一条来源 |
+
+这道门只查名字冲突，不查语义覆盖（后者靠 `audit:runtime`）。
 
 ### 画布排版门（EMB-113 起）
 
