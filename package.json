@@ -1,6 +1,6 @@
 {
   "name": "ember-rift-port",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "private": true,
   "description": "余烬裂隙 PoE2 内容扩展包 · v19 迁移与二次开发工程",
   "scripts": {
@@ -12,11 +12,12 @@
     "smoke": "node tools/smoke-v19.cjs",
     "verify:jewel": "node tools/verify-jewel.mjs",
     "verify:atlas": "node tools/verify-atlas.mjs",
+    "verify:corrupt": "node tools/verify-corrupt.mjs",
     "audit:parity": "node tools/audit-parity.mjs",
     "audit:runtime": "node tools/audit-runtime.mjs",
     "audit:hijack": "node tools/audit-hijack.mjs",
     "audit": "npm run audit:parity && npm run audit:runtime",
-    "verify": "npm run check && npm run test && npm run smoke && npm run verify:jewel && npm run verify:atlas && npm run audit",
+    "verify": "npm run check && npm run test && npm run smoke && npm run verify:jewel && npm run verify:atlas && npm run verify:corrupt && npm run audit",
     "dev": "node tools/dev-server.mjs",
     "cheat:review": "node cheat/scripts/review.js",
     "cheat:smoke": "node cheat/scripts/smoke.js",

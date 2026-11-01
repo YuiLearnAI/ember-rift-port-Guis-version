@@ -4,7 +4,7 @@
 
 ## 这是什么
 
-- 余烬裂隙 · Path of Exile 2 同人二创内容扩展包，基底 **v19.2 踏麟 · 真言**，当前版本 **2.3.2**
+- 余烬裂隙 · Path of Exile 2 同人二创内容扩展包，基底 **v19.2 踏麟 · 真言**，当前版本 **2.3.3**
 - 产物是**单文件离线 HTML**：无框架、无运行时依赖、断网可跑
 - public 仓库。上游素材版权归原厂，仅自用，勿分发或商用
 
@@ -28,7 +28,7 @@ npm run build && npm run verify                        # 3. 期望 ALL OK / ALL 
 ## 工单：编号的唯一来源
 
 - 载体是 **GitHub Issues**（无 Jira 连接器），标题前缀 `EMB-nnn`
-- 编号已用到 **EMB-121**，**下一个从 EMB-122 起**；建单后请同步改这一行
+- 编号已用到 **EMB-122**，**下一个从 EMB-123 起**；建单后请同步改这一行
 - 分支：`feature|bugfix|hotfix/EMB-nnn-<小写连字符 slug>`
 - 提交：`<gitmoji> EMB-nnn: 一句话描述`，一个提交只做一件事
 - **没有工单号，不建分支、不提交、不开 PR。** 缺号就问，不猜、不编
@@ -64,8 +64,9 @@ npm run build && npm run verify                        # 3. 期望 ALL OK / ALL 
 
 ```bash
 npm run dev        # 本地预览 http://127.0.0.1:8787/ （/test /base /wiki）
-npm run verify     # check（语法 / 映射 / 顶层重名）+ 玩法断言 + 冒烟 + 珠宝回归 + 天赋树标签 + 基底一致性两道审计
+npm run verify     # check（语法 / 映射 / 顶层重名）+ 玩法断言 + 冒烟 + 珠宝回归 + 天赋树标签 + 腐化词缀 + 基底一致性两道审计
 npm run verify:atlas   # 单独跑天赋树节点名排版（5 组缩放/平移，矩形容差为 0）
+npm run verify:corrupt # 单独跑腐化词缀池（池完整性 / 权重分布 / 文案 / 祭坛与瓦尔的修补行为）
 npm run cheat:test     # 修改器：静态审查 + 逻辑断言 + jsdom 界面断言
 npm run audit      # 单独跑基底一致性：逐字节比对 + 运行时数据表比对
 npm run audit:hijack   # 列出扩展对宿主符号的全部接管点（升版复审用，只报不判）
