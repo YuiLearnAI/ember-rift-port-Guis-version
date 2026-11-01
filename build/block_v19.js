@@ -133,8 +133,8 @@ var ABMODS = {
 };
 var AB_OMEN = ["omen_abyss_echo", "omen_abyss_light", "omen_abyss_putrid", "omen_abyss_liege", "omen_abyss_blackblood", "omen_abyss_sovereign"];
 var EX_SKIP = new Set(["frac", "ember", "ash"]);
-var ExAll = () => vt.filter(_v1 => z[_v1] && (z[_v1].grp === "sock" || (z[_v1].v > 0 && z[_v1].grp !== "sig" && (z[_v1].grp === "bone" || z[_v1].grp === "rune" || !EX_SKIP.has(_v1)))));
-var ExC = _v2 => Math.round(z[_v2].v * 100);
+var ExAll = () => Tt.filter(_v1 => q[_v1] && (q[_v1].grp === "sock" || (q[_v1].v > 0 && q[_v1].grp !== "sig" && (q[_v1].grp === "bone" || q[_v1].grp === "rune" || !EX_SKIP.has(_v1)))));
+var ExC = _v2 => Math.round(q[_v2].v * 100);
 var RUNE_NAMES = ["艾尔", "艾德", "提尔", "那夫", "爱斯", "伊司", "塔尔", "拉尔", "欧特", "索尔", "安姆", "夏", "多尔", "海尔", "埃欧", "卢姆", "科", "法尔", "蓝姆", "普尔", "乌姆", "马尔", "伊斯特", "古尔", "伐克斯", "欧姆", "罗", "瑟", "贝", "乔", "查姆", "奈落", "阿卡", "塞拉斯", "维恩", "欧泽", "厄里", "图尔", "雷姆", "佐德"];
 var RUNE_CATS = ["fire", "cold", "light", "phys", "vit"];
 var RUNE_CAT_COL = {
@@ -491,12 +491,12 @@ function RuneStatText(_v15, _v16) {
   };
   if (Array.isArray(_v16)) _v16 = [__rr(_v16[0]), __rr(_v16[1])];
   else _v16 = __rr(_v16);
-  if (bl[_v15]) return "附加 " + _v16[0] + " - " + _v16[1] + " " + J1[bl[_v15]] + "伤害";
+  if (Fl[_v15]) return "附加 " + _v16[0] + " - " + _v16[1] + " " + Gg[Fl[_v15]] + "伤害";
   if (_v15 === "physInc") return "物理伤害提高 " + _v16 + "%";
-  return Wa(_v15, _v16);
+  return _a(_v15, _v16);
 }
 function RuneEffectsText(_v17, _v18) {
-  var _v19 = Od[RuneId(_v17)];
+  var _v19 = f0[RuneId(_v17)];
   if (!_v19) return "";
   return (_v18 === "W" ? _v19.w : _v19.a).map(function (_v20) {
     return RuneStatText(_v20[0], _v20[1]);
@@ -522,7 +522,7 @@ function RuneNormWord(_v27) {
   var _v28 = [];
   for (var _v29 = 0; _v29 < _v27.seq.length; _v29++) {
     var _v30 = RuneNormalizeId(_v27.seq[_v29]);
-    if (!z[_v30]) return null;
+    if (!q[_v30]) return null;
     _v28.push(_v30);
   }
   var _v31 = RuneNormStats(_v27.w), _v32 = RuneNormStats(_v27.a);
@@ -585,17 +585,17 @@ function RuneApplyConfig(_v33) {
   RUNE_WORDS = _v40;
   for (var _v49 = 1; _v49 <= 40; _v49++) {
     var _v50 = RuneId(_v49);
-    if (z[_v50]) z[_v50].v = RuneValue(_v49);
+    if (q[_v50]) q[_v50].v = RuneValue(_v49);
   }
-  for (var _v51 = 1; _v51 <= 40; _v51++) Od[RuneId(_v51)] = RuneEffects(_v51);
+  for (var _v51 = 1; _v51 <= 40; _v51++) f0[RuneId(_v51)] = RuneEffects(_v51);
   for (var _v52 = 1; _v52 <= 40; _v52++) {
     var _v53 = RuneId(_v52);
-    if (!z[_v53]) continue;
-    z[_v53].d = "武器: " + RuneEffectsText(_v52, "W") + " · 防具: " + RuneEffectsText(_v52, "A");
+    if (!q[_v53]) continue;
+    q[_v53].d = "武器: " + RuneEffectsText(_v52, "W") + " · 防具: " + RuneEffectsText(_v52, "A");
   }
-  for (var _v54 in Od) if (_v54.indexOf("__rw_") === 0) delete Od[_v54];
+  for (var _v54 in f0) if (_v54.indexOf("__rw_") === 0) delete f0[_v54];
   RUNE_WORDS.forEach(function (_v55) {
-    Od["__rw_" + _v55.id] = {
+    f0["__rw_" + _v55.id] = {
       w: _v55.w,
       a: _v55.a
     };
@@ -622,7 +622,7 @@ function RuneMakeIcon(_v58) {
     _v59.height = 9;
     var _v60 = _v59.getContext("2d");
     if (!_v60) return;
-    var _v61 = z[_v58].col;
+    var _v61 = q[_v58].col;
     _v60.fillStyle = "#0d0b10";
     _v60.fillRect(0, 0, 9, 9);
     var _v62 = function (_v63, _v64, _v65) {
@@ -633,10 +633,10 @@ function RuneMakeIcon(_v58) {
       var _v68 = Math.max(Math.abs(_v67 - 4), Math.abs(_v66 - 4));
       if (_v68 <= 3.5) _v62(_v67, _v66, _v68 > 2.6 ? "#120e14" : _v61);
     }
-    var _v69 = Math.floor((z[_v58].rn - 1) / 10);
+    var _v69 = Math.floor((q[_v58].rn - 1) / 10);
     for (var _v70 = 0; _v70 <= _v69; _v70++) _v62(4, 7 - _v70, "#ffffffaa");
-    ci[_v58] = _v59;
-    _e[_v58] = _v59.toDataURL();
+    Si[_v58] = _v59;
+    Ye[_v58] = _v59.toDataURL();
   } catch (_v71) {}
 }
 function RuneInit() {
@@ -644,18 +644,18 @@ function RuneInit() {
   for (var _v72 = 1; _v72 <= 40; _v72++) {
     var _v73 = RuneId(_v72), _v74 = RUNE_CATS[(_v72 - 1) % 5];
     RUNE_IDS.push(_v73);
-    if (!z[_v73]) z[_v73] = {};
-    z[_v73].n = "#" + _v72 + " " + RUNE_NAMES[_v72 - 1];
-    z[_v73].rn = _v72;
-    z[_v73].cat = _v74;
-    z[_v73].grp = "rune";
-    z[_v73].col = RUNE_CAT_COL[_v74];
-    z[_v73].w = 0;
-    z[_v73].v = RuneValue(_v72);
-    z[_v73].d = "";
+    if (!q[_v73]) q[_v73] = {};
+    q[_v73].n = "#" + _v72 + " " + RUNE_NAMES[_v72 - 1];
+    q[_v73].rn = _v72;
+    q[_v73].cat = _v74;
+    q[_v73].grp = "rune";
+    q[_v73].col = RUNE_CAT_COL[_v74];
+    q[_v73].w = 0;
+    q[_v73].v = RuneValue(_v72);
+    q[_v73].d = "";
     RuneMakeIcon(_v73);
   }
-  C3.skillLvl = "+{v} 技能等级";
+  JS.skillLvl = "+{v} 技能等级";
   RuneApplyConfig(BAL.runes && BAL.runes.words ? BAL.runes : RUNE_CFG_DEFAULT);
 }
 function RuneItemCat(_v75) {
@@ -749,16 +749,16 @@ function RuneWordTipHTML(_v102) {
       return RuneStatText(_v107[0], _v107[1]);
     }).join(" · ");
     var _v108 = (_v103.d || []).map(function (_v109) {
-      return '<div class="p dim">' + F(_v109) + "</div>";
+      return '<div class="p dim">' + O(_v109) + "</div>";
     }).join("");
-    return '<div class="sep"></div><div class="md" style="color:#9dffb4;font-weight:700;font-size:13px">✦ 符文之语「' + F(_v103.n) + '」已激活 <span class="tg">顺序匹配</span></div><div class="md" style="color:#e2d2a8">' + _v106 + "</div>" + _v108;
+    return '<div class="sep"></div><div class="md" style="color:#9dffb4;font-weight:700;font-size:13px">✦ 符文之语「' + O(_v103.n) + '」已激活 <span class="tg">顺序匹配</span></div><div class="md" style="color:#e2d2a8">' + _v106 + "</div>" + _v108;
   }).join("");
 }
 function RunePhysIncOf(_v110) {
   if (!_v110 || !_v110.runes) return 0;
   var _v111 = _v110.slot === "W", _v112 = 0;
   _v110.runes.forEach(function (_v113) {
-    var _v114 = Od[_v113];
+    var _v114 = f0[_v113];
     if (!_v114) return;
     var _v115 = (_v111 ? _v114.w : _v114.a) || [];
     _v115.forEach(function (_v116) {
@@ -778,7 +778,7 @@ function RuneRecipes() {
   if (RUNE_RECIPE_CACHE) return RUNE_RECIPE_CACHE;
   var _v120 = RUNE_CFG && RUNE_CFG.recipes || RUNE_RECIPES_DEFAULT, _v121 = [];
   (_v120.low || []).forEach(function (_v122) {
-    if (!_v122 || !_v122.out || !z[_v122.out]) return;
+    if (!_v122 || !_v122.out || !q[_v122.out]) return;
     _v121.push({
       id: _v122.id || "low_" + _v122.out,
       kind: "low",
@@ -815,7 +815,7 @@ function RuneRecipes() {
     });
   }
   (_v120.targeted || []).forEach(function (_v133) {
-    if (!_v133 || !_v133.out || !z[_v133.out] || !z[_v133.from]) return;
+    if (!_v133 || !_v133.out || !q[_v133.out] || !q[_v133.from]) return;
     _v121.push({
       id: _v133.id || "tgt_" + _v133.out,
       kind: "targeted",
@@ -825,7 +825,7 @@ function RuneRecipes() {
         id: _v133.from,
         count: _v133.count || 2
       }],
-      bones: _v133.bone && z[_v133.bone] ? [{
+      bones: _v133.bone && q[_v133.bone] ? [{
         id: _v133.bone,
         count: 1
       }] : [],
@@ -852,8 +852,8 @@ function RuneCanCraft(_v139) {
   if (!_v139) return "未知符文配方";
   var _v140 = RuneRecipeNeed(_v139);
   for (var _v141 in _v140) {
-    if (!z[_v141]) return "配方数据异常: " + _v141;
-    if ((u.cur[_v141] || 0) < _v140[_v141]) return z[_v141].n + " 不足 (需要 " + _v140[_v141] + ", 持有 " + (u.cur[_v141] || 0) + ")";
+    if (!q[_v141]) return "配方数据异常: " + _v141;
+    if ((u.cur[_v141] || 0) < _v140[_v141]) return q[_v141].n + " 不足 (需要 " + _v140[_v141] + ", 持有 " + (u.cur[_v141] || 0) + ")";
   }
   return null;
 }
@@ -871,11 +871,11 @@ function RuneCraft(_v142) {
   u.cur[_v143.out] = (u.cur[_v143.out] || 0) + 1;
   try {
     var _v148 = AtlasRuneRefundChance();
-    if (_v148 > 0 && E() < _v148) {
+    if (_v148 > 0 && I() < _v148) {
       Object.keys(_v143.cost || ({})).forEach(function (_v149) {
         u.cur[_v149] = (u.cur[_v149] || 0) + _v143.cost[_v149];
       });
-      I("符文共鸣 · 本次合成未消耗通货");
+      P("符文共鸣 · 本次合成未消耗通货");
     }
   } catch (_v150) {}
   return null;
@@ -883,13 +883,13 @@ function RuneCraft(_v142) {
 function RuneCostText(_v151) {
   var _v152 = [];
   (_v151.runes || []).forEach(function (_v153) {
-    _v152.push(z[_v153.id].n + " ×" + _v153.count);
+    _v152.push(q[_v153.id].n + " ×" + _v153.count);
   });
   (_v151.bones || []).forEach(function (_v154) {
-    _v152.push(z[_v154.id].n + " ×" + _v154.count);
+    _v152.push(q[_v154.id].n + " ×" + _v154.count);
   });
   Object.keys(_v151.cost || ({})).forEach(function (_v155) {
-    _v152.push(z[_v155].n + " ×" + _v151.cost[_v155]);
+    _v152.push(q[_v155].n + " ×" + _v151.cost[_v155]);
   });
   return _v152.join(" + ");
 }
@@ -907,7 +907,7 @@ function RuneReqLabel(_v156) {
 }
 function RuneRecipeRow(_v158) {
   var _v159 = !RuneCanCraft(_v158);
-  return '<button data-rune="' + _v158.id + '" style="display:flex;align-items:center;gap:8px;width:100%;padding:5px 8px;border:1px solid ' + (_v159 ? "#5a4a2a" : "#2e2834") + ';background:' + (_v159 ? "#16120c" : "#0d0b10") + ';color:#d8d0c0;cursor:pointer;text-align:left;font-size:12px">' + '<img src="' + (_e[_v158.out] || "") + '" alt="" style="width:20px;height:20px;image-rendering:pixelated;flex:none">' + '<span style="flex:1;min-width:0"><b style="color:' + z[_v158.out].col + '">' + z[_v158.out].n + "</b>" + '<small style="display:block;color:#8e98b0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + RuneCostText(_v158) + "</small></span>" + '<em style="font-style:normal;flex:none;color:' + (_v159 ? "#9dffb4" : "#e06a6a") + '">' + (_v159 ? "可合成" : "材料不足") + "</em></button>";
+  return '<button data-rune="' + _v158.id + '" style="display:flex;align-items:center;gap:8px;width:100%;padding:5px 8px;border:1px solid ' + (_v159 ? "#5a4a2a" : "#2e2834") + ';background:' + (_v159 ? "#16120c" : "#0d0b10") + ';color:#d8d0c0;cursor:pointer;text-align:left;font-size:12px">' + '<img src="' + (Ye[_v158.out] || "") + '" alt="" style="width:20px;height:20px;image-rendering:pixelated;flex:none">' + '<span style="flex:1;min-width:0"><b style="color:' + q[_v158.out].col + '">' + q[_v158.out].n + "</b>" + '<small style="display:block;color:#8e98b0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + RuneCostText(_v158) + "</small></span>" + '<em style="font-style:normal;flex:none;color:' + (_v159 ? "#9dffb4" : "#e06a6a") + '">' + (_v159 ? "可合成" : "材料不足") + "</em></button>";
 }
 function RuneCraftHTML() {
   var _v160 = RuneRecipes();
@@ -922,15 +922,15 @@ function RuneCraftHTML() {
 function RuneBenchHelp() {
   var _v167 = RUNE_WORDS.map(function (_v168) {
     var _v169 = _v168.seq.map(function (_v170) {
-      return z[_v170].n;
+      return q[_v170].n;
     }).join(" → ");
     return '<div class="baff" data-rw="' + _v168.id + '" style="display:block;padding:3px 6px"><span class="btxt"><b style="color:#e8c870">' + _v168.n + '</b> <small style="color:#8e98b0">' + RuneReqLabel(_v168.req) + '</small><br><span style="color:#b8a888;font-size:11px">' + _v169 + "</span></span></div>";
   }).join("");
   return '<section class="bpick"><div class="bsec" style="padding:4px 2px"><h4>符文之语 <small>' + RUNE_WORDS.length + ' 条 · 按镶嵌顺序匹配 · 乱序不生效</small></h4><div style="max-height:56vh;overflow:auto;display:flex;flex-direction:column;gap:3px;padding-right:4px">' + _v167 + "</div></div></section>";
 }
 (function () {
-  var _v171 = rc;
-  rc = function (_v172) {
+  var _v171 = Tc;
+  Tc = function (_v172) {
     var _v173 = [], _v174 = [];
     try {
       if (_v172) for (var _v175 in _v172) {
@@ -945,8 +945,8 @@ function RuneBenchHelp() {
         var __rwAdded = 0;
         __rwMatches.forEach(function (_v177) {
           var _v178 = "__rw_" + _v177.id;
-          if (!Od[_v178]) { Od[_v178] = { w: [], a: [] }; }
-          Od[_v178] = {
+          if (!f0[_v178]) { f0[_v178] = { w: [], a: [] }; }
+          f0[_v178] = {
             w: RuneWordScaled(_v177.w, _v179),
             a: RuneWordScaled(_v177.a, _v179)
           };
@@ -977,7 +977,7 @@ function RuneBenchHelp() {
       for (var _v183 = 0; _v183 < _v174.length; _v183++) {
         var _v184 = null;
         for (var _v185 = 0; _v185 < RUNE_WORDS.length; _v185++) if (RUNE_WORDS[_v185].id === _v174[_v183]) _v184 = RUNE_WORDS[_v185];
-        if (_v184) Od["__rw_" + _v184.id] = {
+        if (_v184) f0["__rw_" + _v184.id] = {
           w: _v184.w,
           a: _v184.a
         };
@@ -1020,7 +1020,7 @@ window.__RUNE = {
   effects: RuneWordEffects,
   tip: RuneWordTipHTML,
   ky: function (_v188, _v189) {
-    return zw(_v188, _v189);
+    return i3(_v188, _v189);
   },
   statText: RuneStatText,
   value: RuneValue,
@@ -1031,11 +1031,11 @@ window.__RUNE = {
   itemCat: RuneItemCat,
   reqOK: RuneReqOK,
   calc: function (_v190) {
-    return rc(_v190 || ({}), u.tree || [], u.level || 1, u.cls, u.ascNodes || [], u.buffs || new Set());
+    return Tc(_v190 || ({}), u.tree || [], u.level || 1, u.cls, u.ascNodes || [], u.buffs || new Set());
   },
   benchHTML: RuneCraftHTML,
   barVisible: function (_v191) {
-    return !z[_v191] || !z[_v191].rn || (u.cur[_v191] || 0) > 0;
+    return !q[_v191] || !q[_v191].rn || (u.cur[_v191] || 0) > 0;
   }
 };
 function AffixSlotCfg() {
@@ -1109,7 +1109,7 @@ function AffixCanAddRegular(_v214) {
   return AffixRegRoom(_v214, "P") > 0 || AffixRegRoom(_v214, "S") > 0;
 }
 function AffixTierOf(_v215, _v216) {
-  var _v217 = _v215 && _v216 ? Da(_v215, _v216.id) : null;
+  var _v217 = _v215 && _v216 ? qa(_v215, _v216.id) : null;
   if (!_v217 || !_v217.ranges) return 1;
   return Math.max(1, _v217.ranges.length - (_v216.ti || 0));
 }
@@ -1126,11 +1126,11 @@ function AffixTagHTML(_v221, _v222) {
   return "";
 }
 function AffixRowHTML(_v224, _v225) {
-  var _v226 = Da(_v224, _v225.id) || Yt[_v225.id];
+  var _v226 = qa(_v224, _v225.id) || ta[_v225.id];
   if (!_v226) return "";
   var _v227 = _v225.ur ? "" : '<span class="tg">' + (_v226.t === "P" ? "前缀" : "后缀") + " T" + (_v226.ranges.length - (_v225.ti || 0)) + "</span>";
   var _v228 = (_v225.fr ? '<span class="tg fr">破溃</span>' : _v224.meta && _v225.t === _v224.meta ? '<span class="tg lk">锁定</span>' : "") + (_v225.ex ? '<span class="tg ex">超越</span>' : "") + AffixTagHTML(_v224, _v225);
-  return '<div class="md' + (_v225.fr ? " frm" : "") + '">' + F(Ks(_v226, _v225.v)) + _v227 + _v228 + "</div>";
+  return '<div class="md' + (_v225.fr ? " frm" : "") + '">' + O(Xs(_v226, _v225.v)) + _v227 + _v228 + "</div>";
 }
 function AffixBlocksHTML(_v229) {
   if (!_v229 || !_v229.mods || !_v229.mods.length) return "";
@@ -1179,23 +1179,23 @@ function AffixSlotRowsHTML(_v243, _v244) {
   });
   if (_v244 === "sp") {
     return '<div class="bcol"><h4>特殊 <small>' + _v246.length + "/" + _v245.special + "</small></h4>" + (_v246.map(function (_v248) {
-      return '<div class="baff"><span class="btier">T' + AffixTierOf(_v243, _v248) + '</span><span class="btxt">' + F(Ks(Da(_v243, _v248.id), _v248.v)) + '</span><i class="bst" style="color:#5fe0c0">特殊</i></div>';
+      return '<div class="baff"><span class="btier">T' + AffixTierOf(_v243, _v248) + '</span><span class="btxt">' + O(Xs(qa(_v243, _v248.id), _v248.v)) + '</span><i class="bst" style="color:#5fe0c0">特殊</i></div>';
     }).join("") || '<div class="baff empty"><span class="btier">—</span><span class="btxt">空栏 · 需异界高级预兆</span></div>') + "</div>";
   }
   var _v249 = _v245.dsec;
   return '<div class="bcol"><h4>渎灵 <small>' + Math.min(_v246.length, _v249) + "/" + _v249 + (_v246.length > _v249 ? " +旧版" + (_v246.length - _v249) : "") + "</small></h4>" + (_v246.map(function (_v250) {
-    return '<div class="baff"><span class="btier">D</span><span class="btxt">' + F(Ks(Da(_v243, _v250.id), _v250.v)) + '</span><i class="bst ds">' + (_v250.legacyDsec ? "旧版渎灵" : "渎灵") + "</i></div>";
+    return '<div class="baff"><span class="btier">D</span><span class="btxt">' + O(Xs(qa(_v243, _v250.id), _v250.v)) + '</span><i class="bst ds">' + (_v250.legacyDsec ? "旧版渎灵" : "渎灵") + "</i></div>";
   }).join("") || '<div class="baff empty"><span class="btier">—</span><span class="btxt">空栏 · 渎灵揭示</span></div>') + "</div>";
 }
-ht = function (_v251) {
+wt = function (_v251) {
   if (!_v251) return false;
   if (AffixTotalRoom(_v251) <= 0) return false;
   var _v252 = [];
   if (AffixRegRoom(_v251, "P") > 0 && _v251.meta !== "P") _v252.push("P");
   if (AffixRegRoom(_v251, "S") > 0 && _v251.meta !== "S") _v252.push("S");
-  Ld(_v252);
+  i0(_v252);
   for (var _v253 = 0; _v253 < _v252.length; _v253++) {
-    var _v254 = h4(_v251, _v252[_v253]);
+    var _v254 = O4(_v251, _v252[_v253]);
     if (_v254) {
       _v251.mods.push(_v254);
       return true;
@@ -1203,7 +1203,7 @@ ht = function (_v251) {
   }
   return false;
 };
-au = function (_v255, _v256) {
+Du = function (_v255, _v256) {
   if (!_v255 || !_v255.mods) return 0;
   var _v257 = 0;
   _v255.mods.forEach(function (_v258) {
@@ -1214,9 +1214,9 @@ au = function (_v255, _v256) {
 function AffixRollSpecial(_v259) {
   if (!_v259 || AffixSpecialRoom(_v259) <= 0 || AffixTotalRoom(_v259) <= 0) return null;
   var _v260 = ["P", "S"];
-  Ld(_v260);
+  i0(_v260);
   for (var _v261 = 0; _v261 < _v260.length; _v261++) {
-    var _v262 = h4(_v259, _v260[_v261]);
+    var _v262 = O4(_v259, _v260[_v261]);
     if (_v262) {
       _v262.sp = 1;
       return _v262;
@@ -1232,7 +1232,7 @@ function AffixAddSpecial(_v263) {
   var _v264 = AffixRollSpecial(_v263);
   if (!_v264) return "没有可用词缀 · 预兆未消耗";
   _v263.mods.push(_v264);
-  aa(_v263);
+  na(_v263);
   return null;
 }
 function AffixMigrateItem(_v265) {
@@ -1276,7 +1276,7 @@ window.__AFFIX = {
   migrateSave: AffixMigrateSave,
   tierOf: AffixTierOf,
   st: function (_v272) {
-    return ht(_v272);
+    return wt(_v272);
   }
 };
 var ATLAS_EXTRA = [{
@@ -1530,8 +1530,8 @@ function AtlasNode(_v273) {
   return null;
 }
 function AtlasEnsure() {
-  if (ATLAS_BUILT_FOR === Hs.length && ATLAS_ALL.length) return;
-  ATLAS_BUILT_FOR = Hs.length;
+  if (ATLAS_BUILT_FOR === Ks.length && ATLAS_ALL.length) return;
+  ATLAS_BUILT_FOR = Ks.length;
   ATLAS_BY_K = {};
   ATLAS_ALL = [];
   ATLAS_BRANCH_TOTAL = {};
@@ -1549,8 +1549,8 @@ function AtlasEnsure() {
   };
   ATLAS_BY_K.core = ATLAS_CORE;
   ATLAS_ALL.push(ATLAS_CORE);
-  for (let _v275 = 0; _v275 < Hs.length; _v275++) {
-    let _v276 = Hs[_v275];
+  for (let _v275 = 0; _v275 < Ks.length; _v275++) {
+    let _v276 = Ks[_v275];
     let _v277 = (ATLAS_ANGLES[_v276.key] !== undefined ? ATLAS_ANGLES[_v276.key] : _v275 * 45) * Math.PI / 180;
     _v276.ang = _v277;
     for (let _v278 = 0; _v278 < _v276.nodes.length; _v278++) {
@@ -1570,7 +1570,7 @@ function AtlasEnsure() {
   for (let _v280 = 0; _v280 < ATLAS_EXTRA.length; _v280++) {
     let _v281 = ATLAS_EXTRA[_v280];
     if (!_v281) continue;
-    let _v282 = Hs.find(function (_v283) {
+    let _v282 = Ks.find(function (_v283) {
       return _v283.key === _v281.b;
     });
     let _v284 = (_v282 ? _v282.ang : 0) + (_v281.ang || 0) * Math.PI / 180;
@@ -1584,10 +1584,10 @@ function AtlasEnsure() {
   }
   // 把自定义图谱节点注册进基础 En，避免基础点击/提示读取 En[key].b 时 undefined
   try {
-    if (typeof va !== "undefined" && va) {
+    if (typeof Ma !== "undefined" && Ma) {
       for (let __ei = 0; __ei < ATLAS_EXTRA.length; __ei++) {
         let __en = ATLAS_EXTRA[__ei];
-        if (__en && __en.k) va[__en.k] = __en;
+        if (__en && __en.k) Ma[__en.k] = __en;
       }
     }
   } catch (e) {}
@@ -1615,7 +1615,7 @@ function AtlasUsed() {
   return _v291;
 }
 function AtlasEarned() {
-  return Math.min($r, Math.max(0, Math.floor(+(u && u.atlasPts || 0))));
+  return Math.min(Br, Math.max(0, Math.floor(+(u && u.atlasPts || 0))));
 }
 function AtlasAvailable() {
   return Math.max(0, Math.min(AtlasEarned(), ATLAS_SPEND) - AtlasUsed());
@@ -1713,7 +1713,7 @@ function AtlasMigrateSave(_v319) {
   AtlasEnsure();
   _v319.atlasEver = Math.max(0, Math.floor(+(_v319.atlasEver || 0)));
   _v319.atlasRespec = Math.max(0, Math.floor(+(_v319.atlasRespec || 0)));
-  _v319.atlasPts = Math.min($r, Math.max(0, Math.floor(+(_v319.atlasPts || 0))));
+  _v319.atlasPts = Math.min(Br, Math.max(0, Math.floor(+(_v319.atlasPts || 0))));
   _v319.atlasEver = Math.max(_v319.atlasEver, _v319.atlasPts);
   let _v320 = Array.isArray(_v319.atlas) ? _v319.atlas : [];
   let _v321 = {}, _v322 = [];
@@ -1757,58 +1757,58 @@ function AtlasMigrateSave(_v319) {
     _v327 += _v341.cost || 1;
   }
   _v319.atlas = _v326;
-  _v319.atlasPts = Math.min($r, Math.max(_v319.atlasPts, Math.ceil(_v327)));
+  _v319.atlasPts = Math.min(Br, Math.max(_v319.atlasPts, Math.ceil(_v327)));
   _v319.atlasEver = Math.max(_v319.atlasEver, _v319.atlasPts);
 }
 function AtlasKillLootMul() {
-  return ne("greed") ? 1.25 : ne("stability") ? 0.9 : 1;
+  return re("greed") ? 1.25 : re("stability") ? 0.9 : 1;
 }
 function AtlasSimLootMul() {
-  return ne("simascetic") ? 1.4 : ne("pleasure") ? 0.85 : 1;
+  return re("simascetic") ? 1.4 : re("pleasure") ? 0.85 : 1;
 }
 function AtlasMonsterMul() {
-  return ne("greed") ? 1.3 : ne("stability") ? 0.9 : 1;
+  return re("greed") ? 1.3 : re("stability") ? 0.9 : 1;
 }
 function AtlasContentMul() {
-  return ne("converge") ? 0.7 : 1;
+  return re("converge") ? 0.7 : 1;
 }
 function AtlasRuneRefundChance() {
-  return (ne("run_affinity") ? 0.1 : 0) + (ne("rune_resonance") ? 0.15 : 0);
+  return (re("run_affinity") ? 0.1 : 0) + (re("rune_resonance") ? 0.15 : 0);
 }
 function AtlasRuneWordMul() {
-  return 1 + (ne("runesmith_novice") ? 0.05 : 0) + (ne("rune_weaver") ? 0.1 : 0);
+  return 1 + (re("runesmith_novice") ? 0.05 : 0) + (re("rune_weaver") ? 0.1 : 0);
 }
 function AtlasDeliriumCap() {
-  return 250 + (ne("sim_lore") ? 25 : 0);
+  return 250 + (re("sim_lore") ? 25 : 0);
 }
 function AtlasDeliriumGain(_v342) {
-  return Math.round(_v342 * (ne("sim_sense") ? 1.1 : 1));
+  return Math.round(_v342 * (re("sim_sense") ? 1.1 : 1));
 }
 function AtlasEnsureHooks() {
   try {
-    $("kill:loot", function (_v343) {
+    A("kill:loot", function (_v343) {
       try {
         if (!_v343) return;
         _v343.dm = (_v343.dm || 1) * AtlasKillLootMul();
         if (n && n.simRun) _v343.dm *= AtlasSimLootMul();
-        if (ne("converge")) _v343.rb = (_v343.rb || 0) + 25;
+        if (re("converge")) _v343.rb = (_v343.rb || 0) + 25;
       } catch (_v344) {}
     });
-    $("map:stats", function (_v345) {
+    A("map:stats", function (_v345) {
       try {
-        if (_v345 && _v345.o && ne("affix_sense")) _v345.o.quant = (_v345.o.quant || 0) + 5;
+        if (_v345 && _v345.o && re("affix_sense")) _v345.o.quant = (_v345.o.quant || 0) + 5;
       } catch (_v346) {}
     });
-    $("boss:map", function (_v347) {
+    A("boss:map", function (_v347) {
       try {
-        if (_v347 && ne("map_sense")) _v347.up = Math.max(_v347.up || 0, 0.55);
+        if (_v347 && re("map_sense")) _v347.up = Math.max(_v347.up || 0, 0.55);
       } catch (_v348) {}
     });
   } catch (_v349) {}
   try {
-    if (typeof et === "function" && !et.__atlasWrapped) {
-      let _v350 = et;
-      et = function (_v351, _v352, _v353, _v354, _v355) {
+    if (typeof nt === "function" && !nt.__atlasWrapped) {
+      let _v350 = nt;
+      nt = function (_v351, _v352, _v353, _v354, _v355) {
         let _v356 = _v350.apply(this, arguments);
         try {
           let _v357 = AtlasMonsterMul();
@@ -1820,7 +1820,7 @@ function AtlasEnsureHooks() {
         } catch (_v358) {}
         return _v356;
       };
-      et.__atlasWrapped = 1;
+      nt.__atlasWrapped = 1;
     }
   } catch (_v359) {}
 }
@@ -1838,11 +1838,11 @@ function AtlasEnsureInput() {
         _v361.stopPropagation();
         let _v363 = _v362.getAttribute("data-atlas-act"), _v364 = null;
         if (_v363 === "reset") _v364 = AtlasRespecAll(); else if (_v363 === "respec") {
-          I("点击已点亮的节点即可退还该点（混沌石 ×" + AtlasRespecCost() + "）");
+          P("点击已点亮的节点即可退还该点（混沌石 ×" + AtlasRespecCost() + "）");
           return;
         }
-        if (_v364) I(_v364); else I("已重置全部图谱点");
-        Ds();
+        if (_v364) P(_v364); else P("已重置全部图谱点");
+        Gs();
         return;
       }
       return;
@@ -1875,11 +1875,11 @@ function AtlasEnsureInput() {
           _v365.stopPropagation();
           var _v377 = AtlasCountAlloc(_v369.k) ? AtlasRespec(_v369.k) : AtlasAlloc(_v369.k);
           if (_v377) {
-            I(_v377);
+            P(_v377);
             return;
           }
-          T(AtlasCountAlloc(_v369.k) ? "craft" : "unique");
-          Ds();
+          $(AtlasCountAlloc(_v369.k) ? "craft" : "unique");
+          Gs();
         } catch (_v378) {}
       }, true);
     }
@@ -1895,7 +1895,7 @@ function AtlasEnsureInput() {
         _v383.push(ATLAS_BY_K[_v384.parent].n);
         _v384 = ATLAS_BY_K[_v384.parent];
       }
-      I("前置链: " + (_v383.length ? _v383.reverse().join(" → ") : "无（核心直连）") + (AtlasCountAlloc(_v382) ? " · 已点亮" : ""));
+      P("前置链: " + (_v383.length ? _v383.reverse().join(" → ") : "无（核心直连）") + (AtlasCountAlloc(_v382) ? " · 已点亮" : ""));
     }, true);
     _v360.addEventListener("pointerdown", function (_v386) {
       let _v387 = _v386.target && _v386.target.id === "atlascv" ? _v386.target : null;
@@ -2072,7 +2072,7 @@ function AtlasDraw() {
     _v436.fillStyle = "#8e98b0";
     _v436.font = "11px monospace";
     _v436.textAlign = "left";
-    _v436.fillText("可用 " + AtlasAvailable() + " · 已获得 " + AtlasEarned() + "/" + $r + " · 已分配 " + AtlasUsed() + "/" + ATLAS_SPEND, 10, 16);
+    _v436.fillText("可用 " + AtlasAvailable() + " · 已获得 " + AtlasEarned() + "/" + Br + " · 已分配 " + AtlasUsed() + "/" + ATLAS_SPEND, 10, 16);
   } catch (_v450) {}
 }
 function AtlasAfterRender() {
@@ -2122,16 +2122,16 @@ function AtlasAfterRender() {
             }
           }
           if (!_v465) {
-            I("请点节点圆点");
+            P("请点节点圆点");
             return;
           }
           let _v473 = AtlasCountAlloc(_v465) ? AtlasRespec(_v465) : AtlasAlloc(_v465);
           if (_v473) {
-            I(_v473);
+            P(_v473);
             return;
           }
-          T(AtlasCountAlloc(_v465) ? "craft" : "unique");
-          Ds();
+          $(AtlasCountAlloc(_v465) ? "craft" : "unique");
+          Gs();
         } catch (_v474) {}
       });
     }
@@ -2152,7 +2152,7 @@ try {
 } catch (_v477) {
   console.warn("[atlas] init failed", _v477);
 }
-rL = AtlasCanAlloc;
+r9 = AtlasCanAlloc;
 window.__ATLAS = {
   version: "2.00",
   ensure: AtlasEnsure,
@@ -2179,7 +2179,7 @@ window.__ATLAS = {
   earned: AtlasEarned,
   available: AtlasAvailable,
   cap: function () {
-    return $r;
+    return Br;
   },
   spendCap: function () {
     return ATLAS_SPEND;
@@ -2219,7 +2219,7 @@ function AdvCfg() {
 }
 function AdvStatLabel(_v483, _v484) {
   try {
-    return Wa(_v483, _v484);
+    return _a(_v483, _v484);
   } catch (_v485) {
     return _v483 + " " + _v484;
   }
@@ -2649,7 +2649,7 @@ function AdvRegion(_v486) {
 }
 function AdvKnownStats() {
   try {
-    return C3 || ({});
+    return JS || ({});
   } catch (_v488) {
     return {};
   }
@@ -2711,7 +2711,7 @@ function AdvRingGap(_v502, _v503) {
 function __advRender() {
   var pb = document.getElementById("pbody");
   var st = pb ? pb.scrollTop : 0;
-  if (typeof Ds === "function") Ds();
+  if (typeof Gs === "function") Gs();
   if (pb) { pb.scrollTop = st; requestAnimationFrame(function () { try { pb.scrollTop = st; } catch (e) {} }); }
 }
 function AdvBuild() {
@@ -4148,7 +4148,7 @@ function AdvEnsureInput() {
         _v959.preventDefault();
         _v959.stopPropagation();
         var _v962 = typeof AdvJewelAction === "function" ? AdvJewelAction(_v961.getAttribute("data-advjewel")) : "珠宝面板未就绪";
-        if (_v962) I(_v962);
+        if (_v962) P(_v962);
         __advRender();
         return;
       }
@@ -4157,7 +4157,7 @@ function AdvEnsureInput() {
         _v959.preventDefault();
         _v959.stopPropagation();
         var _v964 = AdvAlloc(_v963.getAttribute("data-advalloc"));
-        if (_v964) I(_v964);
+        if (_v964) P(_v964);
         __advRender();
         return;
       }
@@ -4166,7 +4166,7 @@ function AdvEnsureInput() {
         _v959.preventDefault();
         _v959.stopPropagation();
         var _v966 = AdvRespec(_v965.getAttribute("data-advrefund"));
-        if (_v966) I(_v966);
+        if (_v966) P(_v966);
         __advRender();
         return;
       }
@@ -4187,7 +4187,7 @@ function AdvEnsureInput() {
       }
       if (_v971) {
         var _v974 = AdvStarAllocated(_v973.k) ? AdvStarRespec(_v973.k) : AdvStarAlloc(_v973.k);
-        if (_v974) I(_v974);
+        if (_v974) P(_v974);
         __advRender();
         return;
       }
@@ -4199,19 +4199,19 @@ function AdvEnsureInput() {
       n.advSel = _v973.k;
       if (AdvAllocated(_v973.k)) {
         var rr = AdvRespec(_v973.k);
-        if (rr) I(rr); else T("craft");
+        if (rr) P(rr); else $("craft");
         n.advPath = null;
         __advRender();
         return;
       }
       var path = AdvPathTo(_v973.k);
-      if (!path) { I(AdvReason(_v973.k) || "无法规划路径"); return; }
+      if (!path) { P(AdvReason(_v973.k) || "无法规划路径"); return; }
       var cost = AdvPathCost(path);
-      if (cost > AdvLeft()) { I("天赋点不足 · 需要 " + cost + " 点, 可用 " + AdvLeft()); return; }
+      if (cost > AdvLeft()) { P("天赋点不足 · 需要 " + cost + " 点, 可用 " + AdvLeft()); return; }
       u.advTree = u.advTree || [];
       path.forEach(function (k) { if (!AdvAllocated(k)) u.advTree.push(k); });
       n.advPath = null;
-      T("level");
+      $("level");
       __advRender();
     };
     if (!window.__advDocClick2) {
@@ -4227,11 +4227,11 @@ function AdvEnsureInput() {
       if (!_v980) return;
       if (_v979) {
         var _v981 = _v980.effect || ({}), _v982 = _v981.require || ({});
-        I("星图词条条件: " + ((_v982.tags || []).join(" + ") || "无") + " · 至少 " + (_v982.min || (_v982.tags || []).length) + " 个已点基底节点 · 当前" + (AdvStarAllocated(_v980.k) && AdvEffectMatches(_v981) ? "已激活" : "未激活"));
+        P("星图词条条件: " + ((_v982.tags || []).join(" + ") || "无") + " · 至少 " + (_v982.min || (_v982.tags || []).length) + " 个已点基底节点 · 当前" + (AdvStarAllocated(_v980.k) && AdvEffectMatches(_v981) ? "已激活" : "未激活"));
       } else if (AdvAllocated(_v980.k)) {
-        I("已点亮 · 邻接 " + AdvNeighbors(_v980.k).length + " 个 · 可点右侧「退还该节点」");
+        P("已点亮 · 邻接 " + AdvNeighbors(_v980.k).length + " 个 · 可点右侧「退还该节点」");
       } else {
-        I(AdvReason(_v980.k) || "可点亮 · 左键点亮");
+        P(AdvReason(_v980.k) || "可点亮 · 左键点亮");
       }
     }, true);
     _v958.addEventListener("pointerdown", function (_v983) {
@@ -4301,8 +4301,8 @@ function AdvEnsureInput() {
     });
   } catch (_v1006) {}
 }
-var _f4Base = cT;
-cT = function () {
+var _f4Base = V$;
+V$ = function () {
   var _v1007 = n && n.advTab || "tree";
   if (_v1007 === "base" || _v1007 === "star") return AdvTabsBar() + AdvPageHTML(_v1007);
   try {
@@ -4314,7 +4314,7 @@ cT = function () {
 try {
   AdvLoadEffects();
   AdvBuild();
-  $("stats:pre", function (_v1009) {
+  A("stats:pre", function (_v1009) {
     try {
       if (!u || !_v1009 || !_v1009.a) return;
       var _v1010 = AdvStatTotals();
@@ -4572,7 +4572,7 @@ function JewelItem(_v1060) {
   var _v1061 = JewelDef(_v1060);
   if (!_v1061) return null;
   return {
-    uid: ya(),
+    uid: Sa(),
     kind: "jewel",
     jid: _v1061.id,
     n: _v1061.n,
@@ -4597,7 +4597,7 @@ function JewelPick() {
   _v1062.forEach(function (_v1064) {
     _v1063 += _v1064.w;
   });
-  var _v1065 = E() * _v1063, _v1066 = 0;
+  var _v1065 = I() * _v1063, _v1066 = 0;
   for (var _v1067 = 0; _v1067 < _v1062.length; _v1067++) {
     _v1066 += _v1062[_v1067].w;
     if (_v1065 <= _v1066) return _v1062[_v1067];
@@ -4610,7 +4610,7 @@ function JewelDrop(_v1068, _v1069) {
     if (!_v1070) return null;
     var _v1071 = JewelItem(_v1070.id);
     if (!_v1071) return null;
-    de(_v1068, _v1069, {
+    ue(_v1068, _v1069, {
       kind: "it",
       it: _v1071
     });
@@ -4632,21 +4632,21 @@ function JewelTooltip(_v1073) {
   }).join(" · ");
   return {
     b: _v1075,
-    h: '<div class="th" style="color:' + _v1075 + '">' + F(_v1074.n) + "<small>天赋珠宝 · T" + _v1074.tier + '</small></div><div class="tb"><div class="sp">' + _v1076 + '</div><div class="sep"></div><div class="md">' + F(_v1074.d || "") + '</div><div class="sep"></div><div class="hint">可镶嵌在高级天赋树的「珠宝栏位」（点亮后点击该栏位选择）</div></div>'
+    h: '<div class="th" style="color:' + _v1075 + '">' + O(_v1074.n) + "<small>天赋珠宝 · T" + _v1074.tier + '</small></div><div class="tb"><div class="sp">' + _v1076 + '</div><div class="sep"></div><div class="md">' + O(_v1074.d || "") + '</div><div class="sep"></div><div class="hint">可镶嵌在高级天赋树的「珠宝栏位」（点亮后点击该栏位选择）</div></div>'
   };
 }
-var _rpJewel = lm;
-lm = function (_v1078) {
+var _rpJewel = Ym;
+Ym = function (_v1078) {
   if (_v1078 && _v1078.kind === "jewel") return JEWEL_ICONS[_v1078.jid] || (JewelDef(_v1078.jid) ? JewelIcon(JewelDef(_v1078.jid)) : "");
   return _rpJewel.apply(this, arguments);
 };
-var _$sJewel = vo;
-vo = function (_v1079, _v1080, _v1081) {
-  if (_v1079 && _v1079.kind === "jewel") return '<div class="cell gm" ' + (_v1081 || "") + ' data-act="' + _v1080 + '" data-uid="' + _v1079.uid + '" data-tt="it:' + _v1079.uid + '" data-craft="' + _v1079.uid + '"><img src="' + lm(_v1079) + '" alt=""><span class="tg">珠宝</span></div>';
+var _$sJewel = Mo;
+Mo = function (_v1079, _v1080, _v1081) {
+  if (_v1079 && _v1079.kind === "jewel") return '<div class="cell gm" ' + (_v1081 || "") + ' data-act="' + _v1080 + '" data-uid="' + _v1079.uid + '" data-tt="it:' + _v1079.uid + '" data-craft="' + _v1079.uid + '"><img src="' + Ym(_v1079) + '" alt=""><span class="tg">珠宝</span></div>';
   return _$sJewel.apply(this, arguments);
 };
-var _asJewel = Os;
-Os = function (_v1082, _v1083) {
+var _asJewel = qs;
+qs = function (_v1082, _v1083) {
   if (_v1082 && _v1082.kind === "jewel") return JewelTooltip(_v1082);
   return _asJewel.apply(this, arguments);
 };
@@ -4741,12 +4741,12 @@ function AdvJewelPanelHTML() {
 function JewelMapDrop(_v1112) {
   try {
     if (!_v1112 || (_v1112.tier || 0) < 14) return null;
-    if (E() >= 0.35) return null;
+    if (I() >= 0.35) return null;
     var _v1113 = (n.Z && n.Z.M && n.Z.M.rooms || []).filter(function (_v1114) {
       return !_v1114.boss;
     });
     if (!_v1113.length) return null;
-    var _v1115 = _v1113[Math.floor(E() * _v1113.length)], _v1116 = Xr(_v1115);
+    var _v1115 = _v1113[Math.floor(I() * _v1113.length)], _v1116 = ui(_v1115);
     return JewelDrop(_v1116.x, _v1116.y);
   } catch (_v1117) {
     return null;
@@ -4768,7 +4768,7 @@ window.__JEWEL = {
   socketInfo: AdvJewelSocketInfo,
   cell: function (_v1120) {
     try {
-      return vo(_v1120, "test", "");
+      return Mo(_v1120, "test", "");
     } catch (_v1121) {
       return "";
     }
@@ -4794,56 +4794,56 @@ function OmHas(_v1125) {
   return OmActive(_v1125) && OmOwned(_v1125);
 }
 function OmIsWorld(_v1126) {
-  return !!(z[_v1126] && z[_v1126].og && String(z[_v1126].og).startsWith("world"));
+  return !!(q[_v1126] && q[_v1126].og && String(q[_v1126].og).startsWith("world"));
 }
 function OmIsAbyss(_v1127) {
-  return !!(z[_v1127] && z[_v1127].og && String(z[_v1127].og).startsWith("abyss"));
+  return !!(q[_v1127] && q[_v1127].og && String(q[_v1127].og).startsWith("abyss"));
 }
 function OmIsCombat(_v1128) {
-  return !!(z[_v1128] && (z[_v1128].og === "worldRes" || z[_v1128].og === "worldExp" || z[_v1128].og === "worldFlask"));
+  return !!(q[_v1128] && (q[_v1128].og === "worldRes" || q[_v1128].og === "worldExp" || q[_v1128].og === "worldFlask"));
 }
 function OmToggle(_v1129) {
-  if (!u || !z[_v1129]) return;
-  let _v1130 = z[_v1129];
+  if (!u || !q[_v1129]) return;
+  let _v1130 = q[_v1129];
   if (!OmOwned(_v1129)) {
-    (I("没有" + _v1130.n), T("nomana", 0.5));
+    (P("没有" + _v1130.n), $("nomana", 0.5));
     return;
   }
   if ((u.om || (u.om = {}), u.om[_v1129])) {
-    (delete u.om[_v1129], I("已收起预兆 · " + _v1130.n), T("pick", 0.6));
+    (delete u.om[_v1129], P("已收起预兆 · " + _v1130.n), $("pick", 0.6));
   } else {
     for (let _v1131 in u.om) {
       if (_v1131 === _v1129) continue;
-      let _v1132 = z[_v1131];
+      let _v1132 = q[_v1131];
       (!_v1132 || _v1132.og && _v1132.og === _v1130.og) && delete u.om[_v1131];
     }
-    (u.om[_v1129] = 1, I("预兆已激活 · " + _v1130.n), ke("预兆已激活", _v1130.n + " · " + _v1130.d), T("pick", 0.7));
+    (u.om[_v1129] = 1, P("预兆已激活 · " + _v1130.n), ke("预兆已激活", _v1130.n + " · " + _v1130.d), $("pick", 0.7));
   }
-  ge();
+  be();
 }
 function OmTake(_v1133, _v1134, _v1135) {
   if (!OmHas(_v1133)) return !1;
-  if (_a && _a.dry) return !0;
+  if (Ya && Ya.dry) return !0;
   if (OmIsCombat(_v1133)) {
     if (n.omTrig) return !1;
     n.omTrig = !0;
   }
   u.cur[_v1133] = Math.max(0, (u.cur[_v1133] || 0) - 1);
   u.cur[_v1133] <= 0 && (u.om || (u.om = {}), delete u.om[_v1133]);
-  I("预兆触发 · " + z[_v1133].n);
-  _v1134 != null && H(_v1134, _v1135 != null ? _v1135 : 0, 0, !1, "gold", "预兆 · " + (z[_v1133].s || z[_v1133].n));
-  OmIsWorld(_v1133) && ke("预兆触发", z[_v1133].n + " · " + z[_v1133].d);
+  P("预兆触发 · " + q[_v1133].n);
+  _v1134 != null && U(_v1134, _v1135 != null ? _v1135 : 0, 0, !1, "gold", "预兆 · " + (q[_v1133].s || q[_v1133].n));
+  OmIsWorld(_v1133) && ke("预兆触发", q[_v1133].n + " · " + q[_v1133].d);
   return !0;
 }
 function OmPrune() {
   if (!u || !u.om) return;
-  for (let _v1136 in u.om) (!z[_v1136] || (u.cur[_v1136] || 0) <= 0) && delete u.om[_v1136];
+  for (let _v1136 in u.om) (!q[_v1136] || (u.cur[_v1136] || 0) <= 0) && delete u.om[_v1136];
 }
 function OmDrop(_v1137, _v1138) {
-  let _v1139 = n.Z && n.Z.tier ? n.Z.tier : 0, _v1140 = vt.filter(_v1141 => z[_v1141].grp === "omen" && (z[_v1141].mt || 1) <= _v1139);
+  let _v1139 = n.Z && n.Z.tier ? n.Z.tier : 0, _v1140 = Tt.filter(_v1141 => q[_v1141].grp === "omen" && (q[_v1141].mt || 1) <= _v1139);
   if (!_v1140.length) return null;
-  let _v1142 = lt(_v1140, _v1143 => z[_v1143].ow || 1);
-  return (de(_v1137, _v1138, {
+  let _v1142 = ht(_v1140, _v1143 => q[_v1143].ow || 1);
+  return (ue(_v1137, _v1138, {
     kind: "cur",
     cur: _v1142
   }), _v1142);
@@ -4855,12 +4855,12 @@ function OmHint(_v1144) {
     chaos: ["omen_chaos_p", "omen_chaos_s", "omen_whittle"],
     chance: ["omen_ancient"]
   })[_v1144] || [], _v1146 = _v1145.filter(_v1147 => OmHas(_v1147));
-  return _v1146.length ? _v1146.map(_v1148 => z[_v1148].s || z[_v1148].n).join(" + ") : null;
+  return _v1146.length ? _v1146.map(_v1148 => q[_v1148].s || q[_v1148].n).join(" + ") : null;
 }
 function OmWhittle(_v1149, _v1150) {
   let _v1151 = [], _v1152 = -1;
   for (let _v1153 of _v1150) {
-    let _v1154 = Da(_v1149, _v1153.id);
+    let _v1154 = qa(_v1149, _v1153.id);
     if (!_v1154 || typeof _v1153.ti !== "number" || !_v1154.ranges || !_v1154.ranges.length) continue;
     let _v1155 = _v1154.ranges.length - 1 - _v1153.ti;
     if (_v1155 < 0 || _v1155 >= _v1154.ranges.length) continue;
@@ -4868,18 +4868,18 @@ function OmWhittle(_v1149, _v1150) {
     (_v1157 > _v1152 && (_v1152 = _v1157, _v1151 = []), _v1157 === _v1152 && _v1151.push(_v1153));
   }
   if (!_v1151.length || Math.floor(_v1152 / 1000) <= 0) return null;
-  return ae(_v1151);
+  return oe(_v1151);
 }
 function StSide(_v1158, _v1159) {
-  if (!_v1159) return ht(_v1158);
-  let _v1160 = h4(_v1158, _v1159);
+  if (!_v1159) return wt(_v1158);
+  let _v1160 = O4(_v1158, _v1159);
   return _v1160 ? (_v1158.mods.push(_v1160), !0) : !1;
 }
 function OmBenchRow() {
-  let _v1161 = vt.filter(_v1162 => z[_v1162].grp === "omen" && (u.cur[_v1162] || 0) > 0);
+  let _v1161 = Tt.filter(_v1162 => q[_v1162].grp === "omen" && (u.cur[_v1162] || 0) > 0);
   return _v1161.length ? _v1161.map(_v1163 => {
-    let _v1164 = z[_v1163], _v1165 = OmActive(_v1163);
-    return `<button class="bcur om${_v1165 ? " on" : ""}" data-omen="${_v1163}" data-tt="cur:${_v1163}"><img src="${_e[_v1163]}" alt=""><span class="bn">${_v1164.s || _v1164.n}</span><b>${u.cur[_v1163] || 0}</b><small>${_v1165 ? "已激活" : OmIsAbyss(_v1163) ? "深渊预兆" : OmIsWorld(_v1163) ? "冒险预兆" : "工艺预兆"}</small></button>`;
+    let _v1164 = q[_v1163], _v1165 = OmActive(_v1163);
+    return `<button class="bcur om${_v1165 ? " on" : ""}" data-omen="${_v1163}" data-tt="cur:${_v1163}"><img src="${Ye[_v1163]}" alt=""><span class="bn">${_v1164.s || _v1164.n}</span><b>${u.cur[_v1163] || 0}</b><small>${_v1165 ? "已激活" : OmIsAbyss(_v1163) ? "深渊预兆" : OmIsWorld(_v1163) ? "冒险预兆" : "工艺预兆"}</small></button>`;
   }).join("") : '<p class="dim bhint">还没有预兆 · 宝箱、稀有怪与 T6 以上的首领会掉落</p>';
 }
 function DsTierOf(_v1166) {
@@ -4894,11 +4894,11 @@ function DsFixedTi(_v1166, _v1190) {
   return Math.max(0, Math.min(n, want));
 }
 function DsBoneTip(_v1167) {
-  let _v1168 = DsTierOf(_v1167), _v1169 = Gc.filter(_v1170 => _v1170.dsec), _v1171 = (_v1172, _v1173) => _v1173 > 1 ? (_v1172 / _v1173).toFixed(1) : _v1172, _v1174 = _v1168 === 0 ? "低阶骨 · 低数值" : _v1168 === 1 ? "中阶骨 · 中数值" : "远古骨 · 最高数值";
+  let _v1168 = DsTierOf(_v1167), _v1169 = pf.filter(_v1170 => _v1170.dsec), _v1171 = (_v1172, _v1173) => _v1173 > 1 ? (_v1172 / _v1173).toFixed(1) : _v1172, _v1174 = _v1168 === 0 ? "低阶骨 · 低数值" : _v1168 === 1 ? "中阶骨 · 中数值" : "远古骨 · 最高数值";
   if (!_v1169.length) return "";
   let _v1175 = _v1169.map(_v1176 => {
     let _v1177 = (DsFixedTi(_v1167, _v1176) != null ? DsFixedTi(_v1167, _v1176) : Math.min(_v1168, _v1176.ranges.length - 1)), _v1178 = _v1176.ranges[_v1177], _v1179 = _v1176.div || 1;
-    return `<div class="p">${_v1176.t === "P" ? "前缀" : "后缀"} · ${F(_v1176.text.replace("{0}", _v1171(_v1178[0], _v1179) + "–" + _v1171(_v1178[1], _v1179)))}</div>`;
+    return `<div class="p">${_v1176.t === "P" ? "前缀" : "后缀"} · ${O(_v1176.text.replace("{0}", _v1171(_v1178[0], _v1179) + "–" + _v1171(_v1178[1], _v1179)))}</div>`;
   }).join("");
   return `<div class="sep"></div><div class="md">可揭示的渎灵词缀（${_v1174}）</div>${_v1175}<div class="hint">揭示时按装备部位的可用词缀三选一 · 词缀槽位未满前可重复渎灵</div>`;
 }
@@ -4909,9 +4909,9 @@ function DsPool(_v1182, _v1183) {
   let _v1184 = function (_v1185) {
     return _v1185.dsec && (!_v1183 || _v1185.t === _v1183);
   };
-  let _v1186 = Gc.filter(_v1187 => _v1184(_v1187) && (!_v1187.slots || _v1187.slots.includes(_v1182.slot)) && _v1187.lv[0] <= _v1182.ilvl);
-  if (!_v1186.length) _v1186 = Gc.filter(_v1188 => _v1184(_v1188) && _v1188.lv[0] <= _v1182.ilvl);
-  if (!_v1186.length) _v1186 = Gc.filter(_v1184);
+  let _v1186 = pf.filter(_v1187 => _v1184(_v1187) && (!_v1187.slots || _v1187.slots.includes(_v1182.slot)) && _v1187.lv[0] <= _v1182.ilvl);
+  if (!_v1186.length) _v1186 = pf.filter(_v1188 => _v1184(_v1188) && _v1188.lv[0] <= _v1182.ilvl);
+  if (!_v1186.length) _v1186 = pf.filter(_v1184);
   return _v1186;
 }
 function DsRoll(_v1189, _v1190, _v1191, _v1198bone) {
@@ -4919,9 +4919,9 @@ function DsRoll(_v1189, _v1190, _v1191, _v1198bone) {
   for (let _v1193 = 0; _v1193 < _v1190.ranges.length; _v1193++) _v1190.lv[_v1193] <= _v1189.ilvl && (_v1192 = _v1193);
   var __fixedTi = _v1198bone ? DsFixedTi(_v1198bone, _v1190) : null;
   let _v1194 = __fixedTi != null ? __fixedTi : Math.min(_v1192, _v1191);
-  let _v1195 = bo(_v1190.ranges[_v1194]);
+  let _v1195 = wo(_v1190.ranges[_v1194]);
   try {
-    if (ne("desecrate_sense")) _v1195 = Array.isArray(_v1195) ? _v1195.map(_v1196 => Math.round(_v1196 * 1.05)) : Math.round(_v1195 * 1.05 * 10) / 10;
+    if (re("desecrate_sense")) _v1195 = Array.isArray(_v1195) ? _v1195.map(_v1196 => Math.round(_v1196 * 1.05)) : Math.round(_v1195 * 1.05 * 10) / 10;
   } catch (_v1197) {}
   return {
     id: _v1190.id,
@@ -4938,10 +4938,10 @@ function DsOptions(_v1198) {
   if (!_v1199.side) _v1200 = _v1200.filter(_v1201 => DsRoom(_v1198, _v1201.t));
   if (!_v1200.length) return null;
   let _v1202 = [], _v1203 = _v1199.fac ? _v1200.filter(_v1204 => _v1204.fac === _v1199.fac) : [];
-  _v1203.length && _v1202.push(DsRoll(_v1198, ae(_v1203), DsTierOf(_v1199.bone), _v1199.bone));
-  let _v1205 = 3 + (ne("desecrate_lore") ? 1 : 0);
+  _v1203.length && _v1202.push(DsRoll(_v1198, oe(_v1203), DsTierOf(_v1199.bone), _v1199.bone));
+  let _v1205 = 3 + (re("desecrate_lore") ? 1 : 0);
   for (let _v1206 = 0; _v1206 < 80 && _v1202.length < _v1205; _v1206++) {
-    let _v1207 = ae(_v1200);
+    let _v1207 = oe(_v1200);
     _v1202.some(_v1208 => _v1208.id === _v1207.id) || _v1202.push(DsRoll(_v1198, _v1207, DsTierOf(_v1199.bone), _v1199.bone));
   }
   return _v1202;
@@ -4964,7 +4964,7 @@ function DsDesecrate(_v1209, _v1210) {
     let _v1213 = (_v1214, _v1215) => {
       let _v1216 = _v1212.filter(_v1217 => _v1217.t === _v1214);
       for (let _v1218 = 0; _v1218 < _v1215 && _v1216.length; _v1218++) {
-        let _v1219 = ae(_v1216);
+        let _v1219 = oe(_v1216);
         let _v1220 = DsRoll(_v1210, _v1219, 2);
         _v1220.putrid = 1;
         _v1220.dsec = 0;
@@ -4974,7 +4974,7 @@ function DsDesecrate(_v1209, _v1210) {
     };
     _v1213("P", 3);
     _v1213("S", 3);
-    return (_v1210.dsec = _v1210.mods.length, aa(_v1210), I("腐烂预兆 · 全部词缀被渎灵替换, 装备已腐化"), null);
+    return (_v1210.dsec = _v1210.mods.length, na(_v1210), P("腐烂预兆 · 全部词缀被渎灵替换, 装备已腐化"), null);
   }
   let _v1222 = OmHas("omen_necro_p") ? "P" : OmHas("omen_necro_s") ? "S" : null;
   if (!DsRoom(_v1210, _v1222)) return "渎灵词缀栏已满 (" + AffixDsecCount(_v1210) + "/" + AffixSlotCfg().dsec + ")";
@@ -4986,7 +4986,7 @@ function DsDesecrate(_v1209, _v1210) {
     side: _v1222,
     fac: _v1224,
     opts: null
-  }, I("渎灵 · 到藏身处的灵魂之井揭示词缀"), null);
+  }, P("渎灵 · 到藏身处的灵魂之井揭示词缀"), null);
 }
 function DsReveal(_v1225, _v1226) {
   if (!_v1225 || !_v1225.ds) return "没有待揭示的渎灵词缀";
@@ -4999,7 +4999,7 @@ function DsReveal(_v1225, _v1226) {
     ti: _v1228.ti,
     v: _v1228.v,
     dsec: !0
-  }), _v1225.ds = null, _v1225.dsec = (_v1225.dsec || 0) + 1, aa(_v1225), I("渎灵词缀已揭示"), null);
+  }), _v1225.ds = null, _v1225.dsec = (_v1225.dsec || 0) + 1, na(_v1225), P("渎灵词缀已揭示"), null);
 }
 function DsReroll(_v1229) {
   if (!_v1229 || !_v1229.ds) return "没有待揭示的渎灵词缀";
@@ -5007,35 +5007,35 @@ function DsReroll(_v1229) {
 }
 function DsMapChaos(_v1230, _v1231) {
   let _v1232 = MAP_CAT[_v1231] || [];
-  _v1230.mods = _v1230.mods.filter(_v1233 => qr(_v1230, _v1233));
-  let _v1234 = 4 + (E() < 0.5 ? 1 : 0);
+  _v1230.mods = _v1230.mods.filter(_v1233 => Qr(_v1230, _v1233));
+  let _v1234 = 4 + (I() < 0.5 ? 1 : 0);
   for (let _v1235 = 0; _v1235 < _v1234; _v1235++) {
-    let _v1236 = wu.filter(_v1237 => !_v1232.includes(_v1237.stat) && _v1237.lv[0] <= _v1230.ilvl && (!_v1237.slots || _v1237.slots.includes(_v1230.slot)));
+    let _v1236 = nh.filter(_v1237 => !_v1232.includes(_v1237.stat) && _v1237.lv[0] <= _v1230.ilvl && (!_v1237.slots || _v1237.slots.includes(_v1230.slot)));
     if (!_v1236.length) break;
-    let _v1238 = lt(_v1236, _v1239 => _v1239.w), _v1240 = 0;
+    let _v1238 = ht(_v1236, _v1239 => _v1239.w), _v1240 = 0;
     for (let _v1241 = 0; _v1241 < _v1238.ranges.length; _v1241++) _v1238.lv[_v1241] <= _v1230.ilvl && (_v1240 = _v1241);
     let _v1242 = [];
     for (let _v1243 = 0; _v1243 <= _v1240; _v1243++) _v1242.push(_v1243);
-    let _v1244 = lt(_v1242, _v1245 => Math.pow(0.62, _v1245));
+    let _v1244 = ht(_v1242, _v1245 => Math.pow(0.62, _v1245));
     _v1230.mods.push({
       id: _v1238.id,
       t: _v1238.t,
       ti: _v1244,
-      v: bo(_v1238.ranges[_v1244])
+      v: wo(_v1238.ranges[_v1244])
     });
   }
   return null;
 }
 function DsBoneDrop(_v1246, _v1247, _v1248) {
-  let _v1249 = n.Z && n.Z.tier || 0, _v1250 = Math.min(2, Math.max(_v1248 || 0, _v1249 >= 14 ? 2 : _v1249 >= 8 ? 1 : 0) + (ne("bone_speech") ? 1 : 0)), _v1251 = [];
+  let _v1249 = n.Z && n.Z.tier || 0, _v1250 = Math.min(2, Math.max(_v1248 || 0, _v1249 >= 14 ? 2 : _v1249 >= 8 ? 1 : 0) + (re("bone_speech") ? 1 : 0)), _v1251 = [];
   for (let _v1252 = 0; _v1252 <= _v1250; _v1252++) _v1251.push(DS_BONES[_v1252]);
-  let _v1253 = ae(_v1251);
-  de(_v1246, _v1247, {
+  let _v1253 = oe(_v1251);
+  ue(_v1246, _v1247, {
     kind: "cur",
     cur: _v1253
   });
   try {
-    if (ne("bone_sense") && E() < 0.1) de(_v1246, _v1247, {
+    if (re("bone_sense") && I() < 0.1) ue(_v1246, _v1247, {
       kind: "cur",
       cur: _v1253
     });
@@ -5081,22 +5081,22 @@ function DsWell() {
   if (!DW.sel || !_v1264.includes(DW.sel)) DW.sel = _v1264[0] || null;
   let _v1266 = DW.sel;
   _v1266 && !_v1266.ds.opts && (_v1266.ds.opts = DsOptions(_v1266));
-  let _v1267 = _v1266 ? `<div class="dwhead"><b style="color:${Zo[_v1266.rarity]}">${F(_v1266.name)}</b><small>${F(_v1266.base)} · 物品等级 ${_v1266.ilvl} · 骨: ${z[_v1266.ds.bone].n}${_v1266.ds.fac ? " · " + DS_FAC[_v1266.ds.fac] : ""}</small></div><div class="dwopts">${(_v1266.ds.opts || []).map((_v1268, _v1269) => {
-    let _v1270 = Da(_v1266, _v1268.id);
-    return `<button class="dwopt" data-dwopt="${_v1269}"><b>${F(Ks(_v1270, _v1268.v))}</b><small>${_v1268.t === "P" ? "前缀" : "后缀"} T${_v1270.ranges.length - _v1268.ti}${_v1270.fac ? " · " + DS_FAC[_v1270.fac] : ""}</small></button>`;
+  let _v1267 = _v1266 ? `<div class="dwhead"><b style="color:${Yo[_v1266.rarity]}">${O(_v1266.name)}</b><small>${O(_v1266.base)} · 物品等级 ${_v1266.ilvl} · 骨: ${q[_v1266.ds.bone].n}${_v1266.ds.fac ? " · " + DS_FAC[_v1266.ds.fac] : ""}</small></div><div class="dwopts">${(_v1266.ds.opts || []).map((_v1268, _v1269) => {
+    let _v1270 = qa(_v1266, _v1268.id);
+    return `<button class="dwopt" data-dwopt="${_v1269}"><b>${O(Xs(_v1270, _v1268.v))}</b><small>${_v1268.t === "P" ? "前缀" : "后缀"} T${_v1270.ranges.length - _v1268.ti}${_v1270.fac ? " · " + DS_FAC[_v1270.fac] : ""}</small></button>`;
   }).join("") || '<p class="dim">没有可用的渎灵词缀</p>'}</div><div class="dwbtns"><button class="btn small" data-dwreroll="1"${OmHas("omen_abyss_echo") ? "" : " disabled"}>重掷选项 (深渊回响预兆)</button></div>` : '<p class="dim">没有待揭示的渎灵装备 · 用遗存骨对稀有装备渎灵</p>';
-  let _v1271 = _v1264.length ? _v1264.map(_v1272 => `<button class="dwitem${_v1272 === _v1266 ? " on" : ""}" data-dw="${_v1272.uid}"><b style="color:${Zo[_v1272.rarity]}">${F(_v1272.name)}</b><small>${z[_v1272.ds.bone].n}</small></button>`).join("") : '<p class="dim">背包里没有</p>';
-  (Ke(`<div class="ovbox well"><h2>灵魂之井</h2><p class="sub">深渊的遗存骨在这里揭示渎灵词缀 · 三选一</p>
+  let _v1271 = _v1264.length ? _v1264.map(_v1272 => `<button class="dwitem${_v1272 === _v1266 ? " on" : ""}" data-dw="${_v1272.uid}"><b style="color:${Yo[_v1272.rarity]}">${O(_v1272.name)}</b><small>${q[_v1272.ds.bone].n}</small></button>`).join("") : '<p class="dim">背包里没有</p>';
+  (Ve(`<div class="ovbox well"><h2>灵魂之井</h2><p class="sub">深渊的遗存骨在这里揭示渎灵词缀 · 三选一</p>
 		 <div class="dwwrap"><div class="dwlist">${_v1271}</div><div class="dwbody">${_v1267}</div></div>
-		 <div class="ovbtns"><button class="btn" id="dwClose">离开 <kbd>Esc</kbd></button></div></div>`), C("#dwClose").onclick = $t, document.querySelectorAll("#overlay [data-dw]").forEach(_v1273 => _v1273.onclick = () => {
+		 <div class="ovbtns"><button class="btn" id="dwClose">离开 <kbd>Esc</kbd></button></div></div>`), C("#dwClose").onclick = xt, document.querySelectorAll("#overlay [data-dw]").forEach(_v1273 => _v1273.onclick = () => {
     let _v1274 = +_v1273.dataset.dw, _v1275 = [...u.inv, ...Object.values(u.equip)].find(_v1276 => _v1276 && _v1276.uid === _v1274);
     (_v1275 && (DW.sel = _v1275), DsWell());
   }), document.querySelectorAll("#overlay [data-dwopt]").forEach(_v1277 => _v1277.onclick = () => {
     let _v1278 = DsReveal(DW.sel, +_v1277.dataset.dwopt);
-    (_v1278 ? I(_v1278) : (T("unique"), ke("渎灵", "词缀已揭示")), DsWell());
+    (_v1278 ? P(_v1278) : ($("unique"), ke("渎灵", "词缀已揭示")), DsWell());
   }), document.querySelectorAll("#overlay [data-dwreroll]").forEach(_v1279 => _v1279.onclick = () => {
     let _v1280 = DsReroll(DW.sel);
-    (_v1280 ? I(_v1280) : (T("pick"), ke("深渊回响", "选项已重掷")), DsWell());
+    (_v1280 ? P(_v1280) : ($("pick"), ke("深渊回响", "选项已重掷")), DsWell());
   }));
 }
 function DlMirror(_v1281, _v1282) {
@@ -5154,7 +5154,7 @@ function DelSplinter(_v1307, _v1308) {
   let _v1309 = n.del;
   if (!_v1309 || _v1309.spl >= _v1309.splMax) return !1;
   _v1309.spl++;
-  return (de(_v1307, _v1308, {
+  return (ue(_v1307, _v1308, {
     kind: "cur",
     cur: "splinter"
   }), !0);
@@ -5202,7 +5202,7 @@ function DelEnterLayer(_v1317) {
     active: !0
   });
   (_v1318.layer = _v1317, _v1318.active = !0, _v1318.bossDead = !1);
-  let _v1319 = Math.max(1, Math.min(16, _v1317 + 2)), _v1320 = Ht(_v1319);
+  let _v1319 = Math.max(1, Math.min(16, _v1317 + 2)), _v1320 = Zt(_v1319);
   (_v1320.name = "惊悸迷雾 · 第 " + _v1317 + " 层", _v1320.base = "惊悸迷雾", _v1320.dbg = {
     rooms: [5, 6]
   });
@@ -5216,7 +5216,7 @@ function DelEnterLayer(_v1317) {
     fogR: 2400,
     outT: 0,
     spl: 0,
-    splMax: fe(3, 6) + (ne("deli3") ? 2 : 0) + (ne("deli6") ? 1 : 0),
+    splMax: de(3, 6) + (re("deli3") ? 2 : 0) + (re("deli6") ? 1 : 0),
     pauseT: 0,
     shardAt: 9999,
     final: !1,
@@ -5226,7 +5226,7 @@ function DelEnterLayer(_v1317) {
   };
   DelLayerMap = !0;
   try {
-    Di(_v1320);
+    Xi(_v1320);
   } catch (_v1323) {
     DelLayerMap = !1;
     return;
@@ -5235,7 +5235,7 @@ function DelEnterLayer(_v1317) {
   (n.Z.name = _v1320.name, n.Z.base = _v1320.base, n.Z.delLayer = _v1317);
   n.delRun = _v1318;
   DelTagBoss();
-  (ke("惊悸迷雾 · 第 " + _v1317 + "/" + DEL_LAYERS + " 层", "击杀本层首领后按 F 进入下一层" + (_v1317 >= DEL_LAYERS ? " · 最终首领血量 ×5" : "")), T("portal"));
+  (ke("惊悸迷雾 · 第 " + _v1317 + "/" + DEL_LAYERS + " 层", "击杀本层首领后按 F 进入下一层" + (_v1317 >= DEL_LAYERS ? " · 最终首领血量 ×5" : "")), $("portal"));
 }
 function DelTagBoss() {
   if (!n.delRun) return;
@@ -5250,16 +5250,16 @@ function DelTagBoss() {
 function DelBossKilled(_v1325) {
   if (!n.delRun || !_v1325 || !_v1325.delBoss || _v1325.delRewarded) return;
   _v1325.delRewarded = !0;
-  let _v1326 = n.delRun.layer >= n.delRun.max, _v1327 = _v1326 ? 20 + (ne("deli7") ? 10 : 0) : 3 + (ne("deli4") ? 1 : 0);
-  for (let _v1328 = 0; _v1328 < _v1327; _v1328++) de(_v1325.x, _v1325.y, {
+  let _v1326 = n.delRun.layer >= n.delRun.max, _v1327 = _v1326 ? 20 + (re("deli7") ? 10 : 0) : 3 + (re("deli4") ? 1 : 0);
+  for (let _v1328 = 0; _v1328 < _v1327; _v1328++) ue(_v1325.x, _v1325.y, {
     kind: "cur",
     cur: "divine"
   });
   if (_v1326) {
-    (Na.mageblood && E() < 0.015 && de(_v1325.x, _v1325.y, {
+    (Ua.mageblood && I() < 0.015 && ue(_v1325.x, _v1325.y, {
       kind: "it",
-      it: Ut(Na.mageblood, 80)
-    }), u.delirium = Math.min(AtlasDeliriumCap(), (u.delirium || 0) + AtlasDeliriumGain(25 + (ne("deli2") ? 10 : 0) + (ne("deli5") ? 10 : 0))), GrantAtlasPoint("惊悸迷雾"), ke("惊悸迷雾 · 终点", "最终首领倒下 · 20 神圣石已掉落 · 亢奋值 +25%"), T("unique"), n.delRun = null, n.del = null);
+      it: Kt(Ua.mageblood, 80)
+    }), u.delirium = Math.min(AtlasDeliriumCap(), (u.delirium || 0) + AtlasDeliriumGain(25 + (re("deli2") ? 10 : 0) + (re("deli5") ? 10 : 0))), GrantAtlasPoint("惊悸迷雾"), ke("惊悸迷雾 · 终点", "最终首领倒下 · 20 神圣石已掉落 · 亢奋值 +25%"), $("unique"), n.delRun = null, n.del = null);
   } else {
     (n.objs.push({
       kind: "b-delportal",
@@ -5267,7 +5267,7 @@ function DelBossKilled(_v1325) {
       y: _v1325.y + 24,
       r: 16,
       layer: n.delRun.layer + 1
-    }), ke("第 " + n.delRun.layer + " 层完成", "按 F 进入第 " + (n.delRun.layer + 1) + " 层"), T("unique"));
+    }), ke("第 " + n.delRun.layer + " 层完成", "按 F 进入第 " + (n.delRun.layer + 1) + " 层"), $("unique"));
   }
 }
 function DeliriumStart(_v1329) {
@@ -5287,20 +5287,20 @@ function DeliriumStart(_v1329) {
     shardAt: 25,
     maxReward: !1,
     spl: 0,
-    splMax: fe(3, 6) + (ne("deli3") ? 2 : 0)
+    splMax: de(3, 6) + (re("deli3") ? 2 : 0)
   });
   for (let _v1330 of n.mons) _v1330.dead || DelMark(_v1330, 0);
-  (ke("惊悸迷雾", "迷雾从镜面扩散 · 越远离镜子亢奋度越高" + (u.delirium ? " · 已积累亢奋 " + u.delirium + "%" : "")), T("unique"), V(0.25));
+  (ke("惊悸迷雾", "迷雾从镜面扩散 · 越远离镜子亢奋度越高" + (u.delirium ? " · 已积累亢奋 " + u.delirium + "%" : "")), $("unique"), X(0.25));
 }
 function DeliriumEnd() {
   if (!n.del) return;
   let _v1331 = n.del;
   if ((_v1331.peak || 0) >= 50) {
-    let _v1332 = Math.min(250, (u.delirium || 0) + 25 + (ne("deli2") ? 10 : 0) + (ne("deli5") ? 10 : 0));
+    let _v1332 = Math.min(250, (u.delirium || 0) + 25 + (re("deli2") ? 10 : 0) + (re("deli5") ? 10 : 0));
     (u.delirium = _v1332, u.deliriumMaps = (u.deliriumMaps || 0) + 1);
-    (ke("迷雾散去", "亢奋值 +25% · 当前 " + _v1332 + "%"), I("惊悸亢奋 " + _v1332 + "% (下一张地图起始亢奋更高)"));
+    (ke("迷雾散去", "亢奋值 +25% · 当前 " + _v1332 + "%"), P("惊悸亢奋 " + _v1332 + "% (下一张地图起始亢奋更高)"));
   } else ke("迷雾散去", "你从惊悸迷雾中走了出来");
-  (n.del = null, T("portal"));
+  (n.del = null, $("portal"));
 }
 function DeliriumUpdate(_v1333) {
   if (!n.Z || n.Z.type !== "map" || !n.pl) return;
@@ -5316,24 +5316,24 @@ function DeliriumUpdate(_v1333) {
   (_v1334.depth = _v1334.pauseT > 0 ? _v1334.depth : Math.min(250, Math.round((_v1334.base || 0) + _v1338 / 1000 * 100)), _v1334.peak = Math.max(_v1334.peak || 0, _v1334.depth), _v1338 > _v1334.fogR + 40 && _v1334.pauseT <= 0 ? _v1334.outT += _v1333 : _v1334.outT = 0);
   for (let _v1339 of n.objs) _v1339.kind === "delshard" && !_v1339.taken && (_v1339.x - n.pl.x) ** 2 + (_v1339.y - n.pl.y) ** 2 < 324 && DelShard(_v1339);
   if (_v1334.depth >= _v1334.shardAt && _v1334.pauseT <= 0) {
-    let _v1340 = He(n.pl.x, n.pl.y, 80);
+    let _v1340 = We(n.pl.x, n.pl.y, 80);
     n.objs.push({
       kind: "delshard",
       x: _v1340.x,
       y: _v1340.y,
       r: 6,
       taken: !1,
-      col: ae(Object.keys(DEL_SHARD_COL))
+      col: oe(Object.keys(DEL_SHARD_COL))
     });
     _v1334.shardAt = Math.min(251, _v1334.shardAt + 25);
-    I("破溃之镜碎片出现了");
+    P("破溃之镜碎片出现了");
   }
   _v1334.outT > 5 && DeliriumEnd();
   if (!n.del) return;
   for (let _v1341 of n.mons) !_v1341.dead && !_v1341.del && (_v1341.x - _v1336) ** 2 + (_v1341.y - _v1337) ** 2 < _v1334.fogR * _v1334.fogR && DelMark(_v1341, _v1334.depth);
   if (!_v1334.maxReward && _v1334.depth >= 250) {
     _v1334.maxReward = !0;
-    let _v1342 = He(n.pl.x, n.pl.y, 26);
+    let _v1342 = We(n.pl.x, n.pl.y, 26);
     (n.objs.push({
       kind: "box",
       x: _v1342.x,
@@ -5345,7 +5345,7 @@ function DeliriumUpdate(_v1333) {
   }
   if (!_v1334.final && _v1334.depth >= 200) {
     _v1334.final = !0;
-    let _v1343 = He(n.pl.x, n.pl.y, 20), _v1344 = et(ae(Object.keys(n.Z.th.mon)), _v1343.x, _v1343.y, n.Z.lvl + 2, 2);
+    let _v1343 = We(n.pl.x, n.pl.y, 20), _v1344 = nt(oe(Object.keys(n.Z.th.mon)), _v1343.x, _v1343.y, n.Z.lvl + 2, 2);
     (Object.assign(_v1344, {
       del: !0,
       delMul: 2.6,
@@ -5370,15 +5370,15 @@ function DelShard(_v1345) {
     let _v1348 = n.mons.filter(_v1349 => !_v1349.dead && _v1349.rar === 2).sort((_v1350, _v1351) => (_v1350.x - n.pl.x) ** 2 + (_v1350.y - n.pl.y) ** 2 - ((_v1351.x - n.pl.x) ** 2 + (_v1351.y - n.pl.y) ** 2))[0];
     if (_v1348) {
       (_v1348.maxhp *= 1.5, _v1348.hp = _v1348.maxhp, _v1348.dmg *= 1.25, _v1348.name = "惊悸·" + _v1348.name);
-      I("蓝色碎片 · 稀有怪物被惊悸强化");
-    } else I("蓝色碎片 · 附近没有稀有怪物");
+      P("蓝色碎片 · 稀有怪物被惊悸强化");
+    } else P("蓝色碎片 · 附近没有稀有怪物");
   } else if (_v1347 === "cyan") {
     _v1346 && (_v1346.pauseT = 12);
-    I("青色碎片 · 迷雾暂停 12 秒");
+    P("青色碎片 · 迷雾暂停 12 秒");
   } else if (_v1347 === "purple") {
     let _v1352 = Object.keys(n.Z.th.mon);
     for (let _v1353 = 0; _v1353 < 4; _v1353++) {
-      let _v1354 = He(n.pl.x, n.pl.y, 90), _v1355 = et(ae(_v1352), _v1354.x, _v1354.y, n.Z.lvl, 1);
+      let _v1354 = We(n.pl.x, n.pl.y, 90), _v1355 = nt(oe(_v1352), _v1354.x, _v1354.y, n.Z.lvl, 1);
       (Object.assign(_v1355, {
         del: !0,
         delMul: 2,
@@ -5386,19 +5386,19 @@ function DelShard(_v1345) {
         name: "纯化·" + _v1355.name
       }), _v1355.maxhp *= 1.6, _v1355.hp = _v1355.maxhp, n.mons.push(_v1355));
     }
-    I("紫色碎片 · 纯化怪群出现");
+    P("紫色碎片 · 纯化怪群出现");
   } else {
-    let _v1356 = He(n.pl.x, n.pl.y, 24), _v1357 = et(ae(Object.keys(n.Z.th.mon)), _v1356.x, _v1356.y, n.Z.lvl + 2, 2);
+    let _v1356 = We(n.pl.x, n.pl.y, 24), _v1357 = nt(oe(Object.keys(n.Z.th.mon)), _v1356.x, _v1356.y, n.Z.lvl + 2, 2);
     (Object.assign(_v1357, {
       del: !0,
       delMul: 2.6,
       name: "迷雾之影",
       aggro: !0,
       maxhp: _v1357.maxhp * 2.5
-    }), _v1357.hp = _v1357.maxhp, n.mons.push(_v1357), I("橙色碎片 · 迷雾之影出现"));
+    }), _v1357.hp = _v1357.maxhp, n.mons.push(_v1357), P("橙色碎片 · 迷雾之影出现"));
   }
   (DelSplinter(_v1345.x, _v1345.y), DelSplinter(_v1345.x, _v1345.y));
-  L(_v1345.x, _v1345.y, 24, [DEL_SHARD_COL[_v1347], "#e8f0ff"], 60, 0.8, {
+  E(_v1345.x, _v1345.y, 24, [DEL_SHARD_COL[_v1347], "#e8f0ff"], 60, 0.8, {
     glow: !0
   });
 }
@@ -5445,32 +5445,32 @@ function RitualWave(_v1369) {
   let _v1370 = Math.max(3, Math.min(6, Math.ceil((_v1369.stored || 6) / 3))), _v1371 = Object.keys(n.Z.th.mon);
   _v1369.revive = (_v1369.revive || 0) + 1;
   for (let _v1372 = 0; _v1372 < _v1370; _v1372++) {
-    let _v1373 = He(_v1369.x, _v1369.y, 90), _v1374 = et(ae(_v1371), _v1373.x, _v1373.y, n.Z.lvl, E() < 0.12 ? 1 : 0);
+    let _v1373 = We(_v1369.x, _v1369.y, 90), _v1374 = nt(oe(_v1371), _v1373.x, _v1373.y, n.Z.lvl, I() < 0.12 ? 1 : 0);
     (Object.assign(_v1374, {
       ritual: _v1369,
       reviveGen: _v1369.revive,
       aggro: !0
     }), n.mons.push(_v1374));
   }
-  (I("驱灵仪式 · 第 " + _v1369.wave + "/" + _v1369.waves + " 波"), L(_v1369.x, _v1369.y, 30, RIT_COL, 70, 0.8, {
+  (P("驱灵仪式 · 第 " + _v1369.wave + "/" + _v1369.waves + " 波"), E(_v1369.x, _v1369.y, 30, RIT_COL, 70, 0.8, {
     glow: !0
   }));
 }
 function RitualStart(_v1375) {
   if (!_v1375 || _v1375.st !== "idle") return;
-  let _v1376 = ne("rit4") ? 2 : 3;
-  if ((_v1375.stored || 0) < _v1376) return I("先在祭坛范围内击杀怪物吸收怨灵 (" + (_v1375.stored || 0) + "/" + _v1376 + ")");
-  (_v1375.st = "active", _v1375.wave = 1, _v1375.revive = 0, _v1375.restT = 0.6, RitualWave(_v1375), ke("驱灵仪式", "击退 3 波怨灵 · 击杀祭坛附近的怪物可获得贡品"), T("portal"), V(0.18));
+  let _v1376 = re("rit4") ? 2 : 3;
+  if ((_v1375.stored || 0) < _v1376) return P("先在祭坛范围内击杀怪物吸收怨灵 (" + (_v1375.stored || 0) + "/" + _v1376 + ")");
+  (_v1375.st = "active", _v1375.wave = 1, _v1375.revive = 0, _v1375.restT = 0.6, RitualWave(_v1375), ke("驱灵仪式", "击退 3 波怨灵 · 击杀祭坛附近的怪物可获得贡品"), $("portal"), X(0.18));
 }
 function RitualUpdate(_v1377) {
   for (let _v1378 of n.objs) {
     if (_v1378.kind !== "ritual" || _v1378.st !== "active") continue;
     if (n.pl && n.pl.dead) {
-      (_v1378.st = "idle", _v1378.stored = 0, _v1378.revive = 0, _v1378.offers = null, I("仪式中断 · 怨灵散去"));
+      (_v1378.st = "idle", _v1378.stored = 0, _v1378.revive = 0, _v1378.offers = null, P("仪式中断 · 怨灵散去"));
       continue;
     }
     if (n.mons.some(_v1379 => _v1379.ritual === _v1378 && !_v1379.dead) || (_v1378.restT -= _v1377) > 0) continue;
-    if (_v1378.wave < _v1378.waves) (_v1378.wave += 1, _v1378.restT = 0.8, RitualWave(_v1378)); else (_v1378.st = "done", u.ritualDone = (u.ritualDone || 0) + 1, RitualMapCheck(), T("unique"), ke("恩典降临", "回到祭坛领取恩赐 (贡品 " + RitTribute() + ")"), L(_v1378.x, _v1378.y, 40, RIT_COL, 90, 1, {
+    if (_v1378.wave < _v1378.waves) (_v1378.wave += 1, _v1378.restT = 0.8, RitualWave(_v1378)); else (_v1378.st = "done", u.ritualDone = (u.ritualDone || 0) + 1, RitualMapCheck(), $("unique"), ke("恩典降临", "回到祭坛领取恩赐 (贡品 " + RitTribute() + ")"), E(_v1378.x, _v1378.y, 40, RIT_COL, 90, 1, {
       glow: !0
     }));
   }
@@ -5481,12 +5481,12 @@ function RitItemTip(_v1380) {
   try {
     if (_v1380.base && pe[_v1380.base]) _v1381 += " · " + pe[_v1380.base].n;
     (_v1380.impl || []).forEach(function (_v1382) {
-      let _v1383 = nn[_v1382.id] || Yt[_v1382.id] || rn[_v1382.id];
-      if (_v1383) _v1381 += "\n" + Ks(_v1383, _v1382.v);
+      let _v1383 = Wo[_v1382.id] || ta[_v1382.id] || un[_v1382.id];
+      if (_v1383) _v1381 += "\n" + Xs(_v1383, _v1382.v);
     });
     (_v1380.mods || []).forEach(function (_v1384) {
-      let _v1385 = nn[_v1384.id] || Yt[_v1384.id] || rn[_v1384.id];
-      if (_v1385) _v1381 += "\n" + Ks(_v1385, _v1384.v);
+      let _v1385 = Wo[_v1384.id] || ta[_v1384.id] || un[_v1384.id];
+      if (_v1385) _v1381 += "\n" + Xs(_v1385, _v1384.v);
     });
     (_v1380.st || []).forEach(function (_v1386) {
       _v1381 += "\n" + _v1386;
@@ -5497,27 +5497,27 @@ function RitItemTip(_v1380) {
 function RitualOffers(_v1388) {
   let _v1389 = RitPool();
   if (_v1389.offers) return _v1389.offers;
-  let _v1390 = [], _v1391 = Math.max(n.Z.lvl || 1, u.level || 1), _v1392 = Se(n.Z.tier || 1, 1, 16), __ritRar = Math.max(0, (n.S && n.S.rarity) || 0), _v1393 = ["omen_exalt_p", "omen_exalt_s", "omen_whittle", "omen_abyss_echo", "omen_abyss_light", "omen_sanctify", "omen_necro_p", "omen_necro_s", "omen_chaos_mon"], _v1394 = ae(_v1393), _v1395 = ae(DS_BONES), _v1396 = vt.filter(_v1397 => z[_v1397].grp === "rune" || z[_v1397].grp === "ess"), _v1398 = ae(_v1396), _v1401 = Et(ae(Ea), _v1391 + 1, 2), _v1402 = Ht(_v1392), _v1403 = pt.filter(_v1404 => _v1404.src === "world" && !_v1404.noDrop), _v1405 = _v1403.length && E() < (0.4 + (u.level || 0) / 300 + __ritRar / 1500) ? ae(_v1403) : null;
+  let _v1390 = [], _v1391 = Math.max(n.Z.lvl || 1, u.level || 1), _v1392 = $e(n.Z.tier || 1, 1, 16), __ritRar = Math.max(0, (n.S && n.S.rarity) || 0), _v1393 = ["omen_exalt_p", "omen_exalt_s", "omen_whittle", "omen_abyss_echo", "omen_abyss_light", "omen_sanctify", "omen_necro_p", "omen_necro_s", "omen_chaos_mon"], _v1394 = oe(_v1393), _v1395 = oe(DS_BONES), _v1396 = Tt.filter(_v1397 => q[_v1397].grp === "rune" || q[_v1397].grp === "ess"), _v1398 = oe(_v1396), _v1401 = Ft(oe(Pa), _v1391 + 1, 2), _v1402 = Zt(_v1392), _v1403 = yt.filter(_v1404 => _v1404.src === "world" && !_v1404.noDrop), _v1405 = _v1403.length && I() < (0.4 + (u.level || 0) / 300 + __ritRar / 1500) ? oe(_v1403) : null;
   // 稀有度越高，恩典里的稀有物品额外多词条；角色等级已通过物品等级体现
   try {
     var __extraMods = Math.min(4, Math.floor(__ritRar / 120));
-    for (var __eiR = 0; __eiR < __extraMods; __eiR++) ht(_v1401);
+    for (var __eiR = 0; __eiR < __extraMods; __eiR++) wt(_v1401);
   } catch (eR) {}
   _v1390.push({
-    n: "预兆 · " + z[_v1394].n,
+    n: "预兆 · " + q[_v1394].n,
     cost: 70,
-    tip: z[_v1394].n + "\n" + z[_v1394].d,
+    tip: q[_v1394].n + "\n" + q[_v1394].d,
     tt: "cur:" + _v1394,
     give: () => {
       u.cur[_v1394] = (u.cur[_v1394] || 0) + 1;
     }
   });
-  if (ne("rit3")) {
-    let _v1406 = ae([..._v1393].filter(_v1407 => _v1407 !== _v1394));
+  if (re("rit3")) {
+    let _v1406 = oe([..._v1393].filter(_v1407 => _v1407 !== _v1394));
     _v1390.push({
-      n: "预兆 · " + z[_v1406].n,
+      n: "预兆 · " + q[_v1406].n,
       cost: 70,
-      tip: z[_v1406].n + "\n" + z[_v1406].d,
+      tip: q[_v1406].n + "\n" + q[_v1406].d,
       tt: "cur:" + _v1406,
       give: () => {
         u.cur[_v1406] = (u.cur[_v1406] || 0) + 1;
@@ -5525,35 +5525,35 @@ function RitualOffers(_v1388) {
     });
   }
   _v1390.push({
-    n: "遗存骨 · " + z[_v1395].n,
+    n: "遗存骨 · " + q[_v1395].n,
     cost: 60,
-    tip: z[_v1395].n + "\n" + z[_v1395].d,
+    tip: q[_v1395].n + "\n" + q[_v1395].d,
     tt: "cur:" + _v1395,
     give: () => {
       u.cur[_v1395] = (u.cur[_v1395] || 0) + 1;
     }
   });
   _v1390.push({
-    n: "稀有 · " + F(_v1401.name),
+    n: "稀有 · " + O(_v1401.name),
     cost: 45,
     tip: RitItemTip(_v1401),
-    give: () => de(n.pl.x, n.pl.y, {
+    give: () => ue(n.pl.x, n.pl.y, {
       kind: "it",
       it: _v1401
     })
   });
   _v1390.push({
-    n: "符文/精华 · " + z[_v1398].n + " ×1",
+    n: "符文/精华 · " + q[_v1398].n + " ×1",
     cost: 15,
-    tip: z[_v1398].n + "：" + z[_v1398].d,
+    tip: q[_v1398].n + "：" + q[_v1398].d,
     give: () => {
       u.cur[_v1398] = (u.cur[_v1398] || 0) + 1;
     }
   });
   _v1390.push({
-    n: "地图 · T" + _v1402.tier + " " + F(_v1402.base),
+    n: "地图 · T" + _v1402.tier + " " + O(_v1402.base),
     cost: 30,
-    tip: "T" + _v1402.tier + " 地图\n" + F(_v1402.name || ""),
+    tip: "T" + _v1402.tier + " 地图\n" + O(_v1402.name || ""),
     give: () => u.inv.push(_v1402)
   });
   _v1390.push({
@@ -5567,7 +5567,7 @@ function RitualOffers(_v1388) {
   _v1390.push({
     n: "混沌石 ×5",
     cost: 20,
-    tip: z.chaos.d,
+    tip: q.chaos.d,
     tt: "cur:chaos",
     give: () => {
       u.cur.chaos = (u.cur.chaos || 0) + 5;
@@ -5576,7 +5576,7 @@ function RitualOffers(_v1388) {
   _v1390.push({
     n: "崇高石 ×1",
     cost: 40,
-    tip: z.exalt.d,
+    tip: q.exalt.d,
     tt: "cur:exalt",
     give: () => {
       u.cur.exalt = (u.cur.exalt || 0) + 1;
@@ -5585,19 +5585,19 @@ function RitualOffers(_v1388) {
   _v1390.push({
     n: "神圣石 ×1",
     cost: BAL.ritualDivineCost || 100,
-    tip: z.divine.d,
+    tip: q.divine.d,
     tt: "cur:divine",
     give: () => {
       u.cur.divine = (u.cur.divine || 0) + 1;
     }
   });
   if (_v1405) {
-    let _v1410 = Ut(_v1405, _v1391);
+    let _v1410 = Kt(_v1405, _v1391);
     _v1390.push({
-      n: "传奇 · " + F(_v1405.n),
+      n: "传奇 · " + O(_v1405.n),
       cost: 160,
       tip: RitItemTip(_v1410),
-      give: () => de(n.pl.x, n.pl.y, {
+      give: () => ue(n.pl.x, n.pl.y, {
         kind: "it",
         it: _v1410
       })
@@ -5607,19 +5607,19 @@ function RitualOffers(_v1388) {
     cost: 160,
     tip: "25% 概率掉落一件随机传奇装备",
     give: () => {
-      let _v1411 = pt.filter(_v1412 => _v1412.src === "world" && !_v1412.noDrop);
-      if (_v1411.length && E() < 0.25) de(n.pl.x, n.pl.y, {
+      let _v1411 = yt.filter(_v1412 => _v1412.src === "world" && !_v1412.noDrop);
+      if (_v1411.length && I() < 0.25) ue(n.pl.x, n.pl.y, {
         kind: "it",
-        it: Ut(ae(_v1411), _v1391)
-      }); else de(n.pl.x, n.pl.y, {
+        it: Kt(oe(_v1411), _v1391)
+      }); else ue(n.pl.x, n.pl.y, {
         kind: "cur",
         cur: "alch"
       });
     }
   });
-  ne("rit5") && _v1390.forEach(_v1413 => _v1413.cost = Math.round(_v1413.cost * 0.85));
+  re("rit5") && _v1390.forEach(_v1413 => _v1413.cost = Math.round(_v1413.cost * 0.85));
   for (let _v1414 = _v1390.length - 1; _v1414 > 0; _v1414--) {
-    let _v1415 = Math.floor(E() * (_v1414 + 1));
+    let _v1415 = Math.floor(I() * (_v1414 + 1));
     [_v1390[_v1414], _v1390[_v1415]] = [_v1390[_v1415], _v1390[_v1414]];
   }
   return (_v1389.offers = _v1390.slice(0, 6).map(_v1416 => ({
@@ -5631,7 +5631,7 @@ function RitualBuy(_v1417, _v1418) {
   let _v1419 = RitualOffers(_v1417)[_v1418];
   if (!_v1419 || _v1419.bought) return "已售出";
   if (RitTribute() < _v1419.cost) return "贡品不足";
-  return (RitSpendTribute(_v1419.cost), _v1419.bought = !0, _v1419.give(), I("恩典: " + _v1419.n), T("unique"), null);
+  return (RitSpendTribute(_v1419.cost), _v1419.bought = !0, _v1419.give(), P("恩典: " + _v1419.n), $("unique"), null);
 }
 function RitualReset() {
   let _v1420 = RitPool();
@@ -5641,17 +5641,17 @@ function RitualReset() {
 }
 function RitualShop(_v1420) {
   n.ritualPause = !0;
-  let _v1421 = RitualOffers(_v1420), _v1422 = RitTribute(), _v1423 = _v1421.map((_v1424, _v1425) => `<button class="ritopt${_v1424.bought ? " bought" : _v1422 < _v1424.cost ? " no" : ""}" data-rbuy="${_v1425}"${_v1424.bought ? " disabled" : ""} title="${F(_v1424.tip || _v1424.n).replace(/"/g, "&quot;")}"><b>${F(_v1424.n)}</b><small>${_v1424.bought ? "已兑换" : _v1424.cost + " 贡品"}</small></button>`).join("");
-  (Ke(`<div class="ovbox ritual"><h2>驱灵祭坛 · 恩典</h2><p class="sub">用击杀祭坛附近怪物获得的贡品换取恩赐 · 全图共享贡品 <b style="color:#ffd0e0">${_v1422}</b></p>
+  let _v1421 = RitualOffers(_v1420), _v1422 = RitTribute(), _v1423 = _v1421.map((_v1424, _v1425) => `<button class="ritopt${_v1424.bought ? " bought" : _v1422 < _v1424.cost ? " no" : ""}" data-rbuy="${_v1425}"${_v1424.bought ? " disabled" : ""} title="${O(_v1424.tip || _v1424.n).replace(/"/g, "&quot;")}"><b>${O(_v1424.n)}</b><small>${_v1424.bought ? "已兑换" : _v1424.cost + " 贡品"}</small></button>`).join("");
+  (Ve(`<div class="ovbox ritual"><h2>驱灵祭坛 · 恩典</h2><p class="sub">用击杀祭坛附近怪物获得的贡品换取恩赐 · 全图共享贡品 <b style="color:#ffd0e0">${_v1422}</b></p>
 		 <div class="ritgrid">${_v1423}</div>
 		 <div class="ovbtns"><button class="btn" id="ritReset">重置恩典 · 10 贡品</button><button class="btn" id="ritClose">离开 <kbd>Esc</kbd></button></div></div>`), C("#ritClose").onclick = () => {
-    (n.ritualPause = !1, $t());
+    (n.ritualPause = !1, xt());
   }, C("#ritReset") && (C("#ritReset").onclick = () => {
     let _v1427 = RitualReset();
-    (_v1427 && (I(_v1427), T("nomana", 0.5)), RitualShop(_v1420));
+    (_v1427 && (P(_v1427), $("nomana", 0.5)), RitualShop(_v1420));
   }), document.querySelectorAll("#overlay [data-rbuy]").forEach(_v1426 => _v1426.onclick = () => {
     let _v1427 = RitualBuy(_v1420, +_v1426.dataset.rbuy);
-    (_v1427 && (I(_v1427), T("nomana", 0.5)), RitualShop(_v1420));
+    (_v1427 && (P(_v1427), $("nomana", 0.5)), RitualShop(_v1420));
   }));
 }
 function RitualInteract(_v1428) {
@@ -5707,7 +5707,7 @@ function SimEnterLayer(_v1443) {
   }), _v1445 = Math.max(1, BAL.simRoomsPerMap || 5), _v1446 = (_v1443 - 1) % _v1445, _v1447 = Math.floor((_v1443 - 1) / _v1445), _v1448 = !n.Z || n.Z.simMap == null || n.Z.simMap !== _v1447;
   _v1444.layer = _v1443;
   try {
-    if (n.pl && n.S && ne("pleasure")) {
+    if (n.pl && n.S && re("pleasure")) {
       n.pl.hp = Math.min(n.S.maxLife, (n.pl.hp || 0) + n.S.maxLife * 0.25);
       n.pl.mana = Math.min(n.S.maxMana, (n.pl.mana || 0) + n.S.maxMana * 0.25);
     }
@@ -5716,13 +5716,13 @@ function SimEnterLayer(_v1443) {
   _v1444.room = _v1446 + 1;
   n.simRun = _v1444;
   if (_v1448) {
-    let _v1450 = Math.max(1, Math.min(16, 1 + Math.floor(_v1443 / 3))), _v1451 = Ht(_v1450);
+    let _v1450 = Math.max(1, Math.min(16, 1 + Math.floor(_v1443 / 3))), _v1451 = Zt(_v1450);
     (_v1451.name = "迷雾副本 · 第 " + _v1443 + " 层", _v1451.base = "迷雾副本", _v1451.dbg = {
       rooms: [_v1445, _v1445]
     });
     let _v1452 = null;
     for (let _v1453 = 0; _v1453 < 40; _v1453++) {
-      let _v1454 = Ur(_v1445);
+      let _v1454 = ai(_v1445);
       if (_v1454.rooms.length >= _v1445) {
         _v1452 = _v1454;
         break;
@@ -5730,7 +5730,7 @@ function SimEnterLayer(_v1443) {
     }
     SimLayerMap = !0;
     try {
-      Di(_v1451, _v1452 || void 0);
+      Xi(_v1451, _v1452 || void 0);
     } catch (_v1455) {
       SimLayerMap = !1;
       return;
@@ -5768,18 +5768,18 @@ function SimSetupRoom(_v1466, _v1467) {
   let _v1468 = n.Z.M, _v1469 = _v1468.rooms, _v1470 = _v1469[Math.min(_v1466, _v1469.length - 1)];
   (n.mons = [], n.objs = [], n.loots = []);
   SimSealRoom(_v1470);
-  let _v1471 = Xr(_v1470);
+  let _v1471 = ui(_v1470);
   (n.pl.x = _v1471.x, n.pl.y = _v1471.y);
-  let _v1472 = (ft[n.Z.th.key] || ({})).boss || "boss", _v1473 = et(_v1472, _v1471.x, _v1471.y - 20, n.Z.lvl + 2, 3);
+  let _v1472 = (gt[n.Z.th.key] || ({})).boss || "boss", _v1473 = nt(_v1472, _v1471.x, _v1471.y - 20, n.Z.lvl + 2, 3);
   (_v1473.simBoss = !0, _v1473.aggro = !0, n.Z.boss = _v1473);
   n.mons.push(_v1473);
   let _v1474 = 1 + _v1467 * 50 / 100 * BAL.simSpawnPer100, _v1475 = Math.max(1, Math.round((3 + Math.floor(_v1467 / 5)) * _v1474));
   for (let _v1476 = 0; _v1476 < _v1475; _v1476++) {
-    let _v1477 = Xr(_v1470), _v1478 = et(ae(Object.keys(n.Z.th.mon)), _v1477.x, _v1477.y, n.Z.lvl || 80, E() < 0.12 ? 2 : E() < 0.4 ? 1 : 0);
+    let _v1477 = ui(_v1470), _v1478 = nt(oe(Object.keys(n.Z.th.mon)), _v1477.x, _v1477.y, n.Z.lvl || 80, I() < 0.12 ? 2 : I() < 0.4 ? 1 : 0);
     (_v1478.aggro = !0, n.mons.push(_v1478));
   }
   SimScaleSpawns(_v1467);
-  (ke("迷雾副本 · 第 " + _v1467 + "/" + SIM_LAYERS + " 层", "第 " + n.simRun.map + " 图 · 第 " + n.simRun.room + "/" + BAL.simRoomsPerMap + " 个房间 · 击杀首领后按 F 前进"), T("portal"));
+  (ke("迷雾副本 · 第 " + _v1467 + "/" + SIM_LAYERS + " 层", "第 " + n.simRun.map + " 图 · 第 " + n.simRun.room + "/" + BAL.simRoomsPerMap + " 个房间 · 击杀首领后按 F 前进"), $("portal"));
 }
 function SimScaleSpawns(_v1479) {
   try {
@@ -5799,7 +5799,7 @@ function SimScaleSpawns(_v1479) {
       if (!_v1487.length) continue;
       let _v1488 = Math.min(_v1482[_v1486] != null ? _v1482[_v1486] : 0, _v1481), _v1489 = Math.round(_v1487.length * _v1488);
       for (let _v1490 = 0; _v1490 < _v1489; _v1490++) {
-        let _v1491 = ae(_v1487), _v1492 = He(_v1491.x, _v1491.y, 32), _v1493 = et(ae(_v1485), _v1492.x, _v1492.y, n.Z.lvl || 80, _v1486);
+        let _v1491 = oe(_v1487), _v1492 = We(_v1491.x, _v1491.y, 32), _v1493 = nt(oe(_v1485), _v1492.x, _v1492.y, n.Z.lvl || 80, _v1486);
         Object.assign(_v1493, {
           sim: !0,
           aggro: !0,
@@ -5823,36 +5823,36 @@ function SimTagBoss() {
 function SimBossKilled(_v1496) {
   if (!n.simRun || !_v1496 || !_v1496.simBoss || _v1496.simRewarded) return;
   _v1496.simRewarded = !0;
-  let _v1497 = n.simRun.layer >= n.simRun.max, _v1498 = (_v1497 ? BAL.simFinalDivines : BAL.simLayerDivines) + (ne("deli1") ? 1 : 0) + (ne("deli4") ? 1 : 0) + (_v1497 && ne("deli7") ? 10 : 0);
-  for (let _v1499 = 0; _v1499 < _v1498; _v1499++) de(_v1496.x, _v1496.y, {
+  let _v1497 = n.simRun.layer >= n.simRun.max, _v1498 = (_v1497 ? BAL.simFinalDivines : BAL.simLayerDivines) + (re("deli1") ? 1 : 0) + (re("deli4") ? 1 : 0) + (_v1497 && re("deli7") ? 10 : 0);
+  for (let _v1499 = 0; _v1499 < _v1498; _v1499++) ue(_v1496.x, _v1496.y, {
     kind: "cur",
     cur: "divine"
   });
-  let _v1500 = 2 + (ne("deli3") ? 2 : 0);
-  for (let _v1501 = 0; _v1501 < _v1500; _v1501++) de(_v1496.x, _v1496.y, {
+  let _v1500 = 2 + (re("deli3") ? 2 : 0);
+  for (let _v1501 = 0; _v1501 < _v1500; _v1501++) ue(_v1496.x, _v1496.y, {
     kind: "cur",
     cur: "splinter"
   });
-  if (ne("deli6")) DsBoneDrop(_v1496.x, _v1496.y, 1);
+  if (re("deli6")) DsBoneDrop(_v1496.x, _v1496.y, 1);
   if (_v1497) {
-    for (let _v1502 = 0; _v1502 < 30; _v1502++) de(_v1496.x, _v1496.y, {
+    for (let _v1502 = 0; _v1502 < 30; _v1502++) ue(_v1496.x, _v1496.y, {
       kind: "cur",
       cur: "splinter"
     });
     for (let _v1503 = 0; _v1503 < 3; _v1503++) DsBoneDrop(_v1496.x, _v1496.y, 1);
     for (let _v1504 = 0; _v1504 < 3; _v1504++) OmDrop(_v1496.x, _v1496.y);
-    let _v1505 = pt.filter(_v1506 => _v1506.src === "world" && !_v1506.noDrop);
-    if (_v1505.length && E() < 0.6) de(_v1496.x, _v1496.y, {
+    let _v1505 = yt.filter(_v1506 => _v1506.src === "world" && !_v1506.noDrop);
+    if (_v1505.length && I() < 0.6) ue(_v1496.x, _v1496.y, {
       kind: "it",
-      it: Ut(ae(_v1505), 80)
+      it: Kt(oe(_v1505), 80)
     });
-    Na.mageblood && E() < BAL.drop.mageblood && de(_v1496.x, _v1496.y, {
+    Ua.mageblood && I() < BAL.drop.mageblood && ue(_v1496.x, _v1496.y, {
       kind: "it",
-      it: Ut(Na.mageblood, 80)
+      it: Kt(Ua.mageblood, 80)
     });
-    (u.delirium = Math.min(AtlasDeliriumCap(), (u.delirium || 0) + AtlasDeliriumGain(25 + (ne("deli2") ? 10 : 0) + (ne("deli5") ? 10 : 0))), u.simRuns = (u.simRuns || 0) + 1);
+    (u.delirium = Math.min(AtlasDeliriumCap(), (u.delirium || 0) + AtlasDeliriumGain(25 + (re("deli2") ? 10 : 0) + (re("deli5") ? 10 : 0))), u.simRuns = (u.simRuns || 0) + 1);
     ke("迷雾副本 · 完成", "70 层全部通过 · 最终首领掉落 20+ 神圣石");
-    T("unique");
+    $("unique");
     n.simRun = null;
     n.sim = null;
   } else {
@@ -5865,9 +5865,9 @@ function SimBossKilled(_v1496) {
       layer: _v1507,
       label: (_v1507 - 1) % _v1508 === 0 ? "F 下一张图" : "F 下一个房间"
     });
-    if (n.simRun.layer % (ne("sim_resonance") ? 10 : BAL.simAtlasEvery) === 0) GrantAtlasPoint("迷雾副本");
+    if (n.simRun.layer % (re("sim_resonance") ? 10 : BAL.simAtlasEvery) === 0) GrantAtlasPoint("迷雾副本");
     ke("第 " + n.simRun.layer + " 层完成", "按 F 进入第 " + (n.simRun.layer + 1) + " 层");
-    T("unique");
+    $("unique");
   }
 }
 function SimulacrumNext() {
@@ -5894,115 +5894,115 @@ function SimulacrumFinish() {
 function curPage() {
   let _v1512 = [["basic", "基础通货"], ["sock", "工匠通货"], ["rune", "符文"], ["ess", "精华"], ["sig", "印记"], ["del", "破溃裂片"], ["bone", "遗存骨"], ["omen", "预兆"]];
   let _v1513 = _v1512.map(function (_v1514) {
-    let _v1515 = vt.filter(function (_v1516) {
-      return z[_v1516].grp === _v1514[0];
+    let _v1515 = Tt.filter(function (_v1516) {
+      return q[_v1516].grp === _v1514[0];
     });
     if (!_v1515.length) return "";
     let _v1517 = _v1515.map(function (_v1518) {
-      if (_v1514[0] === "omen") return `<div class="cur om${OmActive(_v1518) ? " on" : ""}${u.cur[_v1518] ? "" : " zero"}" data-act="omen" data-k="${_v1518}" data-tt="cur:${_v1518}"><img src="${_e[_v1518]}" alt=""><span>${z[_v1518].s || z[_v1518].n}</span><b>${u.cur[_v1518] || 0}</b>${OmActive(_v1518) ? '<i class="omtag">激活</i>' : ""}</div>`;
-      return `<div class="cur${n.held === _v1518 ? " sel" : ""}${u.cur[_v1518] ? "" : " zero"}" data-act="cur" data-k="${_v1518}" data-tt="cur:${_v1518}"><img src="${_e[_v1518]}" alt=""><span>${z[_v1518].n}</span><b>${u.cur[_v1518] || 0}</b></div>`;
+      if (_v1514[0] === "omen") return `<div class="cur om${OmActive(_v1518) ? " on" : ""}${u.cur[_v1518] ? "" : " zero"}" data-act="omen" data-k="${_v1518}" data-tt="cur:${_v1518}"><img src="${Ye[_v1518]}" alt=""><span>${q[_v1518].s || q[_v1518].n}</span><b>${u.cur[_v1518] || 0}</b>${OmActive(_v1518) ? '<i class="omtag">激活</i>' : ""}</div>`;
+      return `<div class="cur${n.held === _v1518 ? " sel" : ""}${u.cur[_v1518] ? "" : " zero"}" data-act="cur" data-k="${_v1518}" data-tt="cur:${_v1518}"><img src="${Ye[_v1518]}" alt=""><span>${q[_v1518].n}</span><b>${u.cur[_v1518] || 0}</b></div>`;
     }).join("");
     return `<div style="margin:10px 0 4px"><h3 style="margin:0 0 6px;font-size:13px;color:var(--mod)">${_v1514[1]} <small>${_v1515.length} 种</small></h3><div style="display:flex;flex-wrap:wrap;gap:8px">${_v1517}</div></div>`;
   }).join("");
   return `<div class="it"><section class="card"><h3>通货 <small>全角色共用 · 点击选中后使用 · 按住 Shift 连续使用</small></h3><p class="dim">按大类分行显示；预兆点击激活。全部通货与角色共享，不占背包格。</p>${_v1513}</section></div>`;
 }
 function jiBox(_v1519) {
-  if ((_v1519.open = !0, T("craft"), T("boom", 0.6), V(0.2), L(_v1519.x, _v1519.y, 30, _v1519.riftBox ? ["#b080ff", "#ff70ff", "#fff"] : ["#ffd060", "#b08a3a", "#fff6d0"], 80, 0.9, {
+  if ((_v1519.open = !0, $("craft"), $("boom", 0.6), X(0.2), E(_v1519.x, _v1519.y, 30, _v1519.riftBox ? ["#b080ff", "#ff70ff", "#fff"] : ["#ffd060", "#b08a3a", "#fff6d0"], 80, 0.9, {
     glow: !0,
     vz: 120
   }), u.stats && (u.stats.boxes = (u.stats.boxes || 0) + 1), _v1519.encBox)) {
-    hw(_v1519);
+    B5(_v1519);
     return;
   }
-  kc(_v1519.x, _v1519.y, 6 * (ne("box2") ? 1.3 : 1) * (_v1519.riftBox ? 0.8 : 1), 30);
-  let _v1520 = ne("box6") && E() < 0.2, _v1521 = 3 * (_v1520 ? 2 : 1);
-  for (let _v1522 = 0; _v1522 < _v1521; _v1522++) de(_v1519.x, _v1519.y, {
+  Hc(_v1519.x, _v1519.y, 6 * (re("box2") ? 1.3 : 1) * (_v1519.riftBox ? 0.8 : 1), 30);
+  let _v1520 = re("box6") && I() < 0.2, _v1521 = 3 * (_v1520 ? 2 : 1);
+  for (let _v1522 = 0; _v1522 < _v1521; _v1522++) ue(_v1519.x, _v1519.y, {
     kind: "cur",
-    cur: Xl()
+    cur: yc()
   });
-  if ((_v1520 && H(_v1519.x, _v1519.y - 18, 0, !1, "gold", "通货翻倍"), _v1519.ornate)) for (let _v1523 = 0; _v1523 < 3; _v1523++) de(_v1519.x, _v1519.y, {
+  if ((_v1520 && U(_v1519.x, _v1519.y - 18, 0, !1, "gold", "通货翻倍"), _v1519.ornate)) for (let _v1523 = 0; _v1523 < 3; _v1523++) ue(_v1519.x, _v1519.y, {
     kind: "cur",
     cur: "chaos"
   });
-  if (ne("box7")) {
-    let _v1524 = vt.filter(_v1525 => z[_v1525].grp === "basic" && z[_v1525].v >= z.alch.v && _v1525 !== "divine" && _v1525 !== "exalt" && _v1525 !== "frac");
-    de(_v1519.x, _v1519.y, {
+  if (re("box7")) {
+    let _v1524 = Tt.filter(_v1525 => q[_v1525].grp === "basic" && q[_v1525].v >= q.alch.v && _v1525 !== "divine" && _v1525 !== "exalt" && _v1525 !== "frac");
+    ue(_v1519.x, _v1519.y, {
       kind: "cur",
-      cur: lt(_v1524, _v1526 => z[_v1526].w)
+      cur: ht(_v1524, _v1526 => q[_v1526].w)
     });
   }
   if (_v1519.riftBox) {
-    E() < 0.22 + Math.min(0.13, (n.Z ? n.Z.tier : 0) * 0.008) && OmDrop(_v1519.x, _v1519.y);
-    I("裂隙宝箱");
+    I() < 0.22 + Math.min(0.13, (n.Z ? n.Z.tier : 0) * 0.008) && OmDrop(_v1519.x, _v1519.y);
+    P("裂隙宝箱");
     return;
   }
   if (_v1519.abyssBox) {
     let _v1527 = n.objs.find(_v1528 => _v1528.kind === "abyss" && Math.hypot(_v1528.x - _v1519.x, _v1528.y - _v1519.y) < 80);
     (_v1527 && (_v1527.st = "opened"), u.abyssDone = (u.abyssDone || 0) + 1);
     let _v1529 = _v1519.abyssBox, _v1530 = _v1519.abyssName || "深渊保险箱", _v1531 = () => {
-      (kc(_v1519.x, _v1519.y, 10, 32), E() < 0.6 && DsBoneDrop(_v1519.x, _v1519.y, 1));
+      (Hc(_v1519.x, _v1519.y, 10, 32), I() < 0.6 && DsBoneDrop(_v1519.x, _v1519.y, 1));
       try {
-        ne("abyssdom") && DsBoneDrop(_v1519.x, _v1519.y, 1);
+        re("abyssdom") && DsBoneDrop(_v1519.x, _v1519.y, 1);
       } catch (_v1532) {}
-      for (let _v1533 = 0; _v1533 < 3 + (ne("aby3") ? 2 : 0); _v1533++) de(_v1519.x, _v1519.y, {
+      for (let _v1533 = 0; _v1533 < 3 + (re("aby3") ? 2 : 0); _v1533++) ue(_v1519.x, _v1519.y, {
         kind: "cur",
-        cur: Xl()
+        cur: yc()
       });
       if (_v1529 === "coffer") {
-        (de(_v1519.x, _v1519.y, {
+        (ue(_v1519.x, _v1519.y, {
           kind: "cur",
           cur: "chaos"
-        }), de(_v1519.x, _v1519.y, {
+        }), ue(_v1519.x, _v1519.y, {
           kind: "cur",
           cur: "chaos"
         }));
       } else {
-        let _v1534 = Ea.filter(_v1535 => _v1529 === "arsenal" ? _v1535.slot === "W" : ["B", "H", "G", "F"].includes(_v1535.slot)).map(_v1536 => pe[_v1536.n] || _v1536);
-        _v1534.length && de(_v1519.x, _v1519.y, {
+        let _v1534 = Pa.filter(_v1535 => _v1529 === "arsenal" ? _v1535.slot === "W" : ["B", "H", "G", "F"].includes(_v1535.slot)).map(_v1536 => pe[_v1536.n] || _v1536);
+        _v1534.length && ue(_v1519.x, _v1519.y, {
           kind: "it",
-          it: Et(ae(_v1534), n.Z.lvl + 2, 2)
+          it: Ft(oe(_v1534), n.Z.lvl + 2, 2)
         });
       }
-      E() < 0.5 && OmDrop(_v1519.x, _v1519.y);
+      I() < 0.5 && OmDrop(_v1519.x, _v1519.y);
       try {
-        if (E() < 0.6 || (n.Z.tier || 0) >= 14) JewelDrop(_v1519.x, _v1519.y);
+        if (I() < 0.6 || (n.Z.tier || 0) >= 14) JewelDrop(_v1519.x, _v1519.y);
       } catch (_v1537) {}
       setTimeout(function () { try { window.__riftResetNext = true; } catch (e) {} }, 0);
     };
-    (_v1531(), I(_v1530), ke(_v1530, "深渊的宝藏升起了"), L(_v1519.x, _v1519.y, 30, ["#2a6a3a", "#7dff9a", "#d8ffe0"], 90, 0.9, {
+    (_v1531(), P(_v1530), ke(_v1530, "深渊的宝藏升起了"), E(_v1519.x, _v1519.y, 30, ["#2a6a3a", "#7dff9a", "#d8ffe0"], 90, 0.9, {
       glow: !0,
       vz: 140
     }));
-    let _v1538 = pt.filter(_v1539 => _v1539.src === "world" && !_v1539.noDrop);
-    _v1538.length && E() < 0.25 + (ne("aby7") ? 0.25 : 0) && de(_v1519.x, _v1519.y, {
+    let _v1538 = yt.filter(_v1539 => _v1539.src === "world" && !_v1539.noDrop);
+    _v1538.length && I() < 0.25 + (re("aby7") ? 0.25 : 0) && ue(_v1519.x, _v1519.y, {
       kind: "it",
-      it: Ut(ae(_v1538), n.Z.lvl)
+      it: Kt(oe(_v1538), n.Z.lvl)
     });
     return;
   }
   if (_v1519.delBox) {
-    (kc(_v1519.x, _v1519.y, 8, 30), I("惊悸宝箱"));
+    (Hc(_v1519.x, _v1519.y, 8, 30), P("惊悸宝箱"));
     (DelSplinter(_v1519.x, _v1519.y), DelSplinter(_v1519.x, _v1519.y), DelSplinter(_v1519.x, _v1519.y));
-    E() < 0.5 && OmDrop(_v1519.x, _v1519.y);
-    E() < 0.3 && DsBoneDrop(_v1519.x, _v1519.y);
+    I() < 0.5 && OmDrop(_v1519.x, _v1519.y);
+    I() < 0.3 && DsBoneDrop(_v1519.x, _v1519.y);
     return;
   }
-  E() < (_v1519.ornate ? 0.4 : 0.12) && OmDrop(_v1519.x, _v1519.y);
-  let _v1540 = ne("box4") ? 4 : 7, _v1541 = n.Z.th.mon, _v1542 = Object.keys(_v1541);
+  I() < (_v1519.ornate ? 0.4 : 0.12) && OmDrop(_v1519.x, _v1519.y);
+  let _v1540 = re("box4") ? 4 : 7, _v1541 = n.Z.th.mon, _v1542 = Object.keys(_v1541);
   for (let _v1543 = 0; _v1543 < _v1540; _v1543++) {
-    let _v1544 = He(_v1519.x, _v1519.y, 50), _v1545 = et(lt(_v1542, _v1546 => _v1541[_v1546]), _v1544.x, _v1544.y, n.Z.lvl, 1);
-    (_v1545.aggro = !0, n.mons.push(_v1545), L(_v1544.x, _v1544.y, 8, ["#8a8cff", "#fff"], 50, 0.4));
+    let _v1544 = We(_v1519.x, _v1519.y, 50), _v1545 = nt(ht(_v1542, _v1546 => _v1541[_v1546]), _v1544.x, _v1544.y, n.Z.lvl, 1);
+    (_v1545.aggro = !0, n.mons.push(_v1545), E(_v1544.x, _v1544.y, 8, ["#8a8cff", "#fff"], 50, 0.4));
   }
-  I("宝箱守卫出现了");
+  P("宝箱守卫出现了");
 }
 function AbyssModRoll(_v1547) {
   if (_v1547.abmod) return _v1547.abmod;
-  let _v1548 = ae(Object.keys(ABMODS));
-  return (_v1547.abmod = _v1548, _v1547.abmodT = D(1.5, 3), _v1548);
+  let _v1548 = oe(Object.keys(ABMODS));
+  return (_v1547.abmod = _v1548, _v1547.abmodT = B(1.5, 3), _v1548);
 }
 function AbyssOmenDrop(_v1549, _v1550) {
-  let _v1551 = lt(AB_OMEN, _v1552 => z[_v1552].ow || 1);
-  return (de(_v1549, _v1550, {
+  let _v1551 = ht(AB_OMEN, _v1552 => q[_v1552].ow || 1);
+  return (ue(_v1549, _v1550, {
     kind: "cur",
     cur: _v1551
   }), _v1551);
@@ -6013,12 +6013,12 @@ function AbyssMods(_v1553) {
     if (_v1554.dead || !_v1554.abyss || !_v1554.abmod) continue;
     let _v1555 = _v1554.abmod;
     if ((_v1554.abmodT = (_v1554.abmodT || 0) - _v1553, _v1555 === "soul")) {
-      (_v1554.soulT = (_v1554.soulT || 0) - _v1553, _v1554.soulT <= 0 && (_v1554.x - n.pl.x) ** 2 + (_v1554.y - n.pl.y) ** 2 < 7225 && (_v1554.soulT = 0.6, ea(_v1554.dmg * 0.6, "phys", {
+      (_v1554.soulT = (_v1554.soulT || 0) - _v1553, _v1554.soulT <= 0 && (_v1554.x - n.pl.x) ** 2 + (_v1554.y - n.pl.y) ** 2 < 7225 && (_v1554.soulT = 0.6, sa(_v1554.dmg * 0.6, "phys", {
         dot: !0,
         noCrit: !0
       })));
     } else if (_v1555 === "shade") {
-      _v1554.abmodT <= 0 && (_v1554.abmodT = D(4.5, 6.5), _v1554.x = n.pl.x + D(-34, 34), _v1554.y = n.pl.y + D(-34, 34), n.fx.push({
+      _v1554.abmodT <= 0 && (_v1554.abmodT = B(4.5, 6.5), _v1554.x = n.pl.x + B(-34, 34), _v1554.y = n.pl.y + B(-34, 34), n.fx.push({
         k: "ring",
         x: _v1554.x,
         y: _v1554.y,
@@ -6028,12 +6028,12 @@ function AbyssMods(_v1553) {
         max: 0.3,
         col: "#2ee6a8",
         w: 2
-      }), L(_v1554.x, _v1554.y, 10, AB_GREEN, 50, 0.5, {
+      }), E(_v1554.x, _v1554.y, 10, AB_GREEN, 50, 0.5, {
         glow: !0
-      }), T("portal"));
+      }), $("portal"));
     } else if (_v1555 === "rune") {
       if (_v1554.abmodT <= 0) {
-        (_v1554.abmodT = D(3.2, 4.6), n.fx.push({
+        (_v1554.abmodT = B(3.2, 4.6), n.fx.push({
           k: "ring",
           x: n.pl.x,
           y: n.pl.y,
@@ -6048,9 +6048,9 @@ function AbyssMods(_v1553) {
         n.pend.push({
           t: 0.85,
           fn: () => {
-            (L(_v1556, _v1557, 16, AB_GREEN, 70, 0.5, {
+            (E(_v1556, _v1557, 16, AB_GREEN, 70, 0.5, {
               glow: !0
-            }), T("boom", 0.4), (n.pl.x - _v1556) ** 2 + (n.pl.y - _v1557) ** 2 < 2500 && ea(_v1558, "phys", {
+            }), $("boom", 0.4), (n.pl.x - _v1556) ** 2 + (n.pl.y - _v1557) ** 2 < 2500 && sa(_v1558, "phys", {
               area: !0
             }));
           }
@@ -6061,7 +6061,7 @@ function AbyssMods(_v1553) {
         t: 0.15,
         fn: () => {
           for (let _v1559 = 0; _v1559 < 2; _v1559++) {
-            let _v1560 = et("abysswalker", _v1554.x + D(-14, 14), _v1554.y + D(-14, 14), Math.max(1, n.Z.lvl - 2), 0);
+            let _v1560 = nt("abysswalker", _v1554.x + B(-14, 14), _v1554.y + B(-14, 14), Math.max(1, n.Z.lvl - 2), 0);
             (Object.assign(_v1560, {
               abyss: !0,
               pit: _v1554.pit,
@@ -6069,9 +6069,9 @@ function AbyssMods(_v1553) {
               name: "深渊亡魂"
             }), _v1560.maxhp *= 0.45, _v1560.hp = _v1560.maxhp, _v1560.dmg *= 0.6, n.mons.push(_v1560));
           }
-          (L(_v1554.x, _v1554.y, 14, AB_GREEN, 60, 0.5, {
+          (E(_v1554.x, _v1554.y, 14, AB_GREEN, 60, 0.5, {
             glow: !0
-          }), T("portal"));
+          }), $("portal"));
         }
       }));
     } else if (_v1555 === "undying") {
@@ -6085,7 +6085,7 @@ function AbyssFloorOK(_v1562, _v1563) {
   try {
     let _v1564 = n.Z && n.Z.M;
     if (!_v1564 || !_v1564.g) return !0;
-    let _v1565 = Math.floor(_v1562 / Z), _v1566 = Math.floor(_v1563 / Z);
+    let _v1565 = Math.floor(_v1562 / K), _v1566 = Math.floor(_v1563 / K);
     return _v1565 >= 1 && _v1566 >= 1 && _v1565 < _v1564.W - 1 && _v1566 < _v1564.H - 1 && _v1564.g[_v1566 * _v1564.W + _v1565] !== 1;
   } catch (_v1567) {
     return !0;
@@ -6107,36 +6107,36 @@ function AbyssMake(_v1572, _v1573) {
     seen: !1,
     lichborn: null
   };
-  let _v1575 = Math.max(1, Math.round(fe(3, 5) * (ne("abyssdom") ? 1.5 : 1))), _v1576 = (n.Z.M && n.Z.M.rooms || []).filter(_v1577 => !_v1577.boss);
+  let _v1575 = Math.max(1, Math.round(de(3, 5) * (re("abyssdom") ? 1.5 : 1))), _v1576 = (n.Z.M && n.Z.M.rooms || []).filter(_v1577 => !_v1577.boss);
   for (let _v1578 = 0; _v1578 < _v1575; _v1578++) {
-    let _v1579 = _v1576[_v1578 % Math.max(1, _v1576.length)] || (n.Z.M.rooms || [])[0], _v1580 = _v1579 ? Xr(_v1579) : He(_v1572, _v1573, 70 + _v1578 * 42);
+    let _v1579 = _v1576[_v1578 % Math.max(1, _v1576.length)] || (n.Z.M.rooms || [])[0], _v1580 = _v1579 ? ui(_v1579) : We(_v1572, _v1573, 70 + _v1578 * 42);
     if (!_v1579) {
-      (_v1580.x = Se(_v1580.x, 48, n.Z.M.W * Z - 48), _v1580.y = Se(_v1580.y, 48, n.Z.M.H * Z - 48));
+      (_v1580.x = $e(_v1580.x, 48, n.Z.M.W * K - 48), _v1580.y = $e(_v1580.y, 48, n.Z.M.H * K - 48));
     }
     for (let _v1581 = 0; _v1581 < 24 && (!AbyssFloorOK(_v1580.x, _v1580.y) || AbyssWallGap(_v1580.x, _v1580.y) < 28); _v1581++) {
-      _v1580 = _v1579 ? Xr(_v1579) : He(_v1572, _v1573, 70 + _v1578 * 42);
+      _v1580 = _v1579 ? ui(_v1579) : We(_v1572, _v1573, 70 + _v1578 * 42);
       if (!_v1579) {
-        (_v1580.x = Se(_v1580.x, 48, n.Z.M.W * Z - 48), _v1580.y = Se(_v1580.y, 48, n.Z.M.H * Z - 48));
+        (_v1580.x = $e(_v1580.x, 48, n.Z.M.W * K - 48), _v1580.y = $e(_v1580.y, 48, n.Z.M.H * K - 48));
       }
     }
     if (!AbyssFloorOK(_v1580.x, _v1580.y)) {
-      (_v1580.x = Se(_v1580.x, 48, n.Z.M.W * Z - 48), _v1580.y = Se(_v1580.y, 48, n.Z.M.H * Z - 48));
+      (_v1580.x = $e(_v1580.x, 48, n.Z.M.W * K - 48), _v1580.y = $e(_v1580.y, 48, n.Z.M.H * K - 48));
     }
     let _v1582 = {
       x: _v1580.x,
       y: _v1580.y,
       closed: !1,
       kills: 0,
-      need: 1 + (ne("abyssdom") ? 1 : 0)
+      need: 1 + (re("abyssdom") ? 1 : 0)
     };
     _v1574.fissures.push(_v1582);
     for (let _v1583 = 0; _v1583 < 3; _v1583++) {
-      let _v1584 = He(_v1582.x, _v1582.y, 30);
-      for (let _v1585 = 0; _v1585 < 16 && !AbyssFloorOK(_v1584.x, _v1584.y); _v1585++) _v1584 = He(_v1582.x, _v1582.y, 30);
+      let _v1584 = We(_v1582.x, _v1582.y, 30);
+      for (let _v1585 = 0; _v1585 < 16 && !AbyssFloorOK(_v1584.x, _v1584.y); _v1585++) _v1584 = We(_v1582.x, _v1582.y, 30);
       if (!AbyssFloorOK(_v1584.x, _v1584.y)) {
         (_v1584.x = _v1582.x, _v1584.y = _v1582.y);
       }
-      let _v1586 = et(ae(Object.keys(n.Z.th.mon)), _v1584.x, _v1584.y, n.Z.lvl, E() < 0.16 ? 1 : 0);
+      let _v1586 = nt(oe(Object.keys(n.Z.th.mon)), _v1584.x, _v1584.y, n.Z.lvl, I() < 0.16 ? 1 : 0);
       (_v1586.weak = !0, _v1586.dmg *= 0.75, _v1586.maxhp *= 0.85, _v1586.hp = _v1586.maxhp, _v1586.aggro = !0, n.mons.push(_v1586));
     }
   }
@@ -6146,20 +6146,20 @@ function AbyssMake(_v1572, _v1573) {
 function AbyssAnnounce(_v1589) {
   _v1589.seen = !0;
   let _v1590 = _v1589.fissures.length;
-  (ke("深渊裂缝", "击杀裂缝附近的怪物来关闭裂缝 · 共 " + _v1590 + " 道"), T("portal"), V(0.15), L(_v1589.x, _v1589.y, 26, AB_GREEN, 70, 0.9, {
+  (ke("深渊裂缝", "击杀裂缝附近的怪物来关闭裂缝 · 共 " + _v1590 + " 道"), $("portal"), X(0.15), E(_v1589.x, _v1589.y, 26, AB_GREEN, 70, 0.9, {
     glow: !0,
     vz: 120
   }));
 }
 function AbyssCloseFissure(_v1591, _v1592) {
-  (_v1592.closed = !0, L(_v1592.x, _v1592.y, 20, AB_GREEN, 70, 0.8, {
+  (_v1592.closed = !0, E(_v1592.x, _v1592.y, 20, AB_GREEN, 70, 0.8, {
     glow: !0,
     vz: 110
-  }), T("boom", 0.5), I("深渊裂缝关闭 (" + _v1591.fissures.filter(_v1593 => _v1593.closed).length + "/" + _v1591.fissures.length + ")"));
-  let _v1594 = 3 + (E() < 0.3 ? 1 : 0);
+  }), $("boom", 0.5), P("深渊裂缝关闭 (" + _v1591.fissures.filter(_v1593 => _v1593.closed).length + "/" + _v1591.fissures.length + ")"));
+  let _v1594 = 3 + (I() < 0.3 ? 1 : 0);
   for (let _v1595 = 0; _v1595 < _v1594; _v1595++) {
-    let _v1596 = He(_v1592.x, _v1592.y, 26), _v1597 = et(ae(["abysswalker", "abyssshambler", "abyssstrangler"]), _v1596.x, _v1596.y, n.Z.lvl, E() < 0.08 ? 1 : 0);
-    (_v1597.abyss = !0, _v1597.pit = _v1591, _v1597.aggro = !0, E() < (_v1597.rar >= 2 ? 1 : _v1597.rar === 1 ? 0.35 : 0.06) && AbyssModRoll(_v1597), n.mons.push(_v1597));
+    let _v1596 = We(_v1592.x, _v1592.y, 26), _v1597 = nt(oe(["abysswalker", "abyssshambler", "abyssstrangler"]), _v1596.x, _v1596.y, n.Z.lvl, I() < 0.08 ? 1 : 0);
+    (_v1597.abyss = !0, _v1597.pit = _v1591, _v1597.aggro = !0, I() < (_v1597.rar >= 2 ? 1 : _v1597.rar === 1 ? 0.35 : 0.06) && AbyssModRoll(_v1597), n.mons.push(_v1597));
   }
   _v1591.fissures.every(_v1598 => _v1598.closed) && AbyssOpenPit(_v1591);
 }
@@ -6167,14 +6167,14 @@ function AbyssOpenPit(_v1599) {
   if (_v1599.st !== "fissures") return;
   _v1599.st = "pit";
   _v1599.waveT = 1.2;
-  let _v1600 = 9 + Math.min(8, Math.round((n.Z.tier || 1) / 2)), _v1601 = E() < 0.3 + (ne("aby5") ? 0.2 : 0) ? ae(AB_LICHBORN) : null;
+  let _v1600 = 9 + Math.min(8, Math.round((n.Z.tier || 1) / 2)), _v1601 = I() < 0.3 + (re("aby5") ? 0.2 : 0) ? oe(AB_LICHBORN) : null;
   _v1601 && (_v1599.lichborn = _v1601.n);
   for (let _v1602 = 0; _v1602 < _v1600; _v1602++) {
-    let _v1603 = He(_v1599.x, _v1599.y, 40 + _v1602 % 3 * 28), _v1604 = et(ae(["abysswalker", "abyssshambler", "abyssstrangler"]), _v1603.x, _v1603.y, n.Z.lvl, E() < 0.12 ? 2 : 0);
+    let _v1603 = We(_v1599.x, _v1599.y, 40 + _v1602 % 3 * 28), _v1604 = nt(oe(["abysswalker", "abyssshambler", "abyssstrangler"]), _v1603.x, _v1603.y, n.Z.lvl, I() < 0.12 ? 2 : 0);
     if (_v1601 && _v1602 === 0) {
       (Object.assign(_v1604, {
         spr: "abysslich",
-        h: Jt.abysslich.h,
+        h: Xt.abysslich.h,
         r: 9,
         abyss: !0,
         pit: _v1599,
@@ -6183,10 +6183,10 @@ function AbyssOpenPit(_v1599) {
         name: _v1601.n + " · 深渊行者"
       }), _v1604.maxhp *= 2.6, _v1604.hp = _v1604.maxhp, _v1604.dmg *= 1.25, _v1604.rar = 2);
     } else (_v1604.abyss = !0, _v1604.pit = _v1599, _v1604.aggro = !0);
-    E() < (_v1604.rar >= 2 ? 1 : _v1604.rar === 1 ? 0.4 : 0.08) && AbyssModRoll(_v1604);
+    I() < (_v1604.rar >= 2 ? 1 : _v1604.rar === 1 ? 0.4 : 0.08) && AbyssModRoll(_v1604);
     n.mons.push(_v1604);
   }
-  (ke("深渊巨坑开启", "大量深渊怪物涌了出来" + (_v1601 ? " · " + _v1601.n + " 在其中" : "")), T("unique"), V(0.25), L(_v1599.x, _v1599.y, 60, AB_GREEN, 110, 1.1, {
+  (ke("深渊巨坑开启", "大量深渊怪物涌了出来" + (_v1601 ? " · " + _v1601.n + " 在其中" : "")), $("unique"), X(0.25), E(_v1599.x, _v1599.y, 60, AB_GREEN, 110, 1.1, {
     glow: !0,
     vz: 160
   }));
@@ -6194,17 +6194,17 @@ function AbyssOpenPit(_v1599) {
 function AbyssSeal(_v1605) {
   if (_v1605.st !== "pit") return;
   _v1605.st = "sealed";
-  let _v1606 = ae(AB_TROVE);
-  (ke("深渊巨坑关闭", "深渊保险箱正在升起"), T("unique"), L(_v1605.x, _v1605.y, 34, AB_GREEN, 90, 1, {
+  let _v1606 = oe(AB_TROVE);
+  (ke("深渊巨坑关闭", "深渊保险箱正在升起"), $("unique"), E(_v1605.x, _v1605.y, 34, AB_GREEN, 90, 1, {
     glow: !0,
     vz: 140
   }), n.pend.push({
     t: 0.85,
     fn: () => {
-      let _v1607 = He(_v1605.x, _v1605.y, 10);
+      let _v1607 = We(_v1605.x, _v1605.y, 10);
       try {
         for (let __bt = 0; __bt < 40; __bt++) {
-          let __bFree = !xt(_v1607.x, _v1607.y) && (typeof AbyssFloorOK !== "function" || AbyssFloorOK(_v1607.x, _v1607.y));
+          let __bFree = !At(_v1607.x, _v1607.y) && (typeof AbyssFloorOK !== "function" || AbyssFloorOK(_v1607.x, _v1607.y));
           if (__bFree) {
             for (let __bo = 0; __bo < n.objs.length; __bo++) {
               let __bx = n.objs[__bo];
@@ -6217,17 +6217,17 @@ function AbyssSeal(_v1605) {
         }
       } catch (eBt) {}
       try {
-        for (let __abi = 0; __abi < 3; __abi++) de(_v1607.x, _v1607.y, { kind: "cur", cur: Xl() });
+        for (let __abi = 0; __abi < 3; __abi++) ue(_v1607.x, _v1607.y, { kind: "cur", cur: yc() });
         if (_v1606.k === "coffer") {
-          de(_v1607.x, _v1607.y, { kind: "cur", cur: "chaos" });
-          de(_v1607.x, _v1607.y, { kind: "cur", cur: "chaos" });
+          ue(_v1607.x, _v1607.y, { kind: "cur", cur: "chaos" });
+          ue(_v1607.x, _v1607.y, { kind: "cur", cur: "chaos" });
         } else {
-          let __abPool = Ea.filter(function (b) { return _v1606.k === "arsenal" ? b.slot === "W" : ["B", "H", "G", "F"].indexOf(b.slot) >= 0; }).map(function (b) { return pe[b.n] || b; });
-          if (__abPool.length) de(_v1607.x, _v1607.y, { kind: "it", it: Et(ae(__abPool), n.Z.lvl + 2, 2) });
+          let __abPool = Pa.filter(function (b) { return _v1606.k === "arsenal" ? b.slot === "W" : ["B", "H", "G", "F"].indexOf(b.slot) >= 0; }).map(function (b) { return pe[b.n] || b; });
+          if (__abPool.length) ue(_v1607.x, _v1607.y, { kind: "it", it: Ft(oe(__abPool), n.Z.lvl + 2, 2) });
         }
-        if (E() < 0.6) DsBoneDrop(_v1607.x, _v1607.y, 1);
-        if (E() < 0.5) OmDrop(_v1607.x, _v1607.y);
-        if (E() < 0.6 || (n.Z.tier || 0) >= 14) JewelDrop(_v1607.x, _v1607.y);
+        if (I() < 0.6) DsBoneDrop(_v1607.x, _v1607.y, 1);
+        if (I() < 0.5) OmDrop(_v1607.x, _v1607.y);
+        if (I() < 0.6 || (n.Z.tier || 0) >= 14) JewelDrop(_v1607.x, _v1607.y);
       } catch (__abe) {}
       (n.objs.push({
         kind: "box",
@@ -6235,7 +6235,7 @@ function AbyssSeal(_v1605) {
         y: _v1607.y,
         r: 6,
         open: !1
-      }), _v1605.st = "done", ke(_v1606.n, "深渊的宝藏升起了"), L(_v1607.x, _v1607.y, 26, AB_GREEN, 80, 0.9, {
+      }), _v1605.st = "done", ke(_v1606.n, "深渊的宝藏升起了"), E(_v1607.x, _v1607.y, 26, AB_GREEN, 80, 0.9, {
         glow: !0,
         vz: 130
       }));
@@ -6247,17 +6247,17 @@ function AbyssUpdate(_v1608) {
   for (let _v1609 of n.objs) {
     if (_v1609.kind !== "abyss") continue;
     (!_v1609.seen && (_v1609.x - n.pl.x) ** 2 + (_v1609.y - n.pl.y) ** 2 < 90000 && AbyssAnnounce(_v1609), _v1609.st === "fissures" && _v1609.fissures.forEach(_v1610 => {
-      !_v1610.closed && E() < 0.012 && n.parts.push({
-        x: _v1610.x + D(-10, 10),
-        y: _v1610.y + D(-6, 6),
+      !_v1610.closed && I() < 0.012 && n.parts.push({
+        x: _v1610.x + B(-10, 10),
+        y: _v1610.y + B(-6, 6),
         z: 1,
         vx: 0,
         vy: 0,
-        vz: D(14, 30),
+        vz: B(14, 30),
         g: -6,
         life: 0.8,
         max: 0.8,
-        col: ae(AB_GREEN),
+        col: oe(AB_GREEN),
         s: 1,
         glow: !0,
         drag: 0
@@ -6276,7 +6276,7 @@ function AbyssOnKill(_v1612) {
   }
 }
 function ExCalc(_v1615, _v1616, _v1617) {
-  let _v1618 = z[_v1615], _v1619 = z[_v1616];
+  let _v1618 = q[_v1615], _v1619 = q[_v1616];
   if (!_v1618 || !_v1619) return {
     err: "不能兑换这一项"
   };
@@ -6301,55 +6301,55 @@ function ExCalc(_v1615, _v1616, _v1617) {
   };
 }
 function ExPrev() {
-  let _v1625 = Za.ex, _v1626 = ExCalc(_v1625.from, _v1625.to, _v1625.amt), _v1627 = C("#exOut"), _v1628 = C("#exGo");
+  let _v1625 = Qa.ex, _v1626 = ExCalc(_v1625.from, _v1625.to, _v1625.amt), _v1627 = C("#exOut"), _v1628 = C("#exGo");
   if (!_v1627) return;
   if (_v1626.err) {
-    (_v1627.innerHTML = `<div class="exerr">${F(_v1626.err)}</div>`, _v1628 && (_v1628.disabled = !0, _v1628.classList.add("no")));
+    (_v1627.innerHTML = `<div class="exerr">${O(_v1626.err)}</div>`, _v1628 && (_v1628.disabled = !0, _v1628.classList.add("no")));
     return;
   }
-  (_v1627.innerHTML = `<div class="exline">给出 <b>${_v1626.n}</b> × <span style="color:${z[_v1625.from].col}">${z[_v1625.from].n}</span> = <b>${zt(_v1626.total / 100)}</b>c</div><div class="exline">得到 <b>${_v1626.got}</b> × <span style="color:${z[_v1625.to].col}">${z[_v1625.to].n}</span> <small class="exdim">= ${zt(_v1626.used / 100)}c</small></div>${_v1626.left ? `<div class="exdim">尾数 ${zt(_v1626.left / 100)}c 不找零</div>` : ""}`, _v1628 && (_v1628.disabled = !1, _v1628.classList.remove("no")));
+  (_v1627.innerHTML = `<div class="exline">给出 <b>${_v1626.n}</b> × <span style="color:${q[_v1625.from].col}">${q[_v1625.from].n}</span> = <b>${Gt(_v1626.total / 100)}</b>c</div><div class="exline">得到 <b>${_v1626.got}</b> × <span style="color:${q[_v1625.to].col}">${q[_v1625.to].n}</span> <small class="exdim">= ${Gt(_v1626.used / 100)}c</small></div>${_v1626.left ? `<div class="exdim">尾数 ${Gt(_v1626.left / 100)}c 不找零</div>` : ""}`, _v1628 && (_v1628.disabled = !1, _v1628.classList.remove("no")));
 }
 function ExDo() {
-  let _v1629 = Za.ex, _v1630 = ExCalc(_v1629.from, _v1629.to, _v1629.amt);
-  if (_v1630.err) return (I(_v1630.err), T("nomana", 0.5), !1);
-  return (u.cur[_v1629.from] -= _v1630.n, u.cur[_v1629.to] = (u.cur[_v1629.to] || 0) + _v1630.got, ShopHeatBump("ex:" + _v1629.to), I("通货兑换 · " + _v1630.n + " " + z[_v1629.from].n + " → " + _v1630.got + " " + z[_v1629.to].n + (ShopHeatMult("ex:" + _v1629.to) > 1.0001 ? "（涨价 ×" + ShopHeatMult("ex:" + _v1629.to).toFixed(2) + "）" : "")), T("pick"), !0);
+  let _v1629 = Qa.ex, _v1630 = ExCalc(_v1629.from, _v1629.to, _v1629.amt);
+  if (_v1630.err) return (P(_v1630.err), $("nomana", 0.5), !1);
+  return (u.cur[_v1629.from] -= _v1630.n, u.cur[_v1629.to] = (u.cur[_v1629.to] || 0) + _v1630.got, ShopHeatBump("ex:" + _v1629.to), P("通货兑换 · " + _v1630.n + " " + q[_v1629.from].n + " → " + _v1630.got + " " + q[_v1629.to].n + (ShopHeatMult("ex:" + _v1629.to) > 1.0001 ? "（涨价 ×" + ShopHeatMult("ex:" + _v1629.to).toFixed(2) + "）" : "")), $("pick"), !0);
 }
 function ExWantApply() {
   let wantEl = C("#exWant");
   let want = Math.max(1, Math.floor(+(wantEl && wantEl.value || 1)));
-  let cost = Math.round(ExC(Za.ex.to) * ShopHeatMult("ex:" + Za.ex.to));
-  let fromV = ExC(Za.ex.from);
-  if (!cost || !fromV) return I("无法计算兑换数量");
+  let cost = Math.round(ExC(Qa.ex.to) * ShopHeatMult("ex:" + Qa.ex.to));
+  let fromV = ExC(Qa.ex.from);
+  if (!cost || !fromV) return P("无法计算兑换数量");
   let need = Math.max(1, Math.ceil(want * cost / fromV));
-  Za.ex.amt = need;
+  Qa.ex.amt = need;
   if (C("#exAmt")) C("#exAmt").value = need;
   ExPrev();
-  I("想要 " + want + " 个" + z[Za.ex.to].n + " · 需要 " + need + " 个" + z[Za.ex.from].n);
+  P("想要 " + want + " 个" + q[Qa.ex.to].n + " · 需要 " + need + " 个" + q[Qa.ex.from].n);
 }
 function ExSelectionRefresh() {
   try {
-    document.querySelectorAll("#overlay [data-exfrom]").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-exfrom") === Za.ex.from); });
-    document.querySelectorAll("#overlay [data-exto]").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-exto") === Za.ex.to); });
+    document.querySelectorAll("#overlay [data-exfrom]").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-exfrom") === Qa.ex.from); });
+    document.querySelectorAll("#overlay [data-exto]").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-exto") === Qa.ex.to); });
     var h4s = document.querySelectorAll("#overlay .exside h4 small");
-    if (h4s[0]) h4s[0].textContent = z[Za.ex.from].n;
-    if (h4s[1]) h4s[1].textContent = z[Za.ex.to].n;
+    if (h4s[0]) h4s[0].textContent = q[Qa.ex.from].n;
+    if (h4s[1]) h4s[1].textContent = q[Qa.ex.to].n;
     var rate = document.querySelector("#overlay .exrate");
-    if (rate) rate.textContent = "1 " + z[Za.ex.from].n + " = " + zt(z[Za.ex.from].v / (z[Za.ex.to].v * ShopHeatMult("ex:" + Za.ex.to))) + " " + z[Za.ex.to].n;
+    if (rate) rate.textContent = "1 " + q[Qa.ex.from].n + " = " + Gt(q[Qa.ex.from].v / (q[Qa.ex.to].v * ShopHeatMult("ex:" + Qa.ex.to))) + " " + q[Qa.ex.to].n;
     ExPrev();
   } catch (e) {}
 }
 function ExBody() {
-  let _v1631 = Za.ex, _v1632 = ExAll(), _v1633 = u.cur[_v1631.from] || 0;
+  let _v1631 = Qa.ex, _v1632 = ExAll(), _v1633 = u.cur[_v1631.from] || 0;
   (_v1631.amt > _v1633 && (_v1631.amt = _v1633 > 0 ? _v1633 : 1), _v1632.includes(_v1631.from) || (_v1631.from = _v1632[0]), _v1632.includes(_v1631.to) || (_v1631.to = _v1632[1] || _v1632[0]));
   let _v1634 = (_v1635, _v1636) => {
-    let _v1637 = (_v1636 === "from" ? _v1631.from : _v1631.to) === _v1635, _v1638 = z[_v1635];
-    return `<button class="exchip${_v1637 ? " on" : ""}" data-${_v1636 === "from" ? "exfrom" : "exto"}="${_v1635}" data-tt="cur:${_v1635}"><img src="${_e[_v1635]}" alt=""><span>${_v1638.s || _v1638.n}</span><i>${zt(_v1638.v)}c</i><b>${u.cur[_v1635] || 0}</b></button>`;
+    let _v1637 = (_v1636 === "from" ? _v1631.from : _v1631.to) === _v1635, _v1638 = q[_v1635];
+    return `<button class="exchip${_v1637 ? " on" : ""}" data-${_v1636 === "from" ? "exfrom" : "exto"}="${_v1635}" data-tt="cur:${_v1635}"><img src="${Ye[_v1635]}" alt=""><span>${_v1638.s || _v1638.n}</span><i>${Gt(_v1638.v)}c</i><b>${u.cur[_v1635] || 0}</b></button>`;
   };
   let _exGroupName = g => ({ basic: "基础通货", sock: "工匠", ess: "精华", omen: "预兆", bone: "遗存骨骸", rune: "符文", sig: "印记", other: "其他" })[g] || "其他";
   let _exOrder = ["basic", "sock", "ess", "omen", "bone", "rune", "other"];
   let _exGroups = (_v1645, _v1646) => {
     let map = {};
-    _v1645.forEach(id => { let g = z[id].grp || "other"; (map[g] = map[g] || []).push(id); });
+    _v1645.forEach(id => { let g = q[id].grp || "other"; (map[g] = map[g] || []).push(id); });
     return _exOrder.map(g => {
       let arr = map[g] || [];
       if (!arr.length) return "";
@@ -6358,9 +6358,9 @@ function ExBody() {
   };
   return `<div class="exc"><p class="exc-hint">汇率取作者标注的混沌石等价 · 兑换向下取整, 尾数不找零</p>
 		 <div class="excols">
-		  <section class="exside"><h4>给出 <small>${z[_v1631.from].n}</small></h4>${_exGroups(_v1632, "from")}</section>
+		  <section class="exside"><h4>给出 <small>${q[_v1631.from].n}</small></h4>${_exGroups(_v1632, "from")}</section>
 		  <section class="exmid"><h4>交换</h4>
-		   <div class="exrate">1 ${z[_v1631.from].n} = ${zt(z[_v1631.from].v / (z[_v1631.to].v * ShopHeatMult("ex:" + _v1631.to)))} ${z[_v1631.to].n}</div>${ShopHeatMult("ex:" + _v1631.to) > 1.0001 ? `<div class="exdim" style="color:#e8c870">该通货需求涨价 ×${ShopHeatMult("ex:" + _v1631.to).toFixed(2)} · 2 分钟无购买后每 30 秒降 50%</div>` : ""}
+		   <div class="exrate">1 ${q[_v1631.from].n} = ${Gt(q[_v1631.from].v / (q[_v1631.to].v * ShopHeatMult("ex:" + _v1631.to)))} ${q[_v1631.to].n}</div>${ShopHeatMult("ex:" + _v1631.to) > 1.0001 ? `<div class="exdim" style="color:#e8c870">该通货需求涨价 ×${ShopHeatMult("ex:" + _v1631.to).toFixed(2)} · 2 分钟无购买后每 30 秒降 50%</div>` : ""}
 		   <label class="examt">数量 <input id="exAmt" type="number" min="0" step="1" value="${_v1631.amt}"></label>
 		   <div class="exq"><button data-examt="1">+1</button><button data-examt="10">+10</button><button data-examt="100">+100</button><button data-examt="max">最大</button></div>
 		   <label class="examt">想要得到 <input id="exWant" type="number" min="1" step="1" value="1"></label>
@@ -6368,7 +6368,7 @@ function ExBody() {
 		   <div class="exout" id="exOut"></div>
 		   <button class="btn primary" id="exGo" disabled>确认兑换</button>
 		  </section>
-		  <section class="exside"><h4>得到 <small>${z[_v1631.to].n}</small></h4>${_exGroups(_v1632, "to")}</section>
+		  <section class="exside"><h4>得到 <small>${q[_v1631.to].n}</small></h4>${_exGroups(_v1632, "to")}</section>
 		 </div></div>`;
 }
 function UniqueResCap() {
@@ -6384,10 +6384,10 @@ function GrantAtlasPoint(_v1643) {
     n.Z.bFlags = n.Z.bFlags || ({});
     if (n.Z.bFlags[_v1643]) return;
     n.Z.bFlags[_v1643] = 1;
-    if ((u.atlasPts || 0) < $r) {
+    if ((u.atlasPts || 0) < Br) {
       u.atlasPts = (u.atlasPts || 0) + 1;
-      I("图谱点 +1 · " + _v1643 + " · 按 U 打开图谱加点");
-    } else I("图谱点已达上限");
+      P("图谱点 +1 · " + _v1643 + " · 按 U 打开图谱加点");
+    } else P("图谱点已达上限");
   } catch (_v1644) {}
 }
 function RitualMapCheck() {
@@ -6402,7 +6402,7 @@ function RitualMapCheck() {
     if (_v1645 > 0 && _v1646 >= _v1645) GrantAtlasPoint("驱灵仪式");
   } catch (_v1648) {}
 }
-Object.assign(H4, {
+Object.assign(pS, {
   通货兑换: "Currency Exchange",
   给出: "Give",
   得到: "Receive",
@@ -6563,7 +6563,7 @@ Object.assign(H4, {
   "深渊裂缝关闭": "Abyssal fissure closed",
   腐烂: "Putrefaction"
 });
-Object.assign(z, {
+Object.assign(q, {
   omen_exalt_p: {
     n: "左旋崇高预兆",
     s: "左旋崇高",
@@ -6968,12 +6968,12 @@ Object.assign(z, {
     d: "对一件稀有装备渎灵: 添加 1 条未揭示的渎灵词缀, 在灵魂之井揭示(3 选 1)。最高阶骨, 可出最高一档词缀"
   }
 });
-Object.assign(uA, {
+Object.assign(XC, {
   omen: "预兆",
   bone: "遗存骨",
   del: "碎片"
 });
-Object.assign(kt, {
+Object.assign($t, {
   abysswalker: {
     n: "深渊行者",
     hp: 11,
@@ -7019,7 +7019,7 @@ Object.assign(kt, {
     gib: ["#2a6a3a", "#d8ffe0", "#0a2410"]
   }
 });
-Hs.push({
+Ks.push({
   key: "deli",
   n: "迷雾副本",
   col: "#c8a8ff",
@@ -7128,69 +7128,69 @@ Hs.push({
     key: 1
   }]
 });
-$r = 56;
-Fh.push("bone_gnawed", "bone_preserved", "bone_ancient");
-Object.assign(Dh, {
+Br = 56;
+$m.push("bone_gnawed", "bone_preserved", "bone_ancient");
+Object.assign(Am, {
   bone_gnawed: "稀装渎灵 · 低阶骨",
   bone_preserved: "稀装渎灵 · 中阶骨",
   bone_ancient: "稀装渎灵 · 远古骨"
 });
-$C = new Set(["device", "vendor", "stash", "bench", "altar", "monument", "dog", "well", "ritual", "simulacrum"]);
-Object.assign(Za, {
+yj = new Set(["device", "vendor", "stash", "bench", "altar", "monument", "dog", "well", "ritual", "simulacrum"]);
+Object.assign(Qa, {
   ex: {
     from: "chaos",
     to: "divine",
     amt: 1
   }
 });
-D$ = (_v1649, _v1650, _v1651, _v1652) => Ih(_v1649).filter(_v1653 => _v1653.t === _v1650 && _v1653.lv[0] <= _v1649.ilvl && (!_v1653.slots || _v1653.slots.includes(_v1649.slot)) && Wl(_v1649, _v1653) && !_v1653.dsec && !_v1652.some(_v1654 => _v1654.id === _v1653.id) && (!_v1651 || _v1651.includes(_v1653.id)));
-Xa = function () {
-  if (Be) {
-    Be.state === "suspended" && Be.resume();
+SC = (_v1649, _v1650, _v1651, _v1652) => Sm(_v1649).filter(_v1653 => _v1653.t === _v1650 && _v1653.lv[0] <= _v1649.ilvl && (!_v1653.slots || _v1653.slots.includes(_v1649.slot)) && ic(_v1649, _v1653) && !_v1653.dsec && !_v1652.some(_v1654 => _v1654.id === _v1653.id) && (!_v1651 || _v1651.includes(_v1653.id)));
+os = function () {
+  if (Ge) {
+    Ge.state === "suspended" && Ge.resume();
     return;
   }
   try {
-    (Be = new (window.AudioContext || window.webkitAudioContext)(), gr = Be.createGain(), gr.gain.value = 0.28);
-    let _v1655 = Be.createDynamicsCompressor();
+    (Ge = new (window.AudioContext || window.webkitAudioContext)(), Ar = Ge.createGain(), Ar.gain.value = 0.28);
+    let _v1655 = Ge.createDynamicsCompressor();
     (_v1655.threshold.value = -18, _v1655.knee.value = 12, _v1655.ratio.value = 3, _v1655.attack.value = 0.008, _v1655.release.value = 0.28);
-    let _v1656 = Be.createBiquadFilter(), _v1657 = Be.createBiquadFilter(), _v1658 = Be.createBiquadFilter(), _v1659 = Be.createDynamicsCompressor();
-    (_v1656.type = "peaking", _v1656.frequency.value = 240, _v1656.gain.value = 1.4, _v1656.Q.value = 0.7, _v1657.type = "highshelf", _v1657.frequency.value = 5200, _v1657.gain.value = -5.5, _v1658.type = "lowpass", _v1658.frequency.value = 13000, _v1658.Q.value = 0.4, _v1659.threshold.value = -3, _v1659.knee.value = 4, _v1659.ratio.value = 14, _v1659.attack.value = 0.002, _v1659.release.value = 0.12, gr.connect(_v1656), _v1656.connect(_v1657), _v1657.connect(_v1658), _v1658.connect(_v1655), _v1655.connect(_v1659), _v1659.connect(Be.destination), Dd = Be.createGain(), Dd.connect(gr), li = Be.createGain(), li.gain.value = 0.6, li.connect(gr), Fd = Be.createBuffer(1, Be.sampleRate * 2 | 0, Be.sampleRate));
-    let _v1660 = Fd.getChannelData(0);
-    for (let _v1661 = 0; _v1661 < _v1660.length; _v1661++) _v1660[_v1661] = E() * 2 - 1;
-    zc = Be.createConvolver();
-    let _v1662 = Be.sampleRate * 1.4 | 0, _v1663 = Be.createBuffer(2, _v1662, Be.sampleRate);
+    let _v1656 = Ge.createBiquadFilter(), _v1657 = Ge.createBiquadFilter(), _v1658 = Ge.createBiquadFilter(), _v1659 = Ge.createDynamicsCompressor();
+    (_v1656.type = "peaking", _v1656.frequency.value = 240, _v1656.gain.value = 1.4, _v1656.Q.value = 0.7, _v1657.type = "highshelf", _v1657.frequency.value = 5200, _v1657.gain.value = -5.5, _v1658.type = "lowpass", _v1658.frequency.value = 13000, _v1658.Q.value = 0.4, _v1659.threshold.value = -3, _v1659.knee.value = 4, _v1659.ratio.value = 14, _v1659.attack.value = 0.002, _v1659.release.value = 0.12, Ar.connect(_v1656), _v1656.connect(_v1657), _v1657.connect(_v1658), _v1658.connect(_v1655), _v1655.connect(_v1659), _v1659.connect(Ge.destination), p0 = Ge.createGain(), p0.connect(Ar), wi = Ge.createGain(), wi.gain.value = 0.6, wi.connect(Ar), d0 = Ge.createBuffer(1, Ge.sampleRate * 2 | 0, Ge.sampleRate));
+    let _v1660 = d0.getChannelData(0);
+    for (let _v1661 = 0; _v1661 < _v1660.length; _v1661++) _v1660[_v1661] = I() * 2 - 1;
+    ff = Ge.createConvolver();
+    let _v1662 = Ge.sampleRate * 1.4 | 0, _v1663 = Ge.createBuffer(2, _v1662, Ge.sampleRate);
     for (let _v1664 = 0; _v1664 < 2; _v1664++) {
       let _v1665 = _v1663.getChannelData(_v1664);
-      for (let _v1666 = 0; _v1666 < _v1662; _v1666++) _v1665[_v1666] = (E() * 2 - 1) * Math.pow(1 - _v1666 / _v1662, 3.2);
+      for (let _v1666 = 0; _v1666 < _v1662; _v1666++) _v1665[_v1666] = (I() * 2 - 1) * Math.pow(1 - _v1666 / _v1662, 3.2);
     }
-    zc.buffer = _v1663;
-    let _v1667 = Be.createGain();
-    (_v1667.gain.value = 0.35, zc.connect(_v1667), _v1667.connect(gr));
-    let _v1668 = Be.createBufferSource();
-    (_v1668.buffer = Fd, _v1668.loop = !0);
-    let _v1669 = Be.createBiquadFilter();
+    ff.buffer = _v1663;
+    let _v1667 = Ge.createGain();
+    (_v1667.gain.value = 0.35, ff.connect(_v1667), _v1667.connect(Ar));
+    let _v1668 = Ge.createBufferSource();
+    (_v1668.buffer = d0, _v1668.loop = !0);
+    let _v1669 = Ge.createBiquadFilter();
     (_v1669.type = "lowpass", _v1669.frequency.value = 300);
-    let _v1670 = Be.createGain();
-    (_v1670.gain.value = 0.09, _v1668.connect(_v1669), _v1669.connect(_v1670), _v1670.connect(li), _v1668.start());
+    let _v1670 = Ge.createGain();
+    (_v1670.gain.value = 0.09, _v1668.connect(_v1669), _v1669.connect(_v1670), _v1670.connect(wi), _v1668.start());
   } catch {
-    Be = null;
+    Ge = null;
   }
 };
-_ = function (_v1671, _v1672, _v1673, _v1674, _v1675, _v1676, _v1677) {
-  let _v1678 = Be.createOscillator(), _v1679 = Be.createGain();
-  (_v1678.type = _v1671, _v1678.frequency.setValueAtTime(_v1672, _v1676), _v1673 && _v1678.frequency.exponentialRampToValueAtTime(Math.max(20, _v1673), _v1676 + _v1674), _v1679.gain.setValueAtTime(1e-4, _v1676), _v1679.gain.linearRampToValueAtTime(_v1675, _v1676 + 0.012), _v1679.gain.exponentialRampToValueAtTime(1e-4, _v1676 + Math.max(_v1674, 0.03)), _v1678.connect(_v1679), _v1679.connect(Dd), _v1677 && _v1679.connect(zc), _v1678.start(_v1676), _v1678.stop(_v1676 + _v1674 + 0.03));
+V = function (_v1671, _v1672, _v1673, _v1674, _v1675, _v1676, _v1677) {
+  let _v1678 = Ge.createOscillator(), _v1679 = Ge.createGain();
+  (_v1678.type = _v1671, _v1678.frequency.setValueAtTime(_v1672, _v1676), _v1673 && _v1678.frequency.exponentialRampToValueAtTime(Math.max(20, _v1673), _v1676 + _v1674), _v1679.gain.setValueAtTime(1e-4, _v1676), _v1679.gain.linearRampToValueAtTime(_v1675, _v1676 + 0.012), _v1679.gain.exponentialRampToValueAtTime(1e-4, _v1676 + Math.max(_v1674, 0.03)), _v1678.connect(_v1679), _v1679.connect(p0), _v1677 && _v1679.connect(ff), _v1678.start(_v1676), _v1678.stop(_v1676 + _v1674 + 0.03));
 };
-le = function (_v1680, _v1681, _v1682, _v1683, _v1684, _v1685, _v1686, _v1687) {
-  let _v1688 = Be.createBufferSource();
-  _v1688.buffer = Fd;
-  let _v1689 = Be.createBiquadFilter();
+ce = function (_v1680, _v1681, _v1682, _v1683, _v1684, _v1685, _v1686, _v1687) {
+  let _v1688 = Ge.createBufferSource();
+  _v1688.buffer = d0;
+  let _v1689 = Ge.createBiquadFilter();
   (_v1689.type = _v1682, _v1689.frequency.setValueAtTime(_v1683, _v1685), _v1684 && _v1689.frequency.exponentialRampToValueAtTime(_v1684, _v1685 + _v1680), _v1689.Q.value = _v1686 || 1);
-  let _v1690 = Be.createGain();
-  (_v1690.gain.setValueAtTime(1e-4, _v1685), _v1690.gain.linearRampToValueAtTime(_v1681, _v1685 + 0.008), _v1690.gain.exponentialRampToValueAtTime(1e-4, _v1685 + Math.max(_v1680, 0.03)), _v1688.connect(_v1689), _v1689.connect(_v1690), _v1690.connect(Dd), _v1687 && _v1690.connect(zc), _v1688.start(_v1685, E() * 1.5), _v1688.stop(_v1685 + _v1680 + 0.03));
+  let _v1690 = Ge.createGain();
+  (_v1690.gain.setValueAtTime(1e-4, _v1685), _v1690.gain.linearRampToValueAtTime(_v1681, _v1685 + 0.008), _v1690.gain.exponentialRampToValueAtTime(1e-4, _v1685 + Math.max(_v1680, 0.03)), _v1688.connect(_v1689), _v1689.connect(_v1690), _v1690.connect(p0), _v1687 && _v1690.connect(ff), _v1688.start(_v1685, I() * 1.5), _v1688.stop(_v1685 + _v1680 + 0.03));
 };
-T = function (_v1691, _v1692 = 1) {
+$ = function (_v1691, _v1692 = 1) {
   if (n.muted) return;
-  let _v1693 = _v1692 * 0.92, _v1694 = 1 + (E() - 0.5) * 0.035;
+  let _v1693 = _v1692 * 0.92, _v1694 = 1 + (I() - 0.5) * 0.035;
   const _v1695 = __uploadedSfxMap[_v1691];
   if (_v1695) {
     for (const _v1696 of _v1695) {
@@ -7201,20 +7201,20 @@ T = function (_v1691, _v1692 = 1) {
     }
     return;
   }
-  if (!Be) return;
-  let _v1702 = Be.currentTime;
-  if (!(yu[_v1691] && _v1702 - yu[_v1691] < 0.05)) {
-    yu[_v1691] = _v1702;
+  if (!Ge) return;
+  let _v1702 = Ge.currentTime;
+  if (!(th[_v1691] && _v1702 - th[_v1691] < 0.05)) {
+    th[_v1691] = _v1702;
     try {
-      In[_v1691](_v1702 + 0.006, _v1693);
+      zn[_v1691](_v1702 + 0.006, _v1693);
     } catch {}
   }
 };
-hg = function (_v1703, _v1704, _v1705) {
-  if (!Be || n.muted) return;
-  let _v1706 = Be.currentTime;
-  if (_v1703 === "light" && _v1706 - ug < 0.03) return;
-  ug = _v1706;
+rb = function (_v1703, _v1704, _v1705) {
+  if (!Ge || n.muted) return;
+  let _v1706 = Ge.currentTime;
+  if (_v1703 === "light" && _v1706 - nb < 0.03) return;
+  nb = _v1706;
   let _v1707 = _v1706 + 0.003, _v1708 = ({
     light: 0.4,
     mid: 0.7,
@@ -7222,55 +7222,55 @@ hg = function (_v1703, _v1704, _v1705) {
     super: 1.1
   })[_v1703];
   try {
-    (le(0.025, 0.2 * _v1708, "highpass", 2400, 0, _v1707, 1), le(0.05 + 0.05 * _v1708, 0.3 * _v1708, "bandpass", 650 + E() * 350, 280, _v1707, 1.6), _v1703 !== "light" && _("sine", 165 + E() * 35, 46, 0.1 + 0.14 * _v1708, 0.55 * _v1708, _v1707), _v1705 && (_("triangle", 1900 + E() * 300, 1200, 0.16, 0.07, _v1707), _("triangle", 2800, 1800, 0.12, 0.045, _v1707)), _v1704 === "fire" && le(0.18, 0.12 * _v1708, "lowpass", 1400, 200, _v1707), _v1704 === "cold" && _("triangle", 2400, 1600, 0.15, 0.05 * _v1708, _v1707), _v1704 === "light" && _("square", 1100, 300, 0.07, 0.045 * _v1708, _v1707), (_v1703 === "heavy" || _v1703 === "super") && (le(0.55 * _v1708, 0.28 * _v1708, "lowpass", 420, 60, _v1707 + 0.01, 1, !0), f3(0.15, 0.35)));
+    (ce(0.025, 0.2 * _v1708, "highpass", 2400, 0, _v1707, 1), ce(0.05 + 0.05 * _v1708, 0.3 * _v1708, "bandpass", 650 + I() * 350, 280, _v1707, 1.6), _v1703 !== "light" && V("sine", 165 + I() * 35, 46, 0.1 + 0.14 * _v1708, 0.55 * _v1708, _v1707), _v1705 && (V("triangle", 1900 + I() * 300, 1200, 0.16, 0.07, _v1707), V("triangle", 2800, 1800, 0.12, 0.045, _v1707)), _v1704 === "fire" && ce(0.18, 0.12 * _v1708, "lowpass", 1400, 200, _v1707), _v1704 === "cold" && V("triangle", 2400, 1600, 0.15, 0.05 * _v1708, _v1707), _v1704 === "light" && V("square", 1100, 300, 0.07, 0.045 * _v1708, _v1707), (_v1703 === "heavy" || _v1703 === "super") && (ce(0.55 * _v1708, 0.28 * _v1708, "lowpass", 420, 60, _v1707 + 0.01, 1, !0), LS(0.15, 0.35)));
   } catch {}
 };
-hA = function () {
-  for (let _v1709 in Gt) Gt[_v1709].fr = l3.map((_v1710, _v1711) => Pt("hero_" + _v1709 + _v1711, Gt[_v1709].rows.concat(Gt[_v1709].legs ? Gt[_v1709].legs[_v1711] : _v1710), {
-    ...Gt[_v1709].pal
+eR = function () {
+  for (let _v1709 in Ht) Ht[_v1709].fr = jS.map((_v1710, _v1711) => Bt("hero_" + _v1709 + _v1711, Ht[_v1709].rows.concat(Ht[_v1709].legs ? Ht[_v1709].legs[_v1711] : _v1710), {
+    ...Ht[_v1709].pal
   }));
-  (Pt("zombie", ["....aaaa....", "...abbbba...", "...acbbca...", "...abbbba...", "...abddba...", "..aaabbaaa..", ".abeeeeeeba.", "ab.eeffee.ba", "b..eeeeee..b", "...eeeeee...", "...aeeeea...", "...ah..ha...", "...ah..ha...", "..aah..haa.."], {
+  (Bt("zombie", ["....aaaa....", "...abbbba...", "...acbbca...", "...abbbba...", "...abddba...", "..aaabbaaa..", ".abeeeeeeba.", "ab.eeffee.ba", "b..eeeeee..b", "...eeeeee...", "...aeeeea...", "...ah..ha...", "...ah..ha...", "..aah..haa.."], {
     b: "#6f8a5a",
     c: "#d8f070",
     d: "#3a1414",
     e: "#4a4038",
     f: "#7a2020",
     h: "#3a3a2a"
-  }), Pt("skel", ["...aaaa....", "..abbbba...", "..acbbca...", "..abbbba..e", "...addda.e.", "..aabba..e.", ".ab.abba.e.", "ab.abbbabe.", "...abbba.e.", "...a.b.a..e", "....b.b....", "...ab.ba...", "...b...b...", "..bb...bb.."], {
+  }), Bt("skel", ["...aaaa....", "..abbbba...", "..acbbca...", "..abbbba..e", "...addda.e.", "..aabba..e.", ".ab.abba.e.", "ab.abbbabe.", "...abbba.e.", "...a.b.a..e", "....b.b....", "...ab.ba...", "...b...b...", "..bb...bb.."], {
     b: "#d8d0b8",
     c: "#ff4030",
     d: "#8a8070",
     e: "#9a6a32"
-  }), Pt("imp", dg, {
+  }), Bt("imp", sb, {
     b: "#c8401a",
     c: "#ffe060",
     d: "#401008",
     e: "#ff9a40"
-  }), Pt("riftling", dg, {
+  }), Bt("riftling", sb, {
     b: "#6a3aa8",
     c: "#ff70ff",
     d: "#200838",
     e: "#b080ff"
-  }), Pt("abyssling", dg, {
+  }), Bt("abyssling", sb, {
     b: "#1e6a3a",
     c: "#7dff9a",
     d: "#06180c",
     e: "#3fd070"
-  }), Pt("cultist", ["....aa....", "...abba...", "..abbbba..", "..abccba..", "..acddca..", "..abccba..", "...abba...", "..aeeeea..", ".aeeffeea.", "gaeeffeeag", ".aeeffeea.", ".aeeeeeea.", ".aeeeeeea.", "aeeeeeeeea", "aaaaaaaaaa"], {
+  }), Bt("cultist", ["....aa....", "...abba...", "..abbbba..", "..abccba..", "..acddca..", "..abccba..", "...abba...", "..aeeeea..", ".aeeffeea.", "gaeeffeeag", ".aeeffeea.", ".aeeeeeea.", ".aeeeeeea.", "aeeeeeeeea", "aaaaaaaaaa"], {
     b: "#2a4a6a",
     c: "#0c141c",
     d: "#80e8ff",
     e: "#3a5a7a",
     f: "#a8d0e8",
     g: "#c8f4ff"
-  }), Pt("brute", ["......aaaa......", ".....abbbba.....", "....abcbbcba....", "....abbbbbba....", "..aaabddddbaaa..", ".abbbbbbbbbbbba.", "abeeebbbbbbeeeba", "abeeebbffbbeeeba", "abbba.bbbb.abbba", ".aa...bbbb...aa.", ".....bggggb.....", ".....bb..bb.....", "....abb..bba....", "....aaa..aaa...."], {
+  }), Bt("brute", ["......aaaa......", ".....abbbba.....", "....abcbbcba....", "....abbbbbba....", "..aaabddddbaaa..", ".abbbbbbbbbbbba.", "abeeebbbbbbeeeba", "abeeebbffbbeeeba", "abbba.bbbb.abbba", ".aa...bbbb...aa.", ".....bggggb.....", ".....bb..bb.....", "....abb..bba....", "....aaa..aaa...."], {
     b: "#7a6a58",
     c: "#ff3020",
     d: "#e8e0c8",
     e: "#c8c0a8",
     f: "#5a4a3a",
     g: "#3a2a20"
-  }), Pt("boss", ["....a............a....", "...ab............ba...", "...abb..aaaaaa..bba...", "....abbabbbbbbabba....", ".....abbbbbbbbbba.....", "....abbcbbbbbbcbba....", "....abbbbbbbbbbbba....", ".....abbddddddbba.....", "...aaabbbbbbbbbbaaa...", "..abbbeeeeeeeeeebbba..", ".abbbeeeeffffeeeebbba.", ".abbaeeeffggffeeeabba.", ".abba.eeffggffee.abba.", ".abba.eeeffffeee.abba.", "..hh..eeeeeeeeee..hh..", "..hh...eeeeeeee...hh..", ".......aeeeeeea.......", "......abbb..bbba......", "......abb....bba......", ".....abbb....bbba.....", ".....aaaa....aaaa....."], {
+  }), Bt("boss", ["....a............a....", "...ab............ba...", "...abb..aaaaaa..bba...", "....abbabbbbbbabba....", ".....abbbbbbbbbba.....", "....abbcbbbbbbcbba....", "....abbbbbbbbbbbba....", ".....abbddddddbba.....", "...aaabbbbbbbbbbaaa...", "..abbbeeeeeeeeeebbba..", ".abbbeeeeffffeeeebbba.", ".abbaeeeffggffeeeabba.", ".abba.eeffggffee.abba.", ".abba.eeeffffeee.abba.", "..hh..eeeeeeeeee..hh..", "..hh...eeeeeeee...hh..", ".......aeeeeeea.......", "......abbb..bbba......", "......abb....bba......", ".....abbb....bbba.....", ".....aaaa....aaaa....."], {
     b: "#3a2a40",
     c: "#ff6020",
     d: "#ff9a40",
@@ -7278,7 +7278,7 @@ hA = function () {
     f: "#8a3050",
     g: "#ffd060",
     h: "#d8d0d0"
-  }), Pt("abysslich", ["....a............a....", "...ab............ba...", "...abb..aaaaaa..bba...", "....abbabbbbbbabba....", ".....abbbbbbbbbba.....", "....abbcbbbbbbcbba....", "....abbbbbbbbbbbba....", ".....abbddddddbba.....", "...aaabbbbbbbbbbaaa...", "..abbbeeeeeeeeeebbba..", ".abbbeeeeffffeeeebbba.", ".abbaeeeffggffeeeabba.", ".abba.eeffggffee.abba.", ".abba.eeeffffeee.abba.", "..hh..eeeeeeeeee..hh..", "..hh...eeeeeeee...hh..", ".......aeeeeeea.......", "......abbb..bbba......", "......abb....bba......", ".....abbb....bbba.....", ".....aaaa....aaaa....."], {
+  }), Bt("abysslich", ["....a............a....", "...ab............ba...", "...abb..aaaaaa..bba...", "....abbabbbbbbabba....", ".....abbbbbbbbbba.....", "....abbcbbbbbbcbba....", "....abbbbbbbbbbbba....", ".....abbddddddbba.....", "...aaabbbbbbbbbbaaa...", "..abbbeeeeeeeeeebbba..", ".abbbeeeeffffeeeebbba.", ".abbaeeeffggffeeeabba.", ".abba.eeffggffee.abba.", ".abba.eeeffffeee.abba.", "..hh..eeeeeeeeee..hh..", "..hh...eeeeeeee...hh..", ".......aeeeeeea.......", "......abbb..bbba......", "......abb....bba......", ".....abbb....bbba.....", ".....aaaa....aaaa....."], {
     b: "#123a22",
     c: "#b8ff60",
     d: "#7dff9a",
@@ -7286,35 +7286,35 @@ hA = function () {
     f: "#2a7a46",
     g: "#d8ffe0",
     h: "#c8e8c0"
-  }), Pt("dummy", ["...aaaa...", "..abbbba..", "..abccba..", "..abbbba..", "aaaabbaaaa", "abbbbbbbba", "aaaabbaaaa", "...abba...", "...abba...", "...abba...", "...abba...", "..aaaaaa..", ".abbbbbba."], {
+  }), Bt("dummy", ["...aaaa...", "..abbbba..", "..abccba..", "..abbbba..", "aaaabbaaaa", "abbbbbbbba", "aaaabbaaaa", "...abba...", "...abba...", "...abba...", "...abba...", "..aaaaaa..", ".abbbbbba."], {
     b: "#8a6a42",
     c: "#c8a070"
-  }), Pt("box", [".aaaaaaaa.", "abbbbbbbba", "acccddccca", "abbbddbbba", "abbbbbbbba", "acccccccca", "abbbbbbbba", "aaaaaaaaaa"], {
+  }), Bt("box", [".aaaaaaaa.", "abbbbbbbba", "acccddccca", "abbbddbbba", "abbbbbbbba", "acccccccca", "abbbbbbbba", "aaaaaaaaaa"], {
     b: "#6a4a2a",
     c: "#b08a3a",
     d: "#ffd060"
   }));
-  for (let _v1712 of ["zombie", "skel", "imp", "cultist", "brute", "boss", "dummy"]) kt[_v1712].h = Jt[_v1712].h;
-  kt.rift.h = Jt.riftling.h;
-  (kt.abysswalker.h = Jt.abyssling.h, kt.abyssshambler.h = Math.round(Jt.abyssling.h * 1.05), kt.abyssstrangler.h = Math.round(Jt.abyssling.h * 1.2));
-  for (let _v1713 in pg) {
-    let _v1714 = br(pg[_v1713], {
+  for (let _v1712 of ["zombie", "skel", "imp", "cultist", "brute", "boss", "dummy"]) $t[_v1712].h = Xt[_v1712].h;
+  $t.rift.h = Xt.riftling.h;
+  ($t.abysswalker.h = Xt.abyssling.h, $t.abyssshambler.h = Math.round(Xt.abyssling.h * 1.05), $t.abyssstrangler.h = Math.round(Xt.abyssling.h * 1.2));
+  for (let _v1713 in ob) {
+    let _v1714 = Cr(ob[_v1713], {
       a: "#14101a",
-      ...c3[_v1713]
+      ...ES[_v1713]
     });
-    (Ga[_v1713] = _v1714, ct[_v1713] = _v1714.toDataURL());
+    (Ha[_v1713] = _v1714, mt[_v1713] = _v1714.toDataURL());
   }
-  for (let _v1715 of vt) {
+  for (let _v1715 of Tt) {
     let _v1716 = document.createElement("canvas");
     (_v1716.width = 9, _v1716.height = 9);
-    let _v1717 = _v1716.getContext("2d"), _v1718 = z[_v1715].col, _v1719 = (_v1720, _v1721, _v1722) => {
+    let _v1717 = _v1716.getContext("2d"), _v1718 = q[_v1715].col, _v1719 = (_v1720, _v1721, _v1722) => {
       (_v1717.fillStyle = _v1722, _v1717.fillRect(_v1720, _v1721, 1, 1));
     };
     for (let _v1723 = 0; _v1723 < 9; _v1723++) for (let _v1724 = 0; _v1724 < 9; _v1724++) {
       let _v1725 = Math.hypot(_v1724 - 4, _v1723 - 4);
       _v1725 <= 4.2 && _v1719(_v1724, _v1723, _v1725 > 3.4 ? "#120e14" : _v1718);
     }
-    (_v1719(3, 2, "#ffffffcc"), _v1719(2, 3, "#ffffff88"), _v1715 === "chaos" && (_v1719(4, 4, "#3a2a10"), _v1719(5, 4, "#3a2a10"), _v1719(4, 5, "#3a2a10")), _v1715 === "divine" && (_v1717.fillStyle = "#d8b050", _v1717.fillRect(4, 1, 1, 7), _v1717.fillRect(1, 4, 7, 1), _v1719(4, 4, "#fff")), _v1715 === "exalt" && (_v1717.fillStyle = "#b89040", _v1717.fillRect(2, 5, 5, 1), _v1719(1, 4, "#b89040"), _v1719(7, 4, "#b89040")), _v1715 === "jewel" && (_v1719(5, 5, "#ffffff"), _v1719(4, 6, "#1a7a60")), _v1715 === "ember" && (_v1719(4, 2, "#ffe080"), _v1719(3, 3, "#ffb040"), _v1719(4, 3, "#fff2c0"), _v1719(5, 3, "#ffb040"), _v1719(3, 5, "#7a1406"), _v1719(4, 5, "#2a0602"), _v1719(5, 5, "#7a1406"), _v1719(4, 6, "#7a1406"), _v1719(2, 4, "#ff9a50"), _v1719(6, 4, "#c83010")), _v1715 === "ash" && (_v1719(2, 2, "#120e14"), _v1719(6, 6, "#120e14"), _v1719(6, 2, "#120e14"), _v1719(3, 4, "#5a504c"), _v1719(5, 3, "#5a504c"), _v1719(4, 6, "#5a504c"), _v1719(6, 5, "#b0a49c"), _v1719(4, 4, "#ff6a24"), _v1719(5, 5, "#a02a10")), _v1715 === "frac" && (_v1719(3, 3, "#4a2410"), _v1719(4, 4, "#4a2410"), _v1719(4, 5, "#4a2410"), _v1719(5, 6, "#4a2410"), _v1719(5, 3, "#4a2410"), _v1719(6, 2, "#4a2410"), _v1719(5, 4, "#ffe2b0")), _v1715 === "chance" && (_v1719(5, 5, "#404040"), _v1719(4, 4, "#404040")), _v1715.startsWith("omen_") && (_v1719(4, 2, "#fff0d0"), _v1719(3, 4, "#e0c070"), _v1719(5, 4, "#e0c070"), _v1719(4, 6, "#8a5ac0"), _v1719(4, 4, "#2a1030")), ci[_v1715] = _v1716, _e[_v1715] = _v1716.toDataURL());
+    (_v1719(3, 2, "#ffffffcc"), _v1719(2, 3, "#ffffff88"), _v1715 === "chaos" && (_v1719(4, 4, "#3a2a10"), _v1719(5, 4, "#3a2a10"), _v1719(4, 5, "#3a2a10")), _v1715 === "divine" && (_v1717.fillStyle = "#d8b050", _v1717.fillRect(4, 1, 1, 7), _v1717.fillRect(1, 4, 7, 1), _v1719(4, 4, "#fff")), _v1715 === "exalt" && (_v1717.fillStyle = "#b89040", _v1717.fillRect(2, 5, 5, 1), _v1719(1, 4, "#b89040"), _v1719(7, 4, "#b89040")), _v1715 === "jewel" && (_v1719(5, 5, "#ffffff"), _v1719(4, 6, "#1a7a60")), _v1715 === "ember" && (_v1719(4, 2, "#ffe080"), _v1719(3, 3, "#ffb040"), _v1719(4, 3, "#fff2c0"), _v1719(5, 3, "#ffb040"), _v1719(3, 5, "#7a1406"), _v1719(4, 5, "#2a0602"), _v1719(5, 5, "#7a1406"), _v1719(4, 6, "#7a1406"), _v1719(2, 4, "#ff9a50"), _v1719(6, 4, "#c83010")), _v1715 === "ash" && (_v1719(2, 2, "#120e14"), _v1719(6, 6, "#120e14"), _v1719(6, 2, "#120e14"), _v1719(3, 4, "#5a504c"), _v1719(5, 3, "#5a504c"), _v1719(4, 6, "#5a504c"), _v1719(6, 5, "#b0a49c"), _v1719(4, 4, "#ff6a24"), _v1719(5, 5, "#a02a10")), _v1715 === "frac" && (_v1719(3, 3, "#4a2410"), _v1719(4, 4, "#4a2410"), _v1719(4, 5, "#4a2410"), _v1719(5, 6, "#4a2410"), _v1719(5, 3, "#4a2410"), _v1719(6, 2, "#4a2410"), _v1719(5, 4, "#ffe2b0")), _v1715 === "chance" && (_v1719(5, 5, "#404040"), _v1719(4, 4, "#404040")), _v1715.startsWith("omen_") && (_v1719(4, 2, "#fff0d0"), _v1719(3, 4, "#e0c070"), _v1719(5, 4, "#e0c070"), _v1719(4, 6, "#8a5ac0"), _v1719(4, 4, "#2a1030")), Si[_v1715] = _v1716, Ye[_v1715] = _v1716.toDataURL());
   }
   (function () {
     let _v1726 = _v1727 => {
@@ -7334,70 +7334,70 @@ hA = function () {
     }, _v1759 = (_v1760, _v1761, _v1762, _v1763, _v1764, _v1765, _v1766) => {
       (_v1741(_v1760, _v1761, _v1762, _v1763, _v1764, _v1765), _v1760(_v1763, _v1764, _v1766), _v1760(_v1763 - 1, _v1764, _v1766), _v1760(_v1763, _v1764 + 1, _v1766));
     };
-    (G.fireball = _v1726(_v1767 => {
+    (W.fireball = _v1726(_v1767 => {
       for (let _v1768 = 0; _v1768 < 6; _v1768++) _v1733(_v1767, 3 + _v1768, 3 + _v1768, 1, _v1768 < 3 ? "#7a2a10" : "#c8401a");
       (_v1733(_v1767, 10, 10, 4, "#e86a20"), _v1733(_v1767, 10, 10, 2, "#ffd060"), _v1767(9, 9, "#fff"));
-    }), G.icespear = _v1726(_v1769 => {
+    }), W.icespear = _v1726(_v1769 => {
       for (let _v1770 = 0; _v1770 < 12; _v1770++) (_v1769(2 + _v1770, 13 - _v1770, "#9fe8ff"), _v1769(3 + _v1770, 13 - _v1770, "#4a8ab8"));
       (_v1769(14, 1, "#fff"), _v1769(13, 2, "#fff"));
-    }), G.arc = _v1726(_v1771 => {
+    }), W.arc = _v1726(_v1771 => {
       let _v1772 = [[2, 2], [6, 5], [4, 8], [9, 10], [7, 13], [13, 14]];
       for (let _v1773 = 0; _v1773 < _v1772.length - 1; _v1773++) _v1741(_v1771, _v1772[_v1773][0], _v1772[_v1773][1], _v1772[_v1773 + 1][0], _v1772[_v1773 + 1][1], "#a8b4ff");
-    }), G.nova = _v1726(_v1774 => {
+    }), W.nova = _v1726(_v1774 => {
       for (let _v1775 = 0; _v1775 < 16; _v1775++) for (let _v1776 = 0; _v1776 < 16; _v1776++) {
         let _v1777 = Math.hypot(_v1776 - 7.5, _v1775 - 7.5);
         _v1777 > 5.2 && _v1777 < 6.8 ? _v1774(_v1776, _v1775, "#8ad8ff") : _v1777 > 3.8 && _v1777 < 5.2 && (_v1776 + _v1775) % 2 && _v1774(_v1776, _v1775, "#3a6a9a");
       }
       _v1733(_v1774, 8, 8, 1, "#e8fbff");
-    }), G.meteor = _v1726(_v1778 => {
+    }), W.meteor = _v1726(_v1778 => {
       for (let _v1779 = 0; _v1779 < 7; _v1779++) (_v1778(13 - _v1779, 2 + _v1779, "#e86a20"), _v1778(14 - _v1779, 2 + _v1779, "#ffb040"));
       (_v1733(_v1778, 6, 10, 3, "#6a4a3a"), _v1733(_v1778, 6, 10, 1, "#ff8a30"));
-    }), G.cyclone = _v1726(_v1780 => {
+    }), W.cyclone = _v1726(_v1780 => {
       for (let _v1781 = 0; _v1781 < 6.2; _v1781 += 0.12) {
         let _v1782 = 1 + _v1781 * 1.05;
         _v1780(Math.round(8 + Math.cos(_v1781 * 1.6) * _v1782), Math.round(8 + Math.sin(_v1781 * 1.6) * _v1782), _v1781 > 4 ? "#e8e2d8" : "#8a8490");
       }
       _v1733(_v1780, 8, 8, 1, "#c8402a");
-    }), G.larrow = _v1726(_v1783 => {
+    }), W.larrow = _v1726(_v1783 => {
       (_v1759(_v1783, 2, 13, 13, 2, "#c8a040", "#fff"), _v1741(_v1783, 9, 3, 11, 6, "#a8b4ff"), _v1741(_v1783, 11, 6, 9, 8, "#a8b4ff"), _v1741(_v1783, 12, 9, 14, 11, "#a8b4ff"));
-    }), G.iceshot = _v1726(_v1784 => {
+    }), W.iceshot = _v1726(_v1784 => {
       _v1759(_v1784, 2, 13, 13, 2, "#5a8ab8", "#e8fbff");
       for (let _v1785 = 0; _v1785 < 5; _v1785++) (_v1784(10 + _v1785 % 3, 6 + _v1785, "#9fe8ff"), _v1784(6 + _v1785, 10 + _v1785 % 2, "#9fe8ff"));
-    }), G.rain = _v1726(_v1786 => {
+    }), W.rain = _v1726(_v1786 => {
       for (let _v1787 = 0; _v1787 < 5; _v1787++) {
         let _v1788 = 2 + _v1787 * 3, _v1789 = 1 + _v1787 % 2 * 3;
         (_v1741(_v1786, _v1788, _v1789, _v1788 + 1, _v1789 + 6, "#c8b890"), _v1786(_v1788 + 1, _v1789 + 7, "#fff"));
       }
       _v1741(_v1786, 0, 14, 15, 14, "#5a4a3a");
-    }), G.javelin = _v1726(_v1790 => {
+    }), W.javelin = _v1726(_v1790 => {
       (_v1741(_v1790, 1, 14, 12, 3, "#c8a040"), _v1741(_v1790, 12, 3, 14, 1, "#fff"), _v1741(_v1790, 8, 2, 10, 5, "#a8b4ff"), _v1741(_v1790, 13, 6, 11, 8, "#a8b4ff"));
-    }), G.thrust = _v1726(_v1791 => {
+    }), W.thrust = _v1726(_v1791 => {
       (_v1741(_v1791, 1, 8, 12, 8, "#9aa4b0"), _v1741(_v1791, 12, 8, 15, 8, "#fff"), _v1791(13, 7, "#fff"), _v1791(13, 9, "#fff"));
       for (let _v1792 = 0; _v1792 < 3; _v1792++) _v1741(_v1791, 2, 4 + _v1792 * 4, 6, 4 + _v1792 * 4, "#5a5060");
-    }), G.whirl = _v1726(_v1793 => {
+    }), W.whirl = _v1726(_v1793 => {
       (_v1750(_v1793, 8, 8, 6, 0, 5.5, "#e0c080"), _v1750(_v1793, 8, 8, 4, 2, 6.2, "#8a7050"), _v1741(_v1793, 8, 8, 14, 8, "#e8eef4"));
-    }), G.flurry = _v1726(_v1794 => {
+    }), W.flurry = _v1726(_v1794 => {
       for (let _v1795 = 0; _v1795 < 3; _v1795++) _v1750(_v1794, 4 + _v1795 * 3, 10, 4, -2.2, -0.6, "#e8e2d8");
       (_v1741(_v1794, 12, 1, 10, 5, "#a8b4ff"), _v1741(_v1794, 10, 5, 12, 6, "#a8b4ff"), _v1741(_v1794, 12, 6, 10, 10, "#a8b4ff"));
-    }), G.thunder = _v1726(_v1796 => {
+    }), W.thunder = _v1726(_v1796 => {
       (_v1741(_v1796, 8, 0, 6, 5, "#a8b4ff"), _v1741(_v1796, 6, 5, 9, 7, "#a8b4ff"), _v1741(_v1796, 9, 7, 7, 11, "#a8b4ff"));
       for (let _v1797 = 1; _v1797 < 15; _v1797++) _v1796(_v1797, 13 + (_v1797 % 3 ? 0 : -1), "#c8a040");
       _v1750(_v1796, 8, 13, 6, 3.4, 6, "#dfe6ff");
-    }), G.glacial = _v1726(_v1798 => {
+    }), W.glacial = _v1726(_v1798 => {
       for (let _v1799 = 0; _v1799 < 4; _v1799++) {
         let _v1800 = 2 + _v1799 * 4, _v1801 = 4 + _v1799 * 2;
         (_v1741(_v1798, _v1800, 14, _v1800 + 1, 14 - _v1801, "#9fe8ff"), _v1798(_v1800 + 1, 14 - _v1801, "#fff"), _v1741(_v1798, _v1800 + 1, 14, _v1800 + 2, 15 - _v1801, "#5a8ab8"));
       }
-    }), G.tsubame = _v1726(_v1802 => {
+    }), W.tsubame = _v1726(_v1802 => {
       (_v1750(_v1802, 8, 9, 6, -2.6, -0.2, "#ffffff"), _v1750(_v1802, 8, 7, 5, 0.4, 2.8, "#f08090"), _v1802(8, 8, "#c03030"));
-    }), G.iai = _v1726(_v1803 => {
+    }), W.iai = _v1726(_v1803 => {
       (_v1741(_v1803, 0, 8, 15, 8, "#ffffff"), _v1741(_v1803, 0, 9, 15, 9, "#7a7a8a"), _v1741(_v1803, 3, 12, 8, 11, "#c03030"), _v1741(_v1803, 8, 11, 13, 10, "#e8eef4"));
-    }), G.windblade = _v1726(_v1804 => {
+    }), W.windblade = _v1726(_v1804 => {
       for (let _v1805 = 0; _v1805 < 3; _v1805++) _v1750(_v1804, 5 + _v1805 * 1, 8, 4 + _v1805 * 2, -0.9, 0.9, _v1805 === 1 ? "#ffffff" : "#a8c8d0");
     }));
   })();
 };
-Le = function (_v1806, _v1807, _v1808, _v1809, _v1810, _v1811, _v1812 = {}) {
+Fe = function (_v1806, _v1807, _v1808, _v1809, _v1810, _v1811, _v1812 = {}) {
   let _v1813 = {
     id: _v1806,
     t: _v1807,
@@ -7406,52 +7406,52 @@ Le = function (_v1806, _v1807, _v1808, _v1809, _v1810, _v1811, _v1812 = {}) {
     stat: _v1810,
     ranges: _v1811,
     w: _v1812.w || 100,
-    lv: _v1812.lv || M3,
+    lv: _v1812.lv || US,
     div: _v1812.div || 1,
     nm: _v1812.nm || "",
     dsec: !!_v1812.dsec,
     fac: _v1812.fac || null,
     pair: Array.isArray(_v1811[0][0])
   };
-  (Yt[_v1806] = _v1813, Gc.push(_v1813));
+  (ta[_v1806] = _v1813, pf.push(_v1813));
 };
-Px = function () {
+s5 = function () {
   AtlasEnsure();
-  let _v1814 = AtlasAvailable(), _v1815 = Yr(), _v1816 = Object.keys(u.done || ({})).length;
+  let _v1814 = AtlasAvailable(), _v1815 = pi(), _v1816 = Object.keys(u.done || ({})).length;
   let _v1817 = (_v1818, _v1819) => {
-    let _v1820 = Hs.find(_v1821 => _v1821.key === _v1818), _v1822 = _v1820 ? _v1820.col : "#c8c8c8";
+    let _v1820 = Ks.find(_v1821 => _v1821.key === _v1818), _v1822 = _v1820 ? _v1820.col : "#c8c8c8";
     let _v1823 = ATLAS_BRANCH_TOTAL[_v1818] || 0;
     let _v1824 = (u.atlas || []).filter(_v1825 => AtlasNode(_v1825) && AtlasNode(_v1825).b === _v1818).length;
     let _v1826 = _v1823 ? Math.round(_v1824 / _v1823 * 100) : 0;
     return `<div style="display:flex;align-items:center;gap:8px;margin:3px 0"><b style="width:58px;color:${_v1822}">${_v1820 ? _v1820.n : _v1819}</b><div style="flex:1;height:8px;background:#1a1620;border:1px solid #2e2834"><div style="width:${_v1826}%;height:100%;background:${_v1822}"></div></div><span class="dim" style="width:60px;text-align:right">${_v1824}/${_v1823}</span></div>`;
   };
   let _v1827 = ATLAS_MAIN_BRANCHES.map(_v1828 => _v1817(_v1828)).join("") + '<div class="dim" style="margin:8px 0 2px">交叉捷径</div>' + ATLAS_SHORTCUTS.map(_v1829 => _v1817(_v1829)).join("");
-  let _v1830 = Hs.map(_v1831 => {
+  let _v1830 = Ks.map(_v1831 => {
     let _v1832 = ATLAS_ALL.filter(_v1833 => _v1833.b === _v1831.key);
     return `<div class="acol" style="--ac:${_v1831.col}"><div class="ahd"><b style="color:${_v1831.col}">${_v1831.n} <small>${_v1832.length} 节点</small></b><p>${_v1831.d}</p></div>${_v1832.map(_v1834 => `<div class="anode${_v1834.tier === "keystone" ? " key" : ""}${AtlasCountAlloc(_v1834.k) ? " on" : ""}" style="cursor:default"><b>${_v1834.n}${_v1834.tier === "keystone" ? " ◆" : _v1834.tier === "sig" ? " ★" : ""}</b><span>${_v1834.d}</span></div>`).join("")}</div>`;
   }).join("");
-  let _v1835 = `<div class="favor"><span class="lab">偏好主题 · 掉落的地图有 50% 是该主题</span>${["", ...Gs].map(_v1836 => `<button class="btn small${(u.favor || "") === _v1836 ? " primary" : ""}" data-act="favor" data-t="${_v1836}" ${_v1836 ? `style="border-color:${ft[_v1836].col}"` : ""}>${_v1836 ? na[_v1836].names[0].slice(0, 2) + " · " + kt[ft[_v1836].boss].n : "不偏好"}</button>`).join("")}</div>`;
+  let _v1835 = `<div class="favor"><span class="lab">偏好主题 · 掉落的地图有 50% 是该主题</span>${["", ..._s].map(_v1836 => `<button class="btn small${(u.favor || "") === _v1836 ? " primary" : ""}" data-act="favor" data-t="${_v1836}" ${_v1836 ? `style="border-color:${gt[_v1836].col}"` : ""}>${_v1836 ? la[_v1836].names[0].slice(0, 2) + " · " + $t[gt[_v1836].boss].n : "不偏好"}</button>`).join("")}</div>`;
   let _v1837 = `<section class="card" style="margin-top:10px"><h3>异界机制 <small>惊悸迷雾 · 驱灵仪式 · 深渊</small></h3><div class="bgrid"><div class="bcard" style="--uc:#cfd8e8"><b>迷雾副本</b><small>70 层 · 每 5 个房间一张图 · 神圣石 · 亢奋</small><p>持久亢奋 <b>${u.delirium || 0}%</b> · 拟像通关 <b>${u.simRuns || 0}</b></p><p class="dim">藏身处进入; 每层首领掉 3 神圣石, 最终首领 ×5 血掉 20; 每完成 20 层 +1 图谱点。</p></div><div class="bcard" style="--uc:#d06a8a"><b>驱灵仪式</b><small>祭坛 · 贡品 · 恩典</small><p>已完成仪式 <b>${u.ritualDone || 0}</b></p><p class="dim">每图 3 座祭坛; 圈内击杀吸收怨灵, 分波复活; 恩典必出具体预兆。</p></div><div class="bcard" style="--uc:#4dff88"><b>深渊</b><small>裂隙 · 巨坑 · 保险箱</small><p>已开启深渊保险箱 <b>${u.abyssDone || 0}</b></p><p class="dim">深渊怪掉落遗存骨; 巫妖血脉稀有怪必掉骨与预兆; 关闭巨坑后升起保险箱。</p></div></div></section>`;
-  return `<div class="at"><div class="ahead card"><div><span class="lab">可用点数</span><b class="big" style="color:#8f9cff">${_v1814}</b><span class="dim"> · 已获得 ${AtlasEarned()} / ${$r} · 已分配 ${AtlasUsed()} / ${ATLAS_SPEND}</span></div><div><span class="lab">当前专精路线</span><b class="big" style="color:${ld(_v1815)}">${id(_v1815)}</b></div><div><span class="lab">图谱完成度</span><b class="big">${_v1816}</b><span class="dim"> / 68</span></div><div class="dim" style="max-width:560px">异界天赋树：点节点需先点亮前置；<b>显著节点（★）</b>还要求同分支已点 ≥2 个小节点；<b>关键节点（◆）</b>两两互斥且花费 2 点。点数来自图谱完成度、异界玩法首通、拟像层数与首领首杀；可获取上限 ${$r}，本期可分配 ${ATLAS_SPEND}，必须取舍。</div><button class="btn small" data-atlas-act="reset">重置全树（神圣石 ×1）</button> <button class="btn small" data-atlas-act="respec">退还单点（混沌石 ×${AtlasRespecCost()}）</button></div>
+  return `<div class="at"><div class="ahead card"><div><span class="lab">可用点数</span><b class="big" style="color:#8f9cff">${_v1814}</b><span class="dim"> · 已获得 ${AtlasEarned()} / ${Br} · 已分配 ${AtlasUsed()} / ${ATLAS_SPEND}</span></div><div><span class="lab">当前专精路线</span><b class="big" style="color:${Od(_v1815)}">${Fd(_v1815)}</b></div><div><span class="lab">图谱完成度</span><b class="big">${_v1816}</b><span class="dim"> / 68</span></div><div class="dim" style="max-width:560px">异界天赋树：点节点需先点亮前置；<b>显著节点（★）</b>还要求同分支已点 ≥2 个小节点；<b>关键节点（◆）</b>两两互斥且花费 2 点。点数来自图谱完成度、异界玩法首通、拟像层数与首领首杀；可获取上限 ${Br}，本期可分配 ${ATLAS_SPEND}，必须取舍。</div><button class="btn small" data-atlas-act="reset">重置全树（神圣石 ×1）</button> <button class="btn small" data-atlas-act="respec">退还单点（混沌石 ×${AtlasRespecCost()}）</button></div>
 		 <section class="card" style="margin-top:10px">${_v1835}</section>
  <section class="card" style="margin-top:10px"><h3>异界天赋树 <small>拖动平移 · 滚轮缩放 · 左键点亮/退还 · 右键看前置链</small></h3><div style="display:grid;grid-template-columns:1fr 240px;gap:10px;align-items:start"><div id="atlasWrap" style="position:relative;min-width:0"><canvas id="atlascv" style="width:100%;height:540px;display:block;background:#0b0a10;border:1px solid #2e2834;cursor:grab;touch-action:none"></canvas><div id="atlasTip" style="display:none;position:absolute;z-index:30;max-width:280px;padding:6px 8px;background:rgba(12,10,16,.96);border:1px solid #4a4058;color:#d8d0c0;font-size:11.5px;line-height:1.5;pointer-events:none;border-radius:3px"></div><div class="dim" style="margin-top:4px">★ 显著节点（同分支 ≥2 小节点） · ◆ 关键节点（2 点，互斥） · 圆点=普通节点</div></div><div>${_v1827}<div class="sep"></div><div class="dim" style="font-size:11px">洗点：点击已点亮节点（混沌石 ×${AtlasRespecCost()}）；重置全树神圣石 ×1。老存档图谱会自动补齐前置。</div></div></div></section>
 		
  <details class="card" style="margin-top:10px"><summary style="cursor:pointer;font-weight:700">节点图鉴 · 全部 ${ATLAS_ALL.length} 个节点（含 6 条主分支与 2 条捷径）</summary><div class="acols" style="margin-top:8px">${_v1830}</div></details>
-		 ${_v1837}<section class="card" style="margin-top:10px">${e1() || '<p class="dim">还没有按路线记录的地图。</p>'}</section></div>`;
+		 ${_v1837}<section class="card" style="margin-top:10px">${U1() || '<p class="dim">还没有按路线记录的地图。</p>'}</section></div>`;
 };
-W7 = function () {
+GL = function () {
   let _v1838 = (_v1839, _v1840, _v1841) => `<button class="btn small" data-act="dbg" data-k="${_v1839}" title="${_v1841 || ""}">${_v1840}</button>`, _v1842 = n.Z && n.Z.type === "map";
   return `<div class="dbg"><section class="card"><h3>调试模式 <small>F9 开关此页</small></h3><p class="dim">所有功能都可以反复点。地图内功能需要先进入地图。</p>
 		 <div class="dsec">角色</div><div class="dbtns">${_v1838("grant", "全部宝石 + 通货 + 点数", "所有主动宝石 20 级 5 孔, 每种辅助 2 颗, 全部精魂与元技能宝石, 通货至少 99, 天赋 +120, 升华 8 点, 图谱点满")}${_v1838("god", u.god ? "无敌: 开" : "无敌: 关")}${_v1838("lv10", "等级 +10")}${_v1838("lv60", "直升 60 级")}${_v1838("sock", "所有主动宝石 5 孔 20 级")}${_v1838("cur999", "全部通货 999999")}${_v1838("trial", "完成全部升华试炼")}${_v1838("atlas", "图谱点满")}${_v1838("cdr", "重置冷却与资源")}${_v1838("charges", "充能满 + 怒火 30")}${_v1838("metafull", "元技能能量满")}${_v1838("perf", "性能面板 (F8)")}</div>
-		 <div class="dsec">满配测试 <small>60 级 · 宝石连好 · 升华与天赋点好 · 顶级稀有装 + 流派传奇 · 直接去试手感</small></div><div class="dbtns">${As.filter(_v1843 => _v1843.cls === u.cls).map(_v1844 => `<button class="btn small primary" data-act="testRig" data-n="${_v1844.n}">满配: ${_v1844.n}</button>`).join("")}</div>
-		 <div class="dsec">流派</div><div class="dbtns">${As.filter(_v1845 => _v1845.cls === u.cls).map(_v1846 => `<button class="btn small" data-act="buildApply" data-n="${_v1846.n}">只套宝石: ${_v1846.n}</button>`).join("")}</div>
+		 <div class="dsec">满配测试 <small>60 级 · 宝石连好 · 升华与天赋点好 · 顶级稀有装 + 流派传奇 · 直接去试手感</small></div><div class="dbtns">${Ls.filter(_v1843 => _v1843.cls === u.cls).map(_v1844 => `<button class="btn small primary" data-act="testRig" data-n="${_v1844.n}">满配: ${_v1844.n}</button>`).join("")}</div>
+		 <div class="dsec">流派</div><div class="dbtns">${Ls.filter(_v1845 => _v1845.cls === u.cls).map(_v1846 => `<button class="btn small" data-act="buildApply" data-n="${_v1846.n}">只套宝石: ${_v1846.n}</button>`).join("")}</div>
 		 <div class="dsec">诊断 / 读屏 <small>截图或导出状态发给开发者</small></div><div class="dbtns"><button class="btn small" data-act="dbg" data-k="shot">保存截图 PNG</button><button class="btn small" data-act="dbg" data-k="diag">导出诊断 JSON</button><button class="btn small" data-act="dbg" data-k="spritedump">列出缺失贴图</button></div>
 		 <div class="dsec">物品</div><div class="dbtns">${_v1838("rares", "10 件稀有装备")}${_v1838("offs", "全部副手与腰带")}${_v1838("uniqs", "全部传奇(计入图鉴)")}${_v1838("maps", "T1–T17 地图各 1")}${_v1838("mapsR", "5 张稀有 T16 地图")}${_v1838("ess", "精华与符文 ×20")}${_v1838("sigils", "四种首领印记 ×1")}${_v1838("souls", "全部兽魂(稀有)")}${_v1838("omens", "全部预兆 ×5")}${_v1838("pet", "千烬灵狐(宠物)")}${_v1838("pinlv", "裂隙之心等级 +1")}</div>
 		 <div class="dsec">地图内 ${_v1842 ? "" : '<small class="neg">· 当前不在地图</small>'}</div><div class="dbtns">${_v1838("clear", "清屏")}${_v1838("boss", "召唤本图主题首领")}${_v1838("enc", "生成本图主题遭遇")}${_v1838("rift", "生成裂隙")}${_v1838("abyss", "生成深渊")}${_v1838("shrine", "生成神龛")}${_v1838("box", "生成宝箱")}${_v1838("pack", "召唤稀有怪群")}${_v1838("crystal", "冰晶柱 ×3")}${_v1838("rain", "通货雨")}${_v1838("divine", "掉一个神圣石")}${_v1838("ape", "召唤焚拳猿王")}${_v1838("stress", "压力测试 +150 怪")}</div>
-		 <div class="dsec">直达首领</div><div class="dbtns">${Gs.map(_v1847 => `<button class="btn small" data-act="dbg" data-k="go_${_v1847}">T10 ${na[_v1847].names[0]} · ${kt[ft[_v1847].boss].n}</button>`).join("")}<button class="btn small" data-act="dbg" data-k="go_pin">裂隙之心 · 虚空之主</button></div></section>
+		 <div class="dsec">直达首领</div><div class="dbtns">${_s.map(_v1847 => `<button class="btn small" data-act="dbg" data-k="go_${_v1847}">T10 ${la[_v1847].names[0]} · ${$t[gt[_v1847].boss].n}</button>`).join("")}<button class="btn small" data-act="dbg" data-k="go_pin">裂隙之心 · 虚空之主</button></div></section>
 		 <section class="card"><h3>说明</h3><p class="dim">推荐流程: 先"全部宝石 + 通货 + 点数", 再"套用"一个流派, 去木桩看机制辅助与元技能能量条; 用"直达首领"测试四位主题首领的机制; 拿到印记后挑战裂隙之心。</p><p class="dim">上方职业条可以随时切换职业: 每个职业一个调试栏位, 切换前自动保存当前角色。<b>万能工匠台</b>可对任意装备增删改词条; <b>地图工坊</b>可开 2–8 倍密度的割草图。</p></section></div>`;
 };
-gM = function (_v1848, _v1849) {
+t$ = function (_v1848, _v1849) {
   return {
     x: _v1848,
     y: _v1849,
@@ -7560,10 +7560,10 @@ gM = function (_v1848, _v1849) {
     bogT: 0
   };
 };
-bc = function (_v1850, _v1851, _v1852, _v1853 = {}) {
+Wc = function (_v1850, _v1851, _v1852, _v1853 = {}) {
   n.del && DeliriumEnd();
-  mM();
-  let _v1854 = hM(_v1850, _v1852);
+  e$();
+  let _v1854 = XT(_v1850, _v1852);
   n.Z = {
     type: _v1851,
     M: _v1850,
@@ -7572,7 +7572,7 @@ bc = function (_v1850, _v1851, _v1852, _v1853 = {}) {
     lights: _v1854.lights,
     lvl: _v1853.lvl || 1,
     tier: _v1853.tier || 0,
-    ms: _v1853.ms || Ps(null),
+    ms: _v1853.ms || Ds(null),
     quant: 0,
     flow: new Int16Array(_v1850.W * _v1850.H).fill(-1),
     q: new Int32Array(_v1850.W * _v1850.H),
@@ -7587,126 +7587,126 @@ bc = function (_v1850, _v1851, _v1852, _v1853 = {}) {
   let _v1855 = document.createElement("canvas");
   (_v1855.width = _v1850.W, _v1855.height = _v1850.H, n.Z.mini = _v1855);
   let _v1856 = _v1850.rooms[0];
-  (n.pl = gM((_v1856.cx + 0.5) * Z, (_v1856.cy + 0.5) * Z), n.omTrig = !1, Va.x = n.pl.x - so / 2, Va.y = n.pl.y - oo / 2);
+  (n.pl = t$((_v1856.cx + 0.5) * K, (_v1856.cy + 0.5) * K), n.omTrig = !1, es.x = n.pl.x - lo / 2, es.y = n.pl.y - co / 2);
 };
-Yi = function () {
-  let _v1857 = uM();
-  (bc(_v1857, "hideout", na.hideout, {
+gl = function () {
+  let _v1857 = YT();
+  (Wc(_v1857, "hideout", la.hideout, {
     lvl: 1
-  }), n.pl.x = 15 * Z + 8, n.pl.y = 13 * Z, n.objs.push({
+  }), n.pl.x = 15 * K + 8, n.pl.y = 13 * K, n.objs.push({
     kind: "device",
-    x: 15 * Z,
-    y: 6 * Z + 8,
+    x: 15 * K,
+    y: 6 * K + 8,
     r: 16
   }), n.objs.push({
     kind: "vendor",
-    x: 9 * Z,
-    y: 6 * Z + 4,
+    x: 9 * K,
+    y: 6 * K + 4,
     r: 14
   }), n.Z.lights.push({
-    x: 9 * Z + 10,
-    y: 6 * Z - 16,
+    x: 9 * K + 10,
+    y: 6 * K - 16,
     r: 70,
     c: "#ffb050",
     i: 0.8,
     torch: 1
   }), n.objs.push({
     kind: "stash",
-    x: 20 * Z + 8,
-    y: 6 * Z + 6,
+    x: 20 * K + 8,
+    y: 6 * K + 6,
     r: 12
   }), n.objs.push({
     kind: "bench",
-    x: 11 * Z,
-    y: 11 * Z,
+    x: 11 * K,
+    y: 11 * K,
     r: 16
   }), n.Z.lights.push({
-    x: 11 * Z - 2,
-    y: 11 * Z - 20,
+    x: 11 * K - 2,
+    y: 11 * K - 20,
     r: 60,
     c: "#ff8a3a",
     i: 0.38,
     torch: 1
   }), n.objs.push({
     kind: "altar",
-    x: 19 * Z,
-    y: 11 * Z,
+    x: 19 * K,
+    y: 11 * K,
     r: 14
   }), n.objs.push({
     kind: "well",
-    x: 24 * Z,
-    y: 16 * Z,
+    x: 24 * K,
+    y: 16 * K,
     r: 12
   }), n.objs.push({
     kind: "simulacrum",
-    x: 27 * Z,
-    y: 11 * Z,
+    x: 27 * K,
+    y: 11 * K,
     r: 14
   }), n.Z.lights.push({
-    x: 23 * Z,
-    y: 14 * Z - 12,
+    x: 23 * K,
+    y: 14 * K - 12,
     r: 55,
     c: "#7dff9a",
     i: 0.6
   }), n.Z.lights.push({
-    x: 27 * Z,
-    y: 11 * Z - 12,
+    x: 27 * K,
+    y: 11 * K - 12,
     r: 55,
     c: "#b48cff",
     i: 0.7
   }), n.Z.lights.push({
-    x: 19 * Z,
-    y: 11 * Z - 22,
+    x: 19 * K,
+    y: 11 * K - 22,
     r: 58,
     c: "#ff4a20",
     i: 0.42,
     torch: 1
   }), n.objs.push({
     kind: "monument",
-    x: 25 * Z + 8,
-    y: 7 * Z + 12,
+    x: 25 * K + 8,
+    y: 7 * K + 12,
     r: 12
   }), n.Z.lights.push({
-    x: 25 * Z + 8,
-    y: 7 * Z - 10,
+    x: 25 * K + 8,
+    y: 7 * K - 10,
     r: 62,
     c: "#ffb050",
     i: 0.55,
     torch: 1
   }), n.objs.push({
     kind: "dog",
-    x: 5 * Z + 6,
-    y: 11 * Z + 8,
+    x: 5 * K + 6,
+    y: 11 * K + 8,
     r: 8
   }), n.objs.push({
     kind: "tgate",
-    x: 5 * Z + 8,
-    y: 15 * Z + 4,
+    x: 5 * K + 8,
+    y: 15 * K + 4,
     r: 14
   }), n.objs.push({
     kind: "stele",
-    x: 9 * Z + 8,
-    y: 15 * Z + 6,
+    x: 9 * K + 8,
+    y: 15 * K + 6,
     r: 10
   }));
-  let _v1858 = et("dummy", 23 * Z, 10 * Z, 1, 0);
+  let _v1858 = nt("dummy", 23 * K, 10 * K, 1, 0);
   (_v1858.dummy = !0, _v1858.log = [], n.mons.push(_v1858));
-  let _v1859 = et("dummy", 24 * Z, 13 * Z, 1, 2);
+  let _v1859 = nt("dummy", 24 * K, 13 * K, 1, 2);
   (_v1859.dummy = !0, _v1859.log = [], _v1859.name = "精英木桩", n.mons.push(_v1859), n.objs.push({
     kind: "fire",
-    x: 7 * Z,
-    y: 10 * Z
+    x: 7 * K,
+    y: 10 * K
   }), n.Z.lights.push({
-    x: 7 * Z,
-    y: 10 * Z,
+    x: 7 * K,
+    y: 10 * K,
     r: 110,
     c: "#ff9a40",
     i: 1,
     torch: 1
-  }), u.flask.forEach(_v1860 => _v1860.ch = _v1860.max), n.state = "play", al(), Xe());
+  }), u.flask.forEach(_v1860 => _v1860.ch = _v1860.max), n.state = "play", kl(), Xe());
 };
-Di = function (_v1861, _v1862) {
-  let _v1863 = na[_v1861.theme], _v1864 = Ps(_v1861), _v1865 = _v1861.dbg || null, _v1866 = n.endlessMode ? 0 : Math.max(1, Math.min(100, Math.round(n.mapIntensity || 1)));
+Xi = function (_v1861, _v1862) {
+  let _v1863 = la[_v1861.theme], _v1864 = Ds(_v1861), _v1865 = _v1861.dbg || null, _v1866 = n.endlessMode ? 0 : Math.max(1, Math.min(100, Math.round(n.mapIntensity || 1)));
   if (!n.endlessMode) {
     _v1864.mods.monLife = (_v1864.mods.monLife || 0) + _v1866 * 1000;
     _v1864.quant += _v1866 * 70;
@@ -7717,15 +7717,15 @@ Di = function (_v1861, _v1862) {
     ..._v1863,
     torchCh: _v1865.torch
   });
-  let [_v1868, _v1869] = _v1865 && _v1865.rooms ? _v1865.rooms : [14, 17], _v1870 = _v1862 || (Ur(fe(_v1868, _v1869)));
-  for (let _v1871 = 0; !_v1862 && !n.endlessMode && _v1871 < 20 && _v1870.rooms.length < Math.min(7, _v1868 - 3); _v1871++) _v1870 = Ur(fe(_v1868, _v1869));
-  (bc(_v1870, "map", _v1863, {
-    lvl: Mo(_v1861.tier),
+  let [_v1868, _v1869] = _v1865 && _v1865.rooms ? _v1865.rooms : [14, 17], _v1870 = _v1862 || (ai(de(_v1868, _v1869)));
+  for (let _v1871 = 0; !_v1862 && !n.endlessMode && _v1871 < 20 && _v1870.rooms.length < Math.min(7, _v1868 - 3); _v1871++) _v1870 = ai(de(_v1868, _v1869));
+  (Wc(_v1870, "map", _v1863, {
+    lvl: Ro(_v1861.tier),
     tier: _v1861.tier,
     ms: _v1864,
     map: _v1861
-  }), n.Z.dens = _v1865 && _v1865.dens || 1, n.Z.quant = _v1864.quant, bM(), n.run = {
-    route: Yr(),
+  }), n.Z.dens = _v1865 && _v1865.dens || 1, n.Z.quant = _v1864.quant, a$(), n.run = {
+    route: pi(),
     name: "T" + _v1861.tier + " " + _v1861.name,
     tier: _v1861.tier,
     rarity: _v1861.rarity,
@@ -7743,60 +7743,60 @@ Di = function (_v1861, _v1862) {
     bossDead: !1,
     died: !1,
     filtered: 0
-  }, n.state = "play", W("map:enter", {
+  }, n.state = "play", G("map:enter", {
     m: _v1861
-  }), al(), ke("T" + _v1861.tier + " · " + _v1861.name, "区域等级 " + n.Z.lvl + " · 强度 " + _v1866 + " · 怪物生命 +" + _v1866 * 1000 + "% · 怪物元素抗性 +" + Math.min(75, _v1866 * 10) + "%（上限 75%）· 物品数量 +" + _v1866 * 70 + "% · 物品稀有度 +" + _v1866 * 70 + "%（地图总数量 +" + _v1864.quant + "% / 总稀有度 +" + _v1864.rar + "%）"));
+  }), kl(), ke("T" + _v1861.tier + " · " + _v1861.name, "区域等级 " + n.Z.lvl + " · 强度 " + _v1866 + " · 怪物生命 +" + _v1866 * 1000 + "% · 怪物元素抗性 +" + Math.min(75, _v1866 * 10) + "%（上限 75%）· 物品数量 +" + _v1866 * 70 + "% · 物品稀有度 +" + _v1866 * 70 + "%（地图总数量 +" + _v1864.quant + "% / 总稀有度 +" + _v1864.rar + "%）"));
 };
-bM = function () {
-  let _v1872 = n.Z.M, _v1873 = n.Z.ms.mods, _v1874 = n.Z.dens || 1, _v1875 = Math.sqrt(_v1874), _v1876 = (1 + (_v1873.packSize || 0) / 100) * Ce.spawn.sizeMul * _v1875, _v1877 = Ce.spawn.packMul * _v1875, _v1878 = _v1879 => {
+a$ = function () {
+  let _v1872 = n.Z.M, _v1873 = n.Z.ms.mods, _v1874 = n.Z.dens || 1, _v1875 = Math.sqrt(_v1874), _v1876 = (1 + (_v1873.packSize || 0) / 100) * Ie.spawn.sizeMul * _v1875, _v1877 = Ie.spawn.packMul * _v1875, _v1878 = _v1879 => {
     let _v1880 = _v1879 * _v1877;
-    return Math.floor(_v1880) + (E() < _v1880 % 1 ? 1 : 0);
+    return Math.floor(_v1880) + (I() < _v1880 % 1 ? 1 : 0);
   };
   _v1872.rooms.forEach((_v1881, _v1882) => {
     if (_v1882 === 0) return;
     if (_v1881.boss) {
-      let _v1883 = (_v1881.cx + 0.5) * Z, _v1884 = (_v1881.cy + 0.5) * Z;
+      let _v1883 = (_v1881.cx + 0.5) * K, _v1884 = (_v1881.cy + 0.5) * K;
       try {
         let _v1885 = 0;
         while (_v1885++ < 80 && (!AbyssFloorOK(_v1883, _v1884) || AbyssWallGap(_v1883, _v1884) < 34)) {
-          let _v1886 = Xr(_v1881);
+          let _v1886 = ui(_v1881);
           _v1883 = _v1886.x;
           _v1884 = _v1886.y;
         }
       } catch (_v1887) {}
-      let _v1888 = et((ft[n.Z.th.key] || ({})).boss || "boss", _v1883, _v1884, n.Z.lvl + 2, 3);
-      (n.Z.boss = _v1888, n.mons.push(_v1888), mc(_v1881, Math.round(4 * Math.min(2, _v1875))));
+      let _v1888 = nt((gt[n.Z.th.key] || ({})).boss || "boss", _v1883, _v1884, n.Z.lvl + 2, 3);
+      (n.Z.boss = _v1888, n.mons.push(_v1888), Dc(_v1881, Math.round(4 * Math.min(2, _v1875))));
       return;
     }
-    let _v1889 = _v1878(fe(1, 3) + (_v1881.w * _v1881.h > 110 ? 1 : 0));
-    for (let _v1890 = 0; _v1890 < _v1889 && n.mons.length < Ce.spawn.cap; _v1890++) mc(_v1881, Math.round(fe(4, 8) * _v1876));
+    let _v1889 = _v1878(de(1, 3) + (_v1881.w * _v1881.h > 110 ? 1 : 0));
+    for (let _v1890 = 0; _v1890 < _v1889 && n.mons.length < Ie.spawn.cap; _v1890++) Dc(_v1881, Math.round(de(4, 8) * _v1876));
   });
   let _v1891 = _v1872.rooms.filter((_v1892, _v1893) => _v1893 > 0 && !_v1892.boss);
   if (!_v1891.length) return;
-  let _v1894 = (E() < 0.55 ? 1 : 0) + (_v1873.boxes || 0) + (ne("box1") ? 1 : 0) + (ne("box5") ? 2 : 0), _v1895 = Math.max(0, Math.round(((E() < 0.35 ? 1 : 0) + (_v1873.rifts || 0) + (ne("rift1") ? 1 : 0)) * AtlasContentMul()));
-  if (ne("sust5")) {
-    let _v1896 = Xr(ae(_v1891));
+  let _v1894 = (I() < 0.55 ? 1 : 0) + (_v1873.boxes || 0) + (re("box1") ? 1 : 0) + (re("box5") ? 2 : 0), _v1895 = Math.max(0, Math.round(((I() < 0.35 ? 1 : 0) + (_v1873.rifts || 0) + (re("rift1") ? 1 : 0)) * AtlasContentMul()));
+  if (re("sust5")) {
+    let _v1896 = ui(oe(_v1891));
     n.objs.push({
       kind: "shrine",
       x: _v1896.x,
       y: _v1896.y,
-      type: ae(as).k,
+      type: oe(is).k,
       used: !1
     });
   }
   for (let _v1897 = 0; _v1897 < _v1894; _v1897++) {
-    let _v1898 = Xr(ae(_v1891));
+    let _v1898 = ui(oe(_v1891));
     n.objs.push({
       kind: "box",
       x: _v1898.x,
       y: _v1898.y,
       r: 6,
       open: !1,
-      ornate: ne("box3") && E() < 0.25
+      ornate: re("box3") && I() < 0.25
     });
   }
   for (let _v1899 = 0; _v1899 < _v1895; _v1899++) {
-    let _v1900 = Xr(ae(_v1891));
+    let _v1900 = ui(oe(_v1891));
     n.objs.push({
       kind: "rift",
       x: _v1900.x,
@@ -7808,12 +7808,12 @@ bM = function () {
       spT: 0
     });
   }
-  if (E() < (0.42 + (ne("aby1") ? 0.15 : 0) + (n.Z.tier >= 11 ? 0.15 : 0)) * AtlasContentMul()) {
-    let _v1901 = Xr(ae(_v1891));
+  if (I() < (0.42 + (re("aby1") ? 0.15 : 0) + (n.Z.tier >= 11 ? 0.15 : 0)) * AtlasContentMul()) {
+    let _v1901 = ui(oe(_v1891));
     n.objs.push(AbyssMake(_v1901.x, _v1901.y));
   }
-  if (E() < BAL.mirrorChance * AtlasContentMul()) {
-    let _v1902 = _v1872.rooms && _v1872.rooms[0] ? Xr(_v1872.rooms[0]) : Xr(ae(_v1891));
+  if (I() < BAL.mirrorChance * AtlasContentMul()) {
+    let _v1902 = _v1872.rooms && _v1872.rooms[0] ? ui(_v1872.rooms[0]) : ui(oe(_v1891));
     n.objs.push({
       kind: "mirror",
       x: _v1902.x,
@@ -7822,46 +7822,46 @@ bM = function () {
       st: "idle"
     });
   }
-  let _v1903 = Math.max(1, Math.round((3 + (ne("rit1") ? 1 : 0) + (n.Z.tier >= 11 && E() < 0.5 ? 1 : 0)) * AtlasContentMul())), _v1904 = _v1891.filter(_v1905 => !_v1905.boss), _v1906 = [];
+  let _v1903 = Math.max(1, Math.round((3 + (re("rit1") ? 1 : 0) + (n.Z.tier >= 11 && I() < 0.5 ? 1 : 0)) * AtlasContentMul())), _v1904 = _v1891.filter(_v1905 => !_v1905.boss), _v1906 = [];
   for (let _v1907 = 0; _v1907 < _v1903; _v1907++) {
-    let _v1908 = _v1904.find(_v1909 => !_v1906.includes(_v1909)) || _v1904[_v1907 % Math.max(1, _v1904.length)] || ae(_v1891);
+    let _v1908 = _v1904.find(_v1909 => !_v1906.includes(_v1909)) || _v1904[_v1907 % Math.max(1, _v1904.length)] || oe(_v1891);
     (_v1906.push(_v1908), 0);
-    let _v1910 = Xr(_v1908);
+    let _v1910 = ui(_v1908);
     n.objs.push(RitualMake(_v1910.x, _v1910.y));
   }
   let _v1911 = _v1872.rooms.find(_v1912 => _v1912.boss);
-  if (_v1911 && E() < BAL.ritualBossChance + (ne("rit7") ? 0.15 : 0)) {
-    let _v1913 = Xr(_v1911), _v1914 = RitualMake(_v1913.x, _v1913.y);
+  if (_v1911 && I() < BAL.ritualBossChance + (re("rit7") ? 0.15 : 0)) {
+    let _v1913 = ui(_v1911), _v1914 = RitualMake(_v1913.x, _v1913.y);
     _v1914.bossAltar = !0;
     n.objs.push(_v1914);
   }
   try {
     JewelMapDrop(_v1872);
   } catch (_v1915) {}
-  Tp();
+  lu();
 };
-hw = function (_v1916) {
+B5 = function (_v1916) {
   let _v1917 = _v1916.x, _v1918 = _v1916.y, _v1919 = _v1916.mult || 1, _v1920 = _v1916.encBox;
-  if ((kc(_v1917, _v1918, 8 * _v1919, 40), _v1920 === "crypt")) {
-    for (let _v1921 = 0; _v1921 < Math.round(3 * _v1919); _v1921++) de(_v1917, _v1918, {
+  if ((Hc(_v1917, _v1918, 8 * _v1919, 40), _v1920 === "crypt")) {
+    for (let _v1921 = 0; _v1921 < Math.round(3 * _v1919); _v1921++) ue(_v1917, _v1918, {
       kind: "it",
-      it: y1()
+      it: fg()
     });
-    E() < 0.25 * _v1919 && de(_v1917, _v1918, {
+    I() < 0.25 * _v1919 && ue(_v1917, _v1918, {
       kind: "it",
-      it: ar(ae(Object.keys(We)))
+      it: ur(oe(Object.keys(Ze)))
     });
   }
   if (_v1920 === "lava") {
-    let _v1922 = vt.filter(_v1923 => z[_v1923].grp === "rune" || z[_v1923].grp === "ess");
-    for (let _v1924 = 0; _v1924 < Math.round(4 * _v1919); _v1924++) de(_v1917, _v1918, {
+    let _v1922 = Tt.filter(_v1923 => q[_v1923].grp === "rune" || q[_v1923].grp === "ess");
+    for (let _v1924 = 0; _v1924 < Math.round(4 * _v1919); _v1924++) ue(_v1917, _v1918, {
       kind: "cur",
-      cur: ae(_v1922)
+      cur: oe(_v1922)
     });
   }
-  if (_v1920 === "ice") for (let _v1925 = 0; _v1925 < Math.round(5 * _v1919); _v1925++) de(_v1917, _v1918, {
+  if (_v1920 === "ice") for (let _v1925 = 0; _v1925 < Math.round(5 * _v1919); _v1925++) ue(_v1917, _v1918, {
     kind: "cur",
-    cur: lt(["chaos", "regal", "exalt", "vaal", "jewel2", "divine"], _v1926 => ({
+    cur: ht(["chaos", "regal", "exalt", "vaal", "jewel2", "divine"], _v1926 => ({
       chaos: 30,
       regal: 20,
       exalt: 6,
@@ -7871,74 +7871,74 @@ hw = function (_v1916) {
     })[_v1926])
   });
   if (_v1920 === "swamp") {
-    if (E() < 0.35 * _v1919) {
-      let _v1927 = pt.filter(_v1928 => _v1928.src === "world" && !_v1928.noDrop && _v1928.lv <= n.Z.lvl + 5);
-      _v1927.length && de(_v1917, _v1918, {
+    if (I() < 0.35 * _v1919) {
+      let _v1927 = yt.filter(_v1928 => _v1928.src === "world" && !_v1928.noDrop && _v1928.lv <= n.Z.lvl + 5);
+      _v1927.length && ue(_v1917, _v1918, {
         kind: "it",
-        it: Ut(ae(_v1927), n.Z.lvl)
+        it: Kt(oe(_v1927), n.Z.lvl)
       });
     }
     for (let _v1929 = 0; _v1929 < 2; _v1929++) {
-      let _v1930 = Et(ae(Ea.filter(_v1931 => _v1931.lv <= n.Z.lvl)), n.Z.lvl, 2);
-      de(_v1917, _v1918, {
+      let _v1930 = Ft(oe(Pa.filter(_v1931 => _v1931.lv <= n.Z.lvl)), n.Z.lvl, 2);
+      ue(_v1917, _v1918, {
         kind: "it",
         it: _v1930
       });
     }
   }
 };
-bw = function (_v1932) {
+q5 = function (_v1932) {
   if (!n.Z || n.Z.type !== "map") return;
   if (n.Z.pin) {
     let _v1933 = u.pinLv;
     (u.pinKills = (u.pinKills || 0) + 1, u.pinBest = Math.max(u.pinBest || 0, _v1933));
-    for (let _v1934 = 0; _v1934 < 2 + Math.floor(_v1933 / 3); _v1934++) de(_v1932.x, _v1932.y, {
+    for (let _v1934 = 0; _v1934 < 2 + Math.floor(_v1933 / 3); _v1934++) ue(_v1932.x, _v1932.y, {
       kind: "cur",
       cur: "divine"
     });
-    for (let _v1935 = 0; _v1935 < 3; _v1935++) de(_v1932.x, _v1932.y, {
+    for (let _v1935 = 0; _v1935 < 3; _v1935++) ue(_v1932.x, _v1932.y, {
       kind: "cur",
       cur: "exalt"
     });
-    kc(_v1932.x, _v1932.y, 25 + _v1933 * 3, 150);
-    let _v1936 = pt.filter(_v1937 => _v1937.src === "void" && !_v1937.noDrop), _v1938 = 0;
-    for (let _v1939 of _v1936) E() < 0.25 + 0.03 * _v1933 && (de(_v1932.x, _v1932.y, {
+    Hc(_v1932.x, _v1932.y, 25 + _v1933 * 3, 150);
+    let _v1936 = yt.filter(_v1937 => _v1937.src === "void" && !_v1937.noDrop), _v1938 = 0;
+    for (let _v1939 of _v1936) I() < 0.25 + 0.03 * _v1933 && (ue(_v1932.x, _v1932.y, {
       kind: "it",
-      it: Ut(_v1939, n.Z.lvl)
+      it: Kt(_v1939, n.Z.lvl)
     }), _v1938++);
     if (!_v1938) {
       let _v1940 = _v1936.filter(_v1941 => !u.codex[_v1941.id]);
-      de(_v1932.x, _v1932.y, {
+      ue(_v1932.x, _v1932.y, {
         kind: "it",
-        it: Ut(ae(_v1940.length ? _v1940 : _v1936), n.Z.lvl)
+        it: Kt(oe(_v1940.length ? _v1940 : _v1936), n.Z.lvl)
       });
     }
-    (u.pinKills === 1 && (u.atlasPts = Math.min($r, u.atlasPts + 3)), u.pinLv = Math.min(10, _v1933 + 1), setTimeout(() => ke("虚空之主 已陨落", "裂隙之心 等级提升至 " + u.pinLv), 1500), vc());
+    (u.pinKills === 1 && (u.atlasPts = Math.min(Br, u.atlasPts + 3)), u.pinLv = Math.min(10, _v1933 + 1), setTimeout(() => ke("虚空之主 已陨落", "裂隙之心 等级提升至 " + u.pinLv), 1500), Nc());
     return;
   }
   let _v1942 = n.Z.th.key, _v1943 = n.Z.tier, _v1944 = _v1942 + ":" + _v1943;
-  (u.done = u.done || ({}), u.done[_v1944] || (u.done[_v1944] = 1, u.atlasPts < $r && (u.atlasPts++, setTimeout(() => I("图谱完成度 +1 · 图谱点 +1 (按 U)"), 2400))), u.bestTier = Math.max(u.bestTier || 0, _v1943));
+  (u.done = u.done || ({}), u.done[_v1944] || (u.done[_v1944] = 1, u.atlasPts < Br && (u.atlasPts++, setTimeout(() => P("图谱完成度 +1 · 图谱点 +1 (按 U)"), 2400))), u.bestTier = Math.max(u.bestTier || 0, _v1943));
   let _v1945 = !(u.bossKills[_v1942] > 0);
-  if ((u.bossKills[_v1942] = (u.bossKills[_v1942] || 0) + 1, u.bossBest[_v1942] = Math.max(u.bossBest[_v1942] || 0, _v1943), _v1943 >= 6 && E() < 0.35 * (ne("enc4") ? 1.5 : 1) * (_v1932.awake ? 2 : 1) && de(_v1932.x, _v1932.y, {
+  if ((u.bossKills[_v1942] = (u.bossKills[_v1942] || 0) + 1, u.bossBest[_v1942] = Math.max(u.bossBest[_v1942] || 0, _v1943), _v1943 >= 6 && I() < 0.35 * (re("enc4") ? 1.5 : 1) * (_v1932.awake ? 2 : 1) && ue(_v1932.x, _v1932.y, {
     kind: "cur",
-    cur: Bd[_v1942]
+    cur: u0[_v1942]
   }), _v1943 >= 4)) {
-    let _v1946 = pt.filter(_v1947 => _v1947.src === _v1942), _v1948 = 0;
-    for (let _v1949 of _v1946) E() < 0.12 * (ne("enc5") ? 1.5 : 1) * (_v1932.awake ? 2 : 1) && (de(_v1932.x, _v1932.y, {
+    let _v1946 = yt.filter(_v1947 => _v1947.src === _v1942), _v1948 = 0;
+    for (let _v1949 of _v1946) I() < 0.12 * (re("enc5") ? 1.5 : 1) * (_v1932.awake ? 2 : 1) && (ue(_v1932.x, _v1932.y, {
       kind: "it",
-      it: Ut(_v1949, n.Z.lvl)
+      it: Kt(_v1949, n.Z.lvl)
     }), _v1948++);
     if (!_v1948 && _v1945) {
       let _v1950 = _v1946.filter(_v1951 => !u.codex[_v1951.id]);
-      _v1950.length && (de(_v1932.x, _v1932.y, {
+      _v1950.length && (ue(_v1932.x, _v1932.y, {
         kind: "it",
-        it: Ut(ae(_v1950), n.Z.lvl)
-      }), setTimeout(() => I("首杀奖励: 专属传奇"), 1800));
+        it: Kt(oe(_v1950), n.Z.lvl)
+      }), setTimeout(() => P("首杀奖励: 专属传奇"), 1800));
     }
   }
-  vc();
+  Nc();
 };
-X = function (_v1952, _v1953, _v1954, _v1955 = 1, _v1956 = {}) {
+ae = function (_v1952, _v1953, _v1954, _v1955 = 1, _v1956 = {}) {
   if (_v1952.dead || _v1952.inv) return 0;
   let _v1957 = _v1953.fixed != null, _v1958 = {
     m: _v1952,
@@ -7952,35 +7952,35 @@ X = function (_v1952, _v1953, _v1954, _v1955 = 1, _v1956 = {}) {
     amt: 0,
     k: 1
   };
-  if (_v1957) (_v1958.amt = _v1953.fixed * (1 - Gr(_v1952, _v1953.el, _v1953) / 100), _v1958.dom = _v1953.el, _v1953.critHit && (_v1958.crit = !0)); else {
+  if (_v1957) (_v1958.amt = _v1953.fixed * (1 - Yr(_v1952, _v1953.el, _v1953) / 100), _v1958.dom = _v1953.el, _v1953.critHit && (_v1958.crit = !0)); else {
     let _v1959 = _v1958.by = {};
-    for (let _v1960 of En) {
+    for (let _v1960 of On) {
       let _v1961 = _v1953.dmg[_v1960];
-      _v1961[1] <= 0 || (_v1959[_v1960] = (_v1961[0] + (_v1961[1] - _v1961[0]) * E()) * (1 - Gr(_v1952, _v1960, _v1953) / 100));
+      _v1961[1] <= 0 || (_v1959[_v1960] = (_v1961[0] + (_v1961[1] - _v1961[0]) * I()) * (1 - Yr(_v1952, _v1960, _v1953) / 100));
     }
-    W("hit:base", _v1958);
+    G("hit:base", _v1958);
     let _v1962 = 0;
     for (let _v1963 in _v1958.by) (_v1958.amt += _v1958.by[_v1963], _v1958.by[_v1963] > _v1962 && (_v1962 = _v1958.by[_v1963], _v1958.dom = _v1963));
-    let _v1964 = W("hit:crit", {
+    let _v1964 = G("hit:crit", {
       m: _v1952,
       c: _v1953,
       src: _v1954,
       cc: _v1953.crit,
       force: !!(_v1954 && (_v1954.sheathe && _v1953.isAtk || _v1954.perfect)) || n.pl.critNextT > 0
     });
-    if ((_v1958.crit = !_v1953.noCrit && (_v1964.force || E() < Math.min(0.95, _v1964.cc)), _v1958.crit)) {
+    if ((_v1958.crit = !_v1953.noCrit && (_v1964.force || I() < Math.min(0.95, _v1964.cc)), _v1958.crit)) {
       _v1958.amt *= _v1953.multi;
       for (let _v1965 in _v1959) _v1959[_v1965] *= _v1953.multi;
     }
   }
-  (_v1958.k = _v1955 * (1 + (_v1952.shockT > 0 ? _v1952.shockAmt : 0)), _v1952.stunT > 0 && (_v1958.k *= 1.25), !_v1957 && _v1954 && _v1954.sheathe && _v1953.isAtk && (_v1958.k *= W("hit:sheathe", {
+  (_v1958.k = _v1955 * (1 + (_v1952.shockT > 0 ? _v1952.shockAmt : 0)), _v1952.stunT > 0 && (_v1958.k *= 1.25), !_v1957 && _v1954 && _v1954.sheathe && _v1953.isAtk && (_v1958.k *= G("hit:sheathe", {
     m: _v1952,
     c: _v1953,
     src: _v1954,
     mult: 1.4 + (n.S.a.sheathe || 0) / 100
-  }).mult), W("hit:mods", _v1958), _v1958.amt *= _v1958.k * DelDRMul(), W("hit:land", _v1958));
+  }).mult), G("hit:mods", _v1958), _v1958.amt *= _v1958.k * DelDRMul(), G("hit:land", _v1958));
   let _v1966 = _v1958.o, _v1967 = _v1958.crit, _v1968 = _v1958.dom, _v1969 = _v1958.by, _v1970 = _v1966.weight || "light", _v1971 = _v1966.dir != null ? _v1966.dir : Math.atan2(_v1952.y - n.pl.y, _v1952.x - n.pl.x);
-  if ((_v1952.flash = _v1966.quiet ? Math.max(_v1952.flash, 0.03) : 0.09, _v1952.aggro = !0, _v1952.dummy)) return (W("hit:dummy", _v1958), _v1952.log.push([n.T, _v1958.amt]), H(_v1952.x, _v1952.y - _v1952.h - 2, _v1958.amt, _v1967, _v1968), ww(_v1952, _v1958.amt, _v1967, _v1970, _v1971, _v1966), _v1958.amt);
+  if ((_v1952.flash = _v1966.quiet ? Math.max(_v1952.flash, 0.03) : 0.09, _v1952.aggro = !0, _v1952.dummy)) return (G("hit:dummy", _v1958), _v1952.log.push([n.T, _v1958.amt]), U(_v1952.x, _v1952.y - _v1952.h - 2, _v1958.amt, _v1967, _v1968), _5(_v1952, _v1958.amt, _v1967, _v1970, _v1971, _v1966), _v1958.amt);
   if ((_v1952.hp -= _v1958.amt, _v1952.rar < 3)) {
     let _v1972 = Math.min(1, _v1958.amt / _v1952.maxhp), _v1973 = (({
       light: 14,
@@ -7992,21 +7992,21 @@ X = function (_v1952, _v1953, _v1954, _v1955 = 1, _v1956 = {}) {
     };
     _v1970 === "heavy" || _v1970 === "super" ? n.releaseQ.push(_v1974) : _v1974();
   }
-  if ((_v1969 && !_v1953.noAil && fE(_v1958), !_v1957 && !n.Z.ms.mods.noLeech)) {
-    let _v1975 = W("hit:leech", {
+  if ((_v1969 && !_v1953.noAil && fI(_v1958), !_v1957 && !n.Z.ms.mods.noLeech)) {
+    let _v1975 = G("hit:leech", {
       m: _v1952,
       c: _v1953,
       lch: n.S.leech
     });
     _v1975.lch > 0 && (n.pl.hp = Math.min(n.S.maxLife, n.pl.hp + Math.min(_v1958.amt * _v1975.lch, n.S.maxLife * 0.025)));
   }
-  return (n.Z.ms.mods.reflect && _v1968 !== "phys" && !_v1957 && (n.pl.reflect += _v1958.amt * n.Z.ms.mods.reflect / 100), !_v1957 && _v1953.isAtk && n.pl.hitN++, W("hit:after", _v1958), (!_v1966.quiet || _v1967) && H(_v1952.x, _v1952.y - _v1952.h - 2, _v1958.amt, _v1967, _v1968), ww(_v1952, _v1958.amt, _v1967, _v1970, _v1971, _v1966), L(_v1952.x, _v1952.y, _v1967 ? 8 : 3, cE[_v1968], _v1967 ? 90 : 50, 0.3, {
+  return (n.Z.ms.mods.reflect && _v1968 !== "phys" && !_v1957 && (n.pl.reflect += _v1958.amt * n.Z.ms.mods.reflect / 100), !_v1957 && _v1953.isAtk && n.pl.hitN++, G("hit:after", _v1958), (!_v1966.quiet || _v1967) && U(_v1952.x, _v1952.y - _v1952.h - 2, _v1958.amt, _v1967, _v1968), _5(_v1952, _v1958.amt, _v1967, _v1970, _v1971, _v1966), E(_v1952.x, _v1952.y, _v1967 ? 8 : 3, cI[_v1968], _v1967 ? 90 : 50, 0.3, {
     z: _v1952.h * 0.5,
     g: 60,
     glow: _v1968 !== "phys",
     dir: _v1971,
     spread: 1.2
-  }), _v1952.hp <= 0 && Qr(_v1952, _v1954, {
+  }), _v1952.hp <= 0 && di(_v1952, _v1954, {
     dir: _v1971,
     weight: _v1970,
     ign: !!_v1952.ign,
@@ -8016,14 +8016,14 @@ X = function (_v1952, _v1953, _v1954, _v1955 = 1, _v1956 = {}) {
     frozen: _v1952.frozen > 0
   }), _v1958.amt);
 };
-ww = function (_v1976, _v1977, _v1978, _v1979, _v1980, _v1981) {
+_5 = function (_v1976, _v1977, _v1978, _v1979, _v1980, _v1981) {
   let _v1982 = Math.min(1, _v1977 / _v1976.maxhp);
   (_v1976.stun += _v1982 * ({
     light: 0.7,
     mid: 1.9,
     heavy: 3.2,
     super: 5
-  })[_v1979] * (_v1976.rar === 3 ? 0.45 : 1) * (_v1978 ? 1.3 : 1) * (_v1981.stunMul || 1), _v1976.stun >= 1 && _v1976.stunT <= 0 && _v1976.rar >= 1 && (_v1976.stun = 0, _v1976.stunT = _v1976.rar === 3 ? 1.1 : 1.7, _v1976.dummy || (_v1976.state = "chase"), _v1976.rar >= 2 && H(_v1976.x, _v1976.y - _v1976.h - 10, 0, !1, "gold", "重击晕眩", !0), T("stun"), W("stun", {
+  })[_v1979] * (_v1976.rar === 3 ? 0.45 : 1) * (_v1978 ? 1.3 : 1) * (_v1981.stunMul || 1), _v1976.stun >= 1 && _v1976.stunT <= 0 && _v1976.rar >= 1 && (_v1976.stun = 0, _v1976.stunT = _v1976.rar === 3 ? 1.1 : 1.7, _v1976.dummy || (_v1976.state = "chase"), _v1976.rar >= 2 && U(_v1976.x, _v1976.y - _v1976.h - 10, 0, !1, "gold", "重击晕眩", !0), $("stun"), G("stun", {
     m: _v1976,
     o: _v1981
   }), n.fx.push({
@@ -8053,12 +8053,12 @@ ww = function (_v1976, _v1977, _v1978, _v1979, _v1980, _v1981) {
     heavy: 0.07,
     super: 0.12
   })[_v1979];
-  (_v1978 && _v1979 !== "light" && (_v1984 += 0.015), _v1979 !== "light" && (_v1984 += _v1982 * 0.03), v1(_v1984), V(({
+  (_v1978 && _v1979 !== "light" && (_v1984 += 0.015), _v1979 !== "light" && (_v1984 += _v1982 * 0.03), dg(_v1984), X(({
     light: 0.012,
     mid: 0.05,
     heavy: 0.14,
     super: 0.26
-  })[_v1979] + (_v1978 ? 0.04 : 0)), ms(_v1980, ({
+  })[_v1979] + (_v1978 ? 0.04 : 0)), vs(_v1980, ({
     light: 0.3,
     mid: 1.4,
     heavy: 2.8,
@@ -8078,7 +8078,7 @@ ww = function (_v1976, _v1977, _v1978, _v1979, _v1980, _v1981) {
     })[_v1979],
     w: _v1978 ? 1.7 : 1.2,
     col: _v1978 ? "#ffe8b0" : _v1977 > _v1976.maxhp * 0.25 ? "#ffb070" : "#ff8a60"
-  }), (_v1978 || _v1979 !== "light") && L(_v1976.x, _v1976.y - _v1976.h * 0.5, _v1978 ? 6 : 3, _v1978 ? ["#fff2c0", "#ffd27a", "#ffb050"] : ["#ffd27a", "#ff9a60"], 34 + ({
+  }), (_v1978 || _v1979 !== "light") && E(_v1976.x, _v1976.y - _v1976.h * 0.5, _v1978 ? 6 : 3, _v1978 ? ["#fff2c0", "#ffd27a", "#ffb050"] : ["#ffd27a", "#ff9a60"], 34 + ({
     light: 0,
     mid: 18,
     heavy: 36,
@@ -8100,12 +8100,12 @@ ww = function (_v1976, _v1977, _v1978, _v1979, _v1980, _v1981) {
     max: _v1979 === "mid" ? 0.1 : 0.16,
     col: _v1978 ? "#ffe080" : "#ffffff",
     r: _v1979 === "mid" ? 7 : 12
-  }), hg(_v1979, _v1981.el || "phys", _v1978));
+  }), rb(_v1979, _v1981.el || "phys", _v1978));
 };
-Qr = function (_v1985, _v1986, _v1987 = {}) {
+di = function (_v1985, _v1986, _v1987 = {}) {
   if (_v1985.dead) return;
   if (_v1985.t.prop) {
-    (_v1985.dead = !0, _v1985.hp = 0, W("prop:death", {
+    (_v1985.dead = !0, _v1985.hp = 0, G("prop:death", {
       m: _v1985
     }));
     return;
@@ -8128,21 +8128,21 @@ Qr = function (_v1985, _v1986, _v1987 = {}) {
     vy: Math.sin(_v1991) * _v1992 * 0.7,
     vz: _v1990 === "light" ? 30 : 60 + _v1992 * 0.35,
     rot: 0,
-    vr: (E() < 0.5 ? -1 : 1) * (_v1990 === "light" ? 3 : 8 + _v1992 * 0.04),
+    vr: (I() < 0.5 ? -1 : 1) * (_v1990 === "light" ? 3 : 8 + _v1992 * 0.04),
     t: 0,
     life: 9,
     rift: _v1985.rift
   };
-  if ((n.corpses.push(_v1993), n.corpses.length > 90 && n.corpses.shift(), n.Z.type === "map" && W("kill:corpse", {
+  if ((n.corpses.push(_v1993), n.corpses.length > 90 && n.corpses.shift(), n.Z.type === "map" && G("kill:corpse", {
     m: _v1985,
     corpse: _v1993,
     o: _v1987
-  }), L(_v1985.x, _v1985.y, _v1989 ? 30 : 12, _v1988.gib, _v1989 ? 110 : 70, 0.7, {
+  }), E(_v1985.x, _v1985.y, _v1989 ? 30 : 12, _v1988.gib, _v1989 ? 110 : 70, 0.7, {
     z: _v1985.h * 0.5,
     vz: 90,
     dir: _v1991,
     spread: 1.4
-  }), L(_v1985.x, _v1985.y, _v1989 ? 7 : 3, _v1988.gib, 70, 2.2, {
+  }), E(_v1985.x, _v1985.y, _v1989 ? 7 : 3, _v1988.gib, 70, 2.2, {
     z: _v1985.h * 0.5,
     vz: 110,
     s: 2,
@@ -8150,33 +8150,33 @@ Qr = function (_v1985, _v1986, _v1987 = {}) {
     drag: 3,
     dir: _v1991,
     spread: 1
-  }), De(_v1985.x, _v1985.y, "blood", _v1989 ? 7 : 4), T("die"), n.Z.type !== "map")) return;
-  UM(_v1985.xp * (_v1985.rift ? 1.5 : 1) * (_v1985.abyss ? 1.35 : 1));
-  let _v1994 = W("kill:flask", {
+  }), qe(_v1985.x, _v1985.y, "blood", _v1989 ? 7 : 4), $("die"), n.Z.type !== "map")) return;
+  E$(_v1985.xp * (_v1985.rift ? 1.5 : 1) * (_v1985.abyss ? 1.35 : 1));
+  let _v1994 = G("kill:flask", {
     m: _v1985,
     mult: n.S.flaskCh
   });
-  (u.flask.forEach(_v1995 => _v1995.ch = Math.min(_v1995.max, _v1995.ch + Ce.flaskGain[_v1985.rar] * _v1994.mult)), n.run && n.run.kills++);
-  let _v1996 = W("kill:loot", {
+  (u.flask.forEach(_v1995 => _v1995.ch = Math.min(_v1995.max, _v1995.ch + Ie.flaskGain[_v1985.rar] * _v1994.mult)), n.run && n.run.kills++);
+  let _v1996 = G("kill:loot", {
     m: _v1985,
     src: _v1986,
-    dm: Ce.loot.perKill[_v1985.rar] * (_v1985.rift ? Ce.loot.riftMul : 1) * (_v1985.abyss ? 1.3 : 1) * (_v1985.abyssloot || 1) * (_v1985.delMul || 1),
+    dm: Ie.loot.perKill[_v1985.rar] * (_v1985.rift ? Ie.loot.riftMul : 1) * (_v1985.abyss ? 1.3 : 1) * (_v1985.abyssloot || 1) * (_v1985.delMul || 1),
     rb: _v1986 && _v1986.c ? _v1986.c.rarity : 0
   });
-  if ((kc(_v1985.x, _v1985.y, _v1996.dm, _v1996.rb), _v1985.rift)) {
+  if ((Hc(_v1985.x, _v1985.y, _v1996.dm, _v1996.rb), _v1985.rift)) {
     let _v1997 = n.objs.find(_v1998 => _v1998.kind === "rift" && _v1998.st === "open");
     _v1997 && (_v1997.kills = (_v1997.kills || 0) + 1);
   }
   AbyssOnKill(_v1985);
   if (_v1985.del && n.Z && n.Z.type === "map") {
     let _v1999 = n.del ? n.del.depth : 0;
-    if (E() < 0.45 + _v1999 / 1200) de(_v1985.x, _v1985.y, {
+    if (I() < 0.45 + _v1999 / 1200) ue(_v1985.x, _v1985.y, {
       kind: "cur",
-      cur: ae(["trans", "aug", "alch", "chaos", "exalt"])
+      cur: oe(["trans", "aug", "alch", "chaos", "exalt"])
     });
-    if (E() < 0.05 + _v1999 / 4000) de(_v1985.x, _v1985.y, {
+    if (I() < 0.05 + _v1999 / 4000) ue(_v1985.x, _v1985.y, {
       kind: "it",
-      it: Et(ae(Ea), (n.Z.lvl || 1) + 1, 2)
+      it: Ft(oe(Pa), (n.Z.lvl || 1) + 1, 2)
     });
   }
   (_v1985.abmod === "volatile" && (n.fx.push({
@@ -8189,19 +8189,19 @@ Qr = function (_v1985, _v1986, _v1987 = {}) {
     max: 0.35,
     col: "#2ee6a8",
     w: 2
-  }), L(_v1985.x, _v1985.y, 18, AB_GREEN, 80, 0.6, {
+  }), E(_v1985.x, _v1985.y, 18, AB_GREEN, 80, 0.6, {
     glow: !0
-  }), T("boom", 0.5), (n.pl.x - _v1985.x) ** 2 + (n.pl.y - _v1985.y) ** 2 < 6400 && ea(_v1985.dmg * 1.4, "phys", {
+  }), $("boom", 0.5), (n.pl.x - _v1985.x) ** 2 + (n.pl.y - _v1985.y) ** 2 < 6400 && sa(_v1985.dmg * 1.4, "phys", {
     area: !0
-  })), _v1985.abyss && _v1985.lichborn && AbyssOmenDrop(_v1985.x, _v1985.y), _v1985.abyss && !_v1985.lichborn && E() < (ne("aby4") ? 0.04 : 0.02) && AbyssOmenDrop(_v1985.x, _v1985.y), _v1985.abyss && E() < (ne("aby2") ? 0.12 : 0.06) && DsBoneDrop(_v1985.x, _v1985.y), _v1985.abyss && _v1985.lichborn && DsBoneDrop(_v1985.x, _v1985.y, 1));
+  })), _v1985.abyss && _v1985.lichborn && AbyssOmenDrop(_v1985.x, _v1985.y), _v1985.abyss && !_v1985.lichborn && I() < (re("aby4") ? 0.04 : 0.02) && AbyssOmenDrop(_v1985.x, _v1985.y), _v1985.abyss && I() < (re("aby2") ? 0.12 : 0.06) && DsBoneDrop(_v1985.x, _v1985.y), _v1985.abyss && _v1985.lichborn && DsBoneDrop(_v1985.x, _v1985.y, 1));
   if (_v1985.abyss) {
-    (E() < 0.03 && OmDrop(_v1985.x, _v1985.y), _v1985.lichborn && (OmDrop(_v1985.x, _v1985.y), OmDrop(_v1985.x, _v1985.y)), _v1985.lichborn === "void" && (ke("阿曼娜姆的虚空", "虚空溃散了"), T("unique")), _v1985.lichborn === "gasp" && !_v1985.revived && n.pend.push({
+    (I() < 0.03 && OmDrop(_v1985.x, _v1985.y), _v1985.lichborn && (OmDrop(_v1985.x, _v1985.y), OmDrop(_v1985.x, _v1985.y)), _v1985.lichborn === "void" && (ke("阿曼娜姆的虚空", "虚空溃散了"), $("unique")), _v1985.lichborn === "gasp" && !_v1985.revived && n.pend.push({
       t: 0.4,
       fn: () => {
-        let _v2000 = et("abyssstrangler", _v1985.x, _v1985.y, n.Z.lvl, 2);
+        let _v2000 = nt("abyssstrangler", _v1985.x, _v1985.y, n.Z.lvl, 2);
         (Object.assign(_v2000, {
           spr: "abysslich",
-          h: Jt.abysslich.h,
+          h: Xt.abysslich.h,
           r: 9,
           abyss: !0,
           pit: _v1985.pit,
@@ -8209,13 +8209,13 @@ Qr = function (_v1985, _v1986, _v1987 = {}) {
           revived: !0,
           lichborn: "gasp",
           name: "回响 · 古加尔的最后喘息"
-        }), _v2000.maxhp = _v1985.maxhp * 0.55, _v2000.hp = _v2000.maxhp, _v2000.dmg = _v1985.dmg * 1.25, n.mons.push(_v2000), ke("古加尔的最后喘息", "它带着更强的力量站了起来"), T("unique"));
+        }), _v2000.maxhp = _v1985.maxhp * 0.55, _v2000.hp = _v2000.maxhp, _v2000.dmg = _v1985.dmg * 1.25, n.mons.push(_v2000), ke("古加尔的最后喘息", "它带着更强的力量站了起来"), $("unique"));
       }
     }), _v1985.lichborn === "legion" && n.pend.push({
       t: 0.2,
       fn: () => {
         for (let _v2001 = 0; _v2001 < 2; _v2001++) {
-          let _v2002 = et("abysswalker", _v1985.x + D(-16, 16), _v1985.y + D(-16, 16), n.Z.lvl, 0);
+          let _v2002 = nt("abysswalker", _v1985.x + B(-16, 16), _v1985.y + B(-16, 16), n.Z.lvl, 0);
           (Object.assign(_v2002, {
             abyss: !0,
             pit: _v1985.pit,
@@ -8223,31 +8223,31 @@ Qr = function (_v1985, _v1986, _v1987 = {}) {
             name: "乌拉曼的军团 · 复制体"
           }), _v2002.maxhp *= 0.35, _v2002.hp = _v2002.maxhp, _v2002.dmg *= 0.7, n.mons.push(_v2002));
         }
-        (ke("乌拉曼的军团", "军团从尸体中分裂出来"), T("unique"));
+        (ke("乌拉曼的军团", "军团从尸体中分裂出来"), $("unique"));
       }
     }));
   }
-  (_v1985.del && E() < 0.35 && DelSplinter(_v1985.x, _v1985.y), _v1985.del && _v1985.rar >= 2 && E() < 0.5 && DelSplinter(_v1985.x, _v1985.y), _v1985.ritual ? (_v1985.ritual.st === "active" && (function () {
-    let _v2003 = Math.max(1, Math.round((2 + (_v1985.rar || 0) * 3 + Math.floor(n.Z.lvl / 12)) * (ne("rit2") ? 1.25 : 1) * (ne("rit7") ? 1.25 : 1) * (_v1985.ritual.bossAltar ? 2 : 1) * (BAL.ritualTributeMul || 1) * (_v1985.reviveGen ? Math.max(0.25, 1 - 0.25 * (_v1985.reviveGen - 1)) : 1)));
-    (RitAddTribute(_v2003), _v1985.ritual.tribute = RitTribute(), T("pick", 0.4));
+  (_v1985.del && I() < 0.35 && DelSplinter(_v1985.x, _v1985.y), _v1985.del && _v1985.rar >= 2 && I() < 0.5 && DelSplinter(_v1985.x, _v1985.y), _v1985.ritual ? (_v1985.ritual.st === "active" && (function () {
+    let _v2003 = Math.max(1, Math.round((2 + (_v1985.rar || 0) * 3 + Math.floor(n.Z.lvl / 12)) * (re("rit2") ? 1.25 : 1) * (re("rit7") ? 1.25 : 1) * (_v1985.ritual.bossAltar ? 2 : 1) * (BAL.ritualTributeMul || 1) * (_v1985.reviveGen ? Math.max(0.25, 1 - 0.25 * (_v1985.reviveGen - 1)) : 1)));
+    (RitAddTribute(_v2003), _v1985.ritual.tribute = RitTribute(), $("pick", 0.4));
   })(), _v1985.ritual.st === "idle" && 0) : (function () {
     if (!n.Z || n.Z.type !== "map") return 0;
     let _v2004 = n.objs.find(_v2005 => _v2005.kind === "ritual" && _v2005.st === "idle" && (_v1985.x - _v2005.x) ** 2 + (_v1985.y - _v2005.y) ** 2 < 36100);
-    return _v2004 ? (_v2004.stored = (_v2004.stored || 0) + 1 + (_v1985.rar || 0) * 2, L(_v2004.x, _v2004.y, 10, RIT_COL, 30, 0.4, {
+    return _v2004 ? (_v2004.stored = (_v2004.stored || 0) + 1 + (_v1985.rar || 0) * 2, E(_v2004.x, _v2004.y, 10, RIT_COL, 30, 0.4, {
       glow: !0
     }), 1) : 0;
   })());
-  let _v2006 = W("kill:explode", {
+  let _v2006 = G("kill:explode", {
     m: _v1985,
     src: _v1986,
     o: _v1987,
     ex: _v1986 && _v1986.c && _v1986.c.explode || 0
   });
   if (_v2006.ex > 0) {
-    let _v2007 = _v1985.x, _v2008 = _v1985.y, _v2009 = ba(_v1985) * _v2006.ex, _v2010 = _v1985.rar >= 2 ? 34 : 26;
+    let _v2007 = _v1985.x, _v2008 = _v1985.y, _v2009 = wa(_v1985) * _v2006.ex, _v2010 = _v1985.rar >= 2 ? 34 : 26;
     n.pend.push({
       t: 0.07,
-      fn: () => nr(_v2007, _v2008, _v2009, _v2010, _v1986)
+      fn: () => gr(_v2007, _v2008, _v2009, _v2010, _v1986)
     });
   }
   if (_v1985.mods.some(_v2011 => _v2011.k === "frostbody")) {
@@ -8273,82 +8273,82 @@ Qr = function (_v1985, _v1986, _v1987 = {}) {
           max: 0.3,
           col: "#bfefff",
           w: 2
-        }), L(_v2012, _v2013, 20, ["#bfefff", "#5fb4e8"], 120, 0.5), T("ice"), (n.pl.x - _v2012) ** 2 + (n.pl.y - _v2013) ** 2 < 1444 && ea(_v2014, "cold", {
+        }), E(_v2012, _v2013, 20, ["#bfefff", "#5fb4e8"], 120, 0.5), $("ice"), (n.pl.x - _v2012) ** 2 + (n.pl.y - _v2013) ** 2 < 1444 && sa(_v2014, "cold", {
           area: 1
         }));
       }
     }));
   }
-  if ((W("kill", {
+  if ((G("kill", {
     m: _v1985,
     src: _v1986,
     o: _v1987
-  }), _v1985.rar === 2 && (re.stop && (n.hitstop = Math.max(n.hitstop, 0.07)), V(0.2)), _v1985.rar === 3)) {
-    if ((n.hitstop = 0.22, n.slowT = 1, V(0.7), n.flashW = 0.5, _v1985.guard)) {
-      (T("slam"), De(_v1985.x, _v1985.y, "scorch", 16), n.fx.push({
+  }), _v1985.rar === 2 && (ie.stop && (n.hitstop = Math.max(n.hitstop, 0.07)), X(0.2)), _v1985.rar === 3)) {
+    if ((n.hitstop = 0.22, n.slowT = 1, X(0.7), n.flashW = 0.5, _v1985.guard)) {
+      ($("slam"), qe(_v1985.x, _v1985.y, "scorch", 16), n.fx.push({
         k: "lines",
         x: _v1985.x,
         y: _v1985.y - 10,
         t: 0,
         max: 0.3
-      }), W("tower:guard", {
+      }), G("tower:guard", {
         m: _v1985
       }));
       return;
     }
-    if ((n.Z.done = !0, n.run && (n.run.bossDead = !0), T("slam"), ke(_v1985.name + " 已陨落", "地图完成 · 按 T 返回藏身处结算"), De(_v1985.x, _v1985.y, "scorch", 16), n.fx.push({
+    if ((n.Z.done = !0, n.run && (n.run.bossDead = !0), $("slam"), ke(_v1985.name + " 已陨落", "地图完成 · 按 T 返回藏身处结算"), qe(_v1985.x, _v1985.y, "scorch", 16), n.fx.push({
       k: "lines",
       x: _v1985.x,
       y: _v1985.y - 10,
       t: 0,
       max: 0.3
-    }), de(_v1985.x, _v1985.y, {
+    }), ue(_v1985.x, _v1985.y, {
       kind: "it",
-      it: Ht(Se(n.Z.tier + (E() < W("boss:map", {
+      it: Zt($e(n.Z.tier + (I() < G("boss:map", {
         m: _v1985,
         up: 0.45
       }).up ? 1 : 0), 1, 16))
-    }), n.Z.tier >= 16 && E() < (n.Z.tier >= 17 ? xc.dropT17 : xc.dropT16) && de(_v1985.x, _v1985.y, {
+    }), n.Z.tier >= 16 && I() < (n.Z.tier >= 17 ? _c.dropT17 : _c.dropT16) && ue(_v1985.x, _v1985.y, {
       kind: "it",
-      it: Ht(17)
-    }), n.Z.tier >= 16 && E() < (n.Z.tier >= 17 ? 0.5 : 0.25) && de(_v1985.x, _v1985.y, {
+      it: Zt(17)
+    }), n.Z.tier >= 16 && I() < (n.Z.tier >= 17 ? 0.5 : 0.25) && ue(_v1985.x, _v1985.y, {
       kind: "cur",
       cur: "frac"
     }), n.Z.tier >= 17)) {
-      de(_v1985.x, _v1985.y, {
+      ue(_v1985.x, _v1985.y, {
         kind: "cur",
         cur: "divine"
       });
-      for (let _v2015 = 0; _v2015 < 2; _v2015++) de(_v1985.x, _v1985.y, {
+      for (let _v2015 = 0; _v2015 < 2; _v2015++) ue(_v1985.x, _v1985.y, {
         kind: "cur",
         cur: "exalt"
       });
-      let _v2016 = pt.filter(_v2017 => _v2017.src === "world" && !_v2017.noDrop);
-      _v2016.length && E() < 0.6 && de(_v1985.x, _v1985.y, {
+      let _v2016 = yt.filter(_v2017 => _v2017.src === "world" && !_v2017.noDrop);
+      _v2016.length && I() < 0.6 && ue(_v1985.x, _v1985.y, {
         kind: "it",
-        it: Ut(ae(_v2016), n.Z.lvl)
+        it: Kt(oe(_v2016), n.Z.lvl)
       });
     }
     let _v2018 = 0;
-    for (let _v2019 of Ws) n.Z.tier >= _v2019 && !u.trials.includes(_v2019) && (u.trials.push(_v2019), _v2018 += 2);
-    (_v2018 && (u.ascPts += _v2018, setTimeout(() => ke("升华试炼完成", "升华点 +" + _v2018 + (u.asc ? "" : " · 按 P 选择你的升华")), 1600)), n.Z.tier >= 6 && E() < 0.1 + Math.min(0.1, n.Z.tier * 0.006) && OmDrop(_v1985.x, _v1985.y), W("boss:kill", {
+    for (let _v2019 of Us) n.Z.tier >= _v2019 && !u.trials.includes(_v2019) && (u.trials.push(_v2019), _v2018 += 2);
+    (_v2018 && (u.ascPts += _v2018, setTimeout(() => ke("升华试炼完成", "升华点 +" + _v2018 + (u.asc ? "" : " · 按 P 选择你的升华")), 1600)), n.Z.tier >= 6 && I() < 0.1 + Math.min(0.1, n.Z.tier * 0.006) && OmDrop(_v1985.x, _v1985.y), G("boss:kill", {
       m: _v1985
     }));
   }
 };
-ea = function (_v2020, _v2021, _v2022 = {}) {
-  if (n.state !== "play" || !n.Z || n.Z.type !== "map" || n.pl.dead || u.god || W("player:avoid", {
+sa = function (_v2020, _v2021, _v2022 = {}) {
+  if (n.state !== "play" || !n.Z || n.Z.type !== "map" || n.pl.dead || u.god || G("player:avoid", {
     amt: _v2020,
     el: _v2021,
     o: _v2022,
     avoided: !1
   }).avoided) return !1;
   let _v2023 = n.Z.ms.mods;
-  if ((!_v2022.dot && !_v2022.noCrit && E() < Ce.mon.crit * (1 + (_v2023.monCrit || 0) / 100) && (_v2020 *= 1.5), _v2020 = W("player:mitigate", {
+  if ((!_v2022.dot && !_v2022.noCrit && I() < Ie.mon.crit * (1 + (_v2023.monCrit || 0) / 100) && (_v2020 *= 1.5), _v2020 = G("player:mitigate", {
     amt: _v2020,
     el: _v2021,
     o: _v2022
-  }).amt, n.pl.shockT > 0 && (_v2020 *= 1 + n.pl.shockAmt), _v2021 === "phys" ? _v2020 *= 1 - Math.min(0.9, n.S.armour / (n.S.armour + 6 * _v2020)) : _v2020 *= 1 - Math.min(UniqueResCap(), (n.S.res[_v2021] || 0) - (_v2023.playerRes || 0)) / 100, _v2020 = W("player:mitigate:post", {
+  }).amt, n.pl.shockT > 0 && (_v2020 *= 1 + n.pl.shockAmt), _v2021 === "phys" ? _v2020 *= 1 - Math.min(0.9, n.S.armour / (n.S.armour + 6 * _v2020)) : _v2020 *= 1 - Math.min(UniqueResCap(), (n.S.res[_v2021] || 0) - (_v2023.playerRes || 0)) / 100, _v2020 = G("player:mitigate:post", {
     amt: _v2020,
     el: _v2021,
     o: _v2022
@@ -8356,59 +8356,59 @@ ea = function (_v2020, _v2021, _v2022 = {}) {
     let _v2024 = Math.min(n.pl.es, _v2020);
     (n.pl.es -= _v2024, _v2020 -= _v2024);
   }
-  return (n.pl.hp - _v2020 <= 0 && W("player:lethal", {
+  return (n.pl.hp - _v2020 <= 0 && G("player:lethal", {
     amt: _v2020,
     o: _v2022,
     prevented: !1
-  }).prevented || (n.pl.hp -= _v2020, W("player:hurt", {
+  }).prevented || (n.pl.hp -= _v2020, G("player:hurt", {
     amt: _v2020,
     el: _v2021,
     o: _v2022
-  }), !_v2022.dot && _v2020 > 0.5 && (n.pl.hurtT = 0.14, V(Math.min(0.5, 0.1 + _v2020 / n.S.maxLife)), T("hurt"), H(n.pl.x, n.pl.y - 20, _v2020, !1, "hurt"), n.edgeFlash = Math.min(1, 0.25 + _v2020 / n.S.maxLife * 2), _v2020 > n.S.maxLife * 0.3 && !_v2022.area && !n.S.noStagger && (n.pl.stagT = 0.25, n.pl.act = null, H(n.pl.x, n.pl.y - 28, 0, !1, "info", "硬直"))), n.pl.hp > 0 && n.pl.hp <= n.S.maxLife * 0.35 && n.pl.hp + _v2020 > n.S.maxLife * 0.35 && OmTake("omen_refresh") && (u.flask.forEach(_v2025 => _v2025.ch = _v2025.max), ke("恢复预兆", "药剂充能已回满")), n.pl.hp > 0 && n.pl.hp <= n.S.maxLife * 0.35 && n.pl.hp + _v2020 > n.S.maxLife * 0.35 && OmHas("omen_resurgence") && OmTake("omen_resurgence", n.pl.x, n.pl.y - 24) && (n.pl.hp = n.S.maxLife, n.pl.mana = n.S.maxMana, n.pl.es = n.S.maxES, L(n.pl.x, n.pl.y, 40, ["#80e0a0", "#ffffff"], 90, 0.9, {
+  }), !_v2022.dot && _v2020 > 0.5 && (n.pl.hurtT = 0.14, X(Math.min(0.5, 0.1 + _v2020 / n.S.maxLife)), $("hurt"), U(n.pl.x, n.pl.y - 20, _v2020, !1, "hurt"), n.edgeFlash = Math.min(1, 0.25 + _v2020 / n.S.maxLife * 2), _v2020 > n.S.maxLife * 0.3 && !_v2022.area && !n.S.noStagger && (n.pl.stagT = 0.25, n.pl.act = null, U(n.pl.x, n.pl.y - 28, 0, !1, "info", "硬直"))), n.pl.hp > 0 && n.pl.hp <= n.S.maxLife * 0.35 && n.pl.hp + _v2020 > n.S.maxLife * 0.35 && OmTake("omen_refresh") && (u.flask.forEach(_v2025 => _v2025.ch = _v2025.max), ke("恢复预兆", "药剂充能已回满")), n.pl.hp > 0 && n.pl.hp <= n.S.maxLife * 0.35 && n.pl.hp + _v2020 > n.S.maxLife * 0.35 && OmHas("omen_resurgence") && OmTake("omen_resurgence", n.pl.x, n.pl.y - 24) && (n.pl.hp = n.S.maxLife, n.pl.mana = n.S.maxMana, n.pl.es = n.S.maxES, E(n.pl.x, n.pl.y, 40, ["#80e0a0", "#ffffff"], 90, 0.9, {
     glow: !0,
     vz: 140,
     g: 60
-  })), n.pl.hp <= 0 && KM()), !0);
+  })), n.pl.hp <= 0 && P$()), !0);
 };
-KM = function () {
-  (n.pl.dead = !0, n.pl.hp = 0, n.state = "dead", T("slam"), n.slowT = 1.2, V(0.8), L(n.pl.x, n.pl.y, 40, ["#a81d2c", "#5a1018", "#574468"], 100, 1.2, {
+P$ = function () {
+  (n.pl.dead = !0, n.pl.hp = 0, n.state = "dead", $("slam"), n.slowT = 1.2, X(0.8), E(n.pl.x, n.pl.y, 40, ["#a81d2c", "#5a1018", "#574468"], 100, 1.2, {
     vz: 120
   }), setTimeout(() => {
     if (n.state !== "dead") return;
-    let _v2026 = Math.min(u.xp, Math.floor(gc(u.level) * Ce.xp.deathLoss)), _v2027 = _v2026 > 0 && OmTake("omen_amelioration", n.pl.x, n.pl.y - 20);
-    (_v2027 && (_v2026 = Math.floor(_v2026 * 0.25)), u.xp = Math.max(0, u.xp - _v2026), n.run && (n.run.died = !0), Ke(`<div class="ovbox"><h1 style="color:#c8303a;font-size:clamp(34px,7vw,60px)">你已死亡</h1><p class="sub">经验损失 ${Oe(_v2026)}${_v2027 ? " · 进步预兆减免 75%" : ""} · 地图已失效</p>${$w(n.run)}<div class="ovbtns" style="margin-top:18px"><button class="btn primary" id="ovBack">返回藏身处</button></div></div>`), C("#ovBack").onclick = () => {
-      ($t(), If(!0));
+    let _v2026 = Math.min(u.xp, Math.floor(qc(u.level) * Ie.xp.deathLoss)), _v2027 = _v2026 > 0 && OmTake("omen_amelioration", n.pl.x, n.pl.y - 20);
+    (_v2027 && (_v2026 = Math.floor(_v2026 * 0.25)), u.xp = Math.max(0, u.xp - _v2026), n.run && (n.run.died = !0), Ve(`<div class="ovbox"><h1 style="color:#c8303a;font-size:clamp(34px,7vw,60px)">你已死亡</h1><p class="sub">经验损失 ${ze(_v2026)}${_v2027 ? " · 进步预兆减免 75%" : ""} · 地图已失效</p>${V5(n.run)}<div class="ovbtns" style="margin-top:18px"><button class="btn primary" id="ovBack">返回藏身处</button></div></div>`), C("#ovBack").onclick = () => {
+      (xt(), od(!0));
     });
   }, 1100));
 };
-dR = function () {
-  $("kill", ({m: _v2028}) => {
+s7 = function () {
+  A("kill", ({m: _v2028}) => {
     if (!n.Z || !u) return;
-    let _v2029 = n.Z.tier || 0, _v2030 = _v2028.ub ? 0.2 : _v2028.rar === 3 && n.Z.type === "map" && !_v2028.guard ? f6(_v2029) : 0;
-    _v2030 && E() < _v2030 && de(_v2028.x, _v2028.y, {
+    let _v2029 = n.Z.tier || 0, _v2030 = _v2028.ub ? 0.2 : _v2028.rar === 3 && n.Z.type === "map" && !_v2028.guard ? z6(_v2029) : 0;
+    _v2030 && I() < _v2030 && ue(_v2028.x, _v2028.y, {
       kind: "cur",
       cur: "ember"
     });
-    _v2028.rar === 2 && n.Z.type === "map" && E() < 0.015 && OmDrop(_v2028.x, _v2028.y);
-    _v2028.rar === 3 && n.Z.type === "map" && E() < 0.4 && JewelDrop(_v2028.x, _v2028.y);
+    _v2028.rar === 2 && n.Z.type === "map" && I() < 0.015 && OmDrop(_v2028.x, _v2028.y);
+    _v2028.rar === 3 && n.Z.type === "map" && I() < 0.4 && JewelDrop(_v2028.x, _v2028.y);
   });
 };
-rT = function () {
+U$ = function () {
   let _v2031 = [];
   if (!n.pl || !n.S) return _v2031;
   if ((n.S.cls === "samurai" && _v2031.push([n.pl.sheReady ? "纳刀 ✓" : "纳刀 " + Math.min(1.2, n.pl.idleAtk).toFixed(1), n.pl.sheReady]), n.S.asc.has("focus") && _v2031.push(["凝神 " + n.pl.focus, n.pl.focus >= 5]), n.S.asc.has("momentum") && _v2031.push(["动量 " + n.pl.mom, n.pl.mom >= 20]), n.S.asc.has("shuraba") && _v2031.push(["杀意 " + n.pl.kills, n.pl.kills >= 25]), n.pl.kishinT > 0 && _v2031.push(["鬼神化 " + n.pl.kishinT.toFixed(1), !0]), n.pl.demon > 0 && _v2031.push(["魔焰 " + n.pl.demon, n.pl.demon >= 10]), n.pl.drunkT > 0 && _v2031.push(["醉意 " + n.pl.drunkT.toFixed(0), !0]), n.pl.pdT > 0 && _v2031.push(["见切", !0]), n.pl.critNextT > 0 && _v2031.push(["必暴", !0]), (u.skills.some(_v2032 => _v2032 && _v2032.gid === "hyakka") || n.pl.ki > 0) && _v2031.push(["刀意 " + n.pl.ki, n.pl.ki >= 10]), u.skills.some(_v2033 => _v2033 && _v2033.gid === "salvo") && _v2031.push(["冰箭 " + n.pl.salvo, n.pl.salvo >= 6]), n.pl.shrineT > 0 || n.pl.shrineT2 > 0)) {
-    let _v2034 = n.pl.shrineT > 0 && as.find(_v2035 => _v2035.k === n.pl.shrine);
+    let _v2034 = n.pl.shrineT > 0 && is.find(_v2035 => _v2035.k === n.pl.shrine);
     _v2034 && _v2031.push([_v2034.n + " " + Math.ceil(n.pl.shrineT), !0]);
-    let _v2036 = n.pl.shrineT2 > 0 && as.find(_v2037 => _v2037.k === n.pl.shrine2);
+    let _v2036 = n.pl.shrineT2 > 0 && is.find(_v2037 => _v2037.k === n.pl.shrine2);
     _v2036 && _v2031.push([_v2036.n + " " + Math.ceil(n.pl.shrineT2), !0]);
   }
   u.om && Object.keys(u.om).forEach(_v2038 => {
-    let _v2039 = z[_v2038];
+    let _v2039 = q[_v2038];
     _v2039 && _v2031.push([_v2039.n, !0]);
   });
   n.sim && n.sim.active && n.Z && n.Z.simLayer && _v2031.push(["迷雾副本 " + n.sim.layer + "/" + n.sim.max + " 层 · 亢奋 " + n.sim.depth + "% · 伤害 -" + DelDRPct() + (n.sim.layer > 18 ? "% · 怪伤 +" + Math.round((SimDmgMul(n.sim.layer) - 1) * 100) + "%" : "%"), !0]);
   n.del && _v2031.push([n.del.outT > 0 ? "离开迷雾 " + Math.max(0, 5 - n.del.outT).toFixed(1) + "s" : "亢奋度 " + Math.round(n.del.depth) + "%" + (n.del.base ? " (基础 " + n.del.base + "%)" : "") + " · 伤害 -" + DelDRPct() + "%" + (n.del.pauseT > 0 ? " · 迷雾暂停" : ""), !0]);
-  return (n.pl.noutouT > 0 && _v2031.push(["纳刀·无拍子", !0]), n.pl.parryBuffT > 0 && _v2031.push(["弹刀·重击", !0]), n.pl.waveT > 0 && _v2031.push(["寒冰波 ×2", !0]), n.pl.disT > 0 && _v2031.push(["撤离→重刺", !0]), n.minions.length && _v2031.push(["骷髅 " + n.minions.length, !1]), n.pl.ds > 0 && _v2031.push(["斗志 " + n.pl.ds, n.pl.ds >= (n.S.dsCap || 10)]), u.god && _v2031.push(["无敌", !0]), n.pl.tailT > 0 && _v2031.push(["顺风", !0]), n.pl.rangerT > 0 && _v2031.push(["游击", !1]), n.pl.overT > 0 && _v2031.push(["霸主", !0]), n.pl.markT > 0 && _v2031.push(["猎杀", !1]), n.pl.eoT > 0 && _v2031.push(["元素超载", !0]), Lx(_v2031), _v2031);
+  return (n.pl.noutouT > 0 && _v2031.push(["纳刀·无拍子", !0]), n.pl.parryBuffT > 0 && _v2031.push(["弹刀·重击", !0]), n.pl.waveT > 0 && _v2031.push(["寒冰波 ×2", !0]), n.pl.disT > 0 && _v2031.push(["撤离→重刺", !0]), n.minions.length && _v2031.push(["骷髅 " + n.minions.length, !1]), n.pl.ds > 0 && _v2031.push(["斗志 " + n.pl.ds, n.pl.ds >= (n.S.dsCap || 10)]), u.god && _v2031.push(["无敌", !0]), n.pl.tailT > 0 && _v2031.push(["顺风", !0]), n.pl.rangerT > 0 && _v2031.push(["游击", !1]), n.pl.overT > 0 && _v2031.push(["霸主", !0]), n.pl.markT > 0 && _v2031.push(["猎杀", !1]), n.pl.eoT > 0 && _v2031.push(["元素超载", !0]), t5(_v2031), _v2031);
 };
 function CurbarHTML() {
   var _v2040 = {
@@ -8440,25 +8440,25 @@ function CurbarHTML() {
   }
   var _v2048 = '<span class="lbl">选中后点击物品使用 · 按住 Shift 连续使用 · 通货全角色共用 · 预兆点击激活</span>';
   _v2041.forEach(function (_v2049) {
-    var _v2050 = vt.filter(function (_v2051) {
-      return z[_v2051].grp === _v2049 && (!z[_v2051].rn || (u.cur[_v2051] || 0) > 0);
+    var _v2050 = Tt.filter(function (_v2051) {
+      return q[_v2051].grp === _v2049 && (!q[_v2051].rn || (u.cur[_v2051] || 0) > 0);
     });
     if (!_v2050.length) return;
     var _v2052 = _v2042[_v2049] != null ? !!_v2042[_v2049] : _v2049 === "basic" || _v2049 === "omen";
     _v2048 += '<details class="curfold" data-g="' + _v2049 + '"' + (_v2052 ? " open" : "") + '><summary><span class="cg">' + _v2040[_v2049] + "</span><small>" + _v2050.length + "</small></summary><div class=\"curgrid\">";
     _v2050.forEach(function (_v2053) {
-      if (_v2049 === "omen") _v2048 += '<div class="cur om' + (OmActive(_v2053) ? " on" : "") + (u.cur[_v2053] ? "" : " zero") + '" data-act="omen" data-k="' + _v2053 + '" data-tt="cur:' + _v2053 + '"><img src="' + _e[_v2053] + '" alt=""><span>' + (z[_v2053].s || z[_v2053].n) + "</span><b>" + (u.cur[_v2053] || 0) + "</b>" + (OmActive(_v2053) ? '<i class="omtag">激活</i>' : "") + "</div>"; else _v2048 += '<div class="cur' + (n.held === _v2053 ? " sel" : "") + (u.cur[_v2053] ? "" : " zero") + '" data-act="cur" data-k="' + _v2053 + '" data-tt="cur:' + _v2053 + '"><img src="' + _e[_v2053] + '" alt=""><span>' + z[_v2053].n + "</span><b>" + (u.cur[_v2053] || 0) + "</b></div>";
+      if (_v2049 === "omen") _v2048 += '<div class="cur om' + (OmActive(_v2053) ? " on" : "") + (u.cur[_v2053] ? "" : " zero") + '" data-act="omen" data-k="' + _v2053 + '" data-tt="cur:' + _v2053 + '"><img src="' + Ye[_v2053] + '" alt=""><span>' + (q[_v2053].s || q[_v2053].n) + "</span><b>" + (u.cur[_v2053] || 0) + "</b>" + (OmActive(_v2053) ? '<i class="omtag">激活</i>' : "") + "</div>"; else _v2048 += '<div class="cur' + (n.held === _v2053 ? " sel" : "") + (u.cur[_v2053] ? "" : " zero") + '" data-act="cur" data-k="' + _v2053 + '" data-tt="cur:' + _v2053 + '"><img src="' + Ye[_v2053] + '" alt=""><span>' + q[_v2053].n + "</span><b>" + (u.cur[_v2053] || 0) + "</b></div>";
     });
     _v2048 += "</div></details>";
   });
   return _v2048;
 }
-Ds = function () {
+Gs = function () {
   if (!n.tab) return;
   OmPrune();
   document.querySelectorAll("#tabs button").forEach(_v2054 => _v2054.classList.toggle("on", _v2054.dataset.tab === n.tab));
   let _v2055 = C("#pbody"), _v2056 = _v2055.scrollTop;
-  (_v2055.innerHTML = n.tab === "map" ? bm() : n.tab === "inv" ? lT() : n.tab === "cur" ? curPage() : n.tab === "gem" ? Ix() : n.tab === "atlas" ? Px() : n.tab === "debug" ? Fx() : n.tab === "codex" ? Ox() : cT(), _v2055.scrollTop = _v2056, _v2055.querySelectorAll("[data-pv]").forEach(_v2057 => _v2057.replaceWith(hp(_v2057.dataset.pv))));
+  (_v2055.innerHTML = n.tab === "map" ? i1() : n.tab === "inv" ? K$() : n.tab === "cur" ? curPage() : n.tab === "gem" ? a5() : n.tab === "atlas" ? s5() : n.tab === "debug" ? n5() : n.tab === "codex" ? o5() : V$(), _v2055.scrollTop = _v2056, _v2055.querySelectorAll("[data-pv]").forEach(_v2057 => _v2057.replaceWith(Qp(_v2057.dataset.pv))));
   let _v2058 = C("#tabDebug");
   _v2058 && (_v2058.hidden = !u.debug);
   let _v2059 = {
@@ -8472,94 +8472,94 @@ Ds = function () {
     del: "裂片"
   };
   (C("#curbar").innerHTML = CurbarHTML(), n.tab === "tree" && setTimeout(() => {
-    (Km(!1), $a());
+    (q1(!1), Ea());
   }, 0), n.tab === "tree" && setTimeout(() => {
-    if (n.advTab === "base" || n.advTab === "star") AdvAfterRender(); else (Km(!1), $a());
+    if (n.advTab === "base" || n.advTab === "star") AdvAfterRender(); else (q1(!1), Ea());
   }, 0), n.tab === "atlas" && setTimeout(AtlasAfterRender, 0));
 };
-ym = function () {
+l1 = function () {
   let _v2060 = n.S, _v2061 = _v2062 => _v2060.a[_v2062] || 0, _v2063 = (_v2064, _v2065) => `<div class="row"><span>${_v2064}</span><b>${_v2065}</b></div>`, _v2066 = n.Z && n.Z.ms && n.Z.ms.mods.playerRes || 0, _v2067 = _v2068 => {
     let _v2069 = _v2060.res[_v2068] - _v2066;
     return `<span style="color:${_v2069 >= UniqueResCap() ? "var(--up)" : _v2069 < 0 ? "var(--down)" : "inherit"}">${Math.min(UniqueResCap(), _v2069)}%${_v2069 > UniqueResCap() ? " (" + _v2069 + ")" : ""}</span>`;
-  }, _v2070 = `<div class="sec">${ie[u.cls].n}${u.asc ? " · " + Me[u.asc].n : ""}</div><div class="dim" style="font-size:11.5px">${ie[u.cls].trait}</div>`;
-  return (_v2070 += '<div class="sec">防御</div>' + _v2063("最大生命", Math.round(_v2060.maxLife)) + _v2063("能量护盾", Math.round(_v2060.maxES)) + _v2063("最大魔力", Math.round(_v2060.maxMana)) + _v2063("护甲", Math.round(_v2060.armour)) + _v2063("火焰抗性", _v2067("fire")) + _v2063("冰霜抗性", _v2067("cold")) + _v2063("闪电抗性", _v2067("light")) + _v2063("生命回复", zt(_v2060.regen) + "/秒") + _v2063("生命偷取", (_v2060.leech * 100).toFixed(1) + "%"), _v2070 += _v2063("格挡几率", Math.round(_v2060.block || 0) + "%") + _v2063("精魂", _v2060.spUsed + " / " + _v2060.spMax) + _v2063("药剂效果", "×" + (_v2060.flaskEff || 1).toFixed(2)), _v2060.buffs.size && (_v2070 += '<div class="sec">精魂增益</div>' + [..._v2060.buffs].map(_v2071 => {
-    let _v2072 = ze[_v2071] || We[_v2071];
+  }, _v2070 = `<div class="sec">${le[u.cls].n}${u.asc ? " · " + Ce[u.asc].n : ""}</div><div class="dim" style="font-size:11.5px">${le[u.cls].trait}</div>`;
+  return (_v2070 += '<div class="sec">防御</div>' + _v2063("最大生命", Math.round(_v2060.maxLife)) + _v2063("能量护盾", Math.round(_v2060.maxES)) + _v2063("最大魔力", Math.round(_v2060.maxMana)) + _v2063("护甲", Math.round(_v2060.armour)) + _v2063("火焰抗性", _v2067("fire")) + _v2063("冰霜抗性", _v2067("cold")) + _v2063("闪电抗性", _v2067("light")) + _v2063("生命回复", Gt(_v2060.regen) + "/秒") + _v2063("生命偷取", (_v2060.leech * 100).toFixed(1) + "%"), _v2070 += _v2063("格挡几率", Math.round(_v2060.block || 0) + "%") + _v2063("精魂", _v2060.spUsed + " / " + _v2060.spMax) + _v2063("药剂效果", "×" + (_v2060.flaskEff || 1).toFixed(2)), _v2060.buffs.size && (_v2070 += '<div class="sec">精魂增益</div>' + [..._v2060.buffs].map(_v2071 => {
+    let _v2072 = He[_v2071] || Ze[_v2071];
     return _v2063(`<span style="color:${_v2072.col}">${_v2072.n}</span>`, _v2072.spirit);
-  }).join("")), (_v2060.souls || []).length && (_v2070 += '<div class="sec">伙伴</div>' + _v2060.souls.map(_v2073 => _v2063(`<span style="color:${Ae[_v2073.beast].col}">${F(Ae[_v2073.beast].n)}</span>`, Oe(gs(_v2073)) + "/秒")).join("")), _v2070 += '<div class="sec">收益与机动</div>' + _v2063("图谱路线", id(Yr())) + _v2063("物品稀有度", "+" + Math.round(_v2060.rarity) + "%") + _v2063("物品数量", "+" + Math.round(_v2060.quant) + "%") + _v2063("移动速度", "+" + Math.round(_v2061("moveInc")) + "%") + _v2063("翻滚冷却", _v2060.rollCd.toFixed(2) + " 秒"), _v2070 += '<div class="sec">技能 DPS(单体估算)</div>' + u.skills.map((_v2074, _v2075) => _v2074 ? _v2063(te[_v2074.gid].n + (n.SKC[_v2075].wtOK ? "" : " ✕"), n.SKC[_v2075].wtOK ? Oe(n.SKC[_v2075].dps) : "需要" + n.SKC[_v2075].wtNeed) : "").join(""), _v2060.ks.size && (_v2070 += '<div class="sec">基石天赋</div>' + [..._v2060.ks].map(_v2076 => _v2063((be.nodes.find(_v2077 => _v2077.ks === _v2076) || ({
+  }).join("")), (_v2060.souls || []).length && (_v2070 += '<div class="sec">伙伴</div>' + _v2060.souls.map(_v2073 => _v2063(`<span style="color:${je[_v2073.beast].col}">${O(je[_v2073.beast].n)}</span>`, ze(ks(_v2073)) + "/秒")).join("")), _v2070 += '<div class="sec">收益与机动</div>' + _v2063("图谱路线", Fd(pi())) + _v2063("物品稀有度", "+" + Math.round(_v2060.rarity) + "%") + _v2063("物品数量", "+" + Math.round(_v2060.quant) + "%") + _v2063("移动速度", "+" + Math.round(_v2061("moveInc")) + "%") + _v2063("翻滚冷却", _v2060.rollCd.toFixed(2) + " 秒"), _v2070 += '<div class="sec">技能 DPS(单体估算)</div>' + u.skills.map((_v2074, _v2075) => _v2074 ? _v2063(se[_v2074.gid].n + (n.SKC[_v2075].wtOK ? "" : " ✕"), n.SKC[_v2075].wtOK ? ze(n.SKC[_v2075].dps) : "需要" + n.SKC[_v2075].wtNeed) : "").join(""), _v2060.ks.size && (_v2070 += '<div class="sec">基石天赋</div>' + [..._v2060.ks].map(_v2076 => _v2063((xe.nodes.find(_v2077 => _v2077.ks === _v2076) || ({
     name: _v2076
   })).name, "✓")).join("")), _v2070);
 };
-Os = function (_v2078, _v2079) {
+qs = function (_v2078, _v2079) {
   if (_v2078 && _v2078.kind === "jewel") return JewelTooltip(_v2078);
   if (_v2078.kind === "gem") {
-    let _v2080 = te[_v2078.gid], _v2081 = Vr(_v2078, n.S), _v2082 = Yn(_v2078.lvl);
+    let _v2080 = se[_v2078.gid], _v2081 = ri(_v2078, n.S), _v2082 = ir(_v2078.lvl);
     return {
       b: "#2ec4a0",
-      h: `<div class="th" style="color:#4fe0c0">${_v2080.n}<small>主动技能宝石${_v2080.wt ? " · " + _v2080.wt.map(_v2083 => Wt[_v2083]).join("/") : ""}</small></div><div class="tb"><div class="p">${_v2080.tags.map(_v2084 => Uc[_v2084] || _v2084).join(" · ")}</div>${(() => {
-        let _v2085 = cn.filter(_v2086 => Nt[_v2086].pool.includes(_v2078.gid));
-        return _v2085.length ? '<div class="p" style="color:#e8c890">' + _v2085.map(_v2087 => ie[_v2087].n).join("/") + " 专属技能</div>" : "";
-      })()}<div class="p">等级 <b>${_v2078.lvl}</b> · 插槽 <b>${_v2078.sock}</b>/5${_v2080.cd ? " · 冷却 <b>" + _v2081.cd.toFixed(1) + "s</b>" : ""} · 经验 <b>${_v2078.lvl >= 20 ? "MAX" : Oe(_v2078.xp) + "/" + Oe(_v2082)}</b></div><div class="sep"></div><div class="md">${_v2080.d}</div><div class="sep"></div>${_v2081.wtOK ? `<div class="p">按当前装备: DPS <b>${Oe(_v2081.dps)}</b> · 均伤 <b>${Oe(_v2081.avg)}</b></div>` : `<div class="p" style="color:var(--down)">需要装备 ${_v2081.wtNeed}</div>`}${_v2080.tags.includes("attack") ? '<div class="hint">使用武器伤害 · 伤害效用 ' + Math.round(_v2080.eff * (1 + 0.03 * (_v2081.lvl - 1)) * 100) + "%</div>" : '<div class="hint">装备上的附加伤害对法术按 60% 生效</div>'}${_v2080.tags.includes("melee") ? '<div class="hint" style="color:#e8b070">近战本能: 伤害总增 40% · 范围 +15% · 命中积累斗志(每层受到伤害 -2%、近战攻速 +1%) · 命中回复生命</div>' : ""}</div>`
+      h: `<div class="th" style="color:#4fe0c0">${_v2080.n}<small>主动技能宝石${_v2080.wt ? " · " + _v2080.wt.map(_v2083 => _t[_v2083]).join("/") : ""}</small></div><div class="tb"><div class="p">${_v2080.tags.map(_v2084 => gf[_v2084] || _v2084).join(" · ")}</div>${(() => {
+        let _v2085 = mn.filter(_v2086 => Ut[_v2086].pool.includes(_v2078.gid));
+        return _v2085.length ? '<div class="p" style="color:#e8c890">' + _v2085.map(_v2087 => le[_v2087].n).join("/") + " 专属技能</div>" : "";
+      })()}<div class="p">等级 <b>${_v2078.lvl}</b> · 插槽 <b>${_v2078.sock}</b>/5${_v2080.cd ? " · 冷却 <b>" + _v2081.cd.toFixed(1) + "s</b>" : ""} · 经验 <b>${_v2078.lvl >= 20 ? "MAX" : ze(_v2078.xp) + "/" + ze(_v2082)}</b></div><div class="sep"></div><div class="md">${_v2080.d}</div><div class="sep"></div>${_v2081.wtOK ? `<div class="p">按当前装备: DPS <b>${ze(_v2081.dps)}</b> · 均伤 <b>${ze(_v2081.avg)}</b></div>` : `<div class="p" style="color:var(--down)">需要装备 ${_v2081.wtNeed}</div>`}${_v2080.tags.includes("attack") ? '<div class="hint">使用武器伤害 · 伤害效用 ' + Math.round(_v2080.eff * (1 + 0.03 * (_v2081.lvl - 1)) * 100) + "%</div>" : '<div class="hint">装备上的附加伤害对法术按 60% 生效</div>'}${_v2080.tags.includes("melee") ? '<div class="hint" style="color:#e8b070">近战本能: 伤害总增 40% · 范围 +15% · 命中积累斗志(每层受到伤害 -2%、近战攻速 +1%) · 命中回复生命</div>' : ""}</div>`
     };
   }
   if (_v2078.kind === "buff") {
-    let _v2088 = ze[_v2078.gid], _v2089 = n.S.buffs.has(_v2078.gid) && _v2079 === "buff";
+    let _v2088 = He[_v2078.gid], _v2089 = n.S.buffs.has(_v2078.gid) && _v2079 === "buff";
     return {
       b: _v2088.col,
       h: `<div class="th" style="color:${_v2088.col}">${_v2088.n}<small>精魂宝石 · 持续增益</small></div><div class="tb"><div class="p">保留 <b>${_v2088.spirit}</b> 精魂 · 当前 ${n.S.spUsed}/${n.S.spMax}</div><div class="sep"></div><div class="md">${_v2088.d}</div><div class="sep"></div><div class="hint">${_v2079 === "buff" ? _v2089 ? "生效中 · 点击卸下" : "精魂不足, 未生效 · 点击卸下" : "点击放入增益槽"}</div></div>`
     };
   }
   if (_v2078.kind === "meta") {
-    let _v2090 = We[_v2078.gid], _v2091 = _v2079 === "buff" && n.S.buffs.has(_v2078.gid);
+    let _v2090 = Ze[_v2078.gid], _v2091 = _v2079 === "buff" && n.S.buffs.has(_v2078.gid);
     return {
       b: _v2090.col,
-      h: `<div class="th" style="color:${_v2090.col}">${_v2090.n}<small>元技能宝石 · 保留 ${_v2090.spirit} 精魂</small></div><div class="tb"><div class="md">${_v2090.d}</div><div class="sep"></div><div class="p">内含法术: ${_v2078.inner.map(_v2092 => _v2092 ? te[_v2092.gid].n : "空").join(" / ")}</div><div class="p">能量 <b>${Math.floor(_v2078.energy || 0)}</b>/100</div><div class="hint">只能插入定点、投射或印记类法术 · ${_v2079 === "buff" ? _v2091 ? "生效中" : "精魂不足" : "点击放入精魂槽"}</div></div>`
+      h: `<div class="th" style="color:${_v2090.col}">${_v2090.n}<small>元技能宝石 · 保留 ${_v2090.spirit} 精魂</small></div><div class="tb"><div class="md">${_v2090.d}</div><div class="sep"></div><div class="p">内含法术: ${_v2078.inner.map(_v2092 => _v2092 ? se[_v2092.gid].n : "空").join(" / ")}</div><div class="p">能量 <b>${Math.floor(_v2078.energy || 0)}</b>/100</div><div class="hint">只能插入定点、投射或印记类法术 · ${_v2079 === "buff" ? _v2091 ? "生效中" : "精魂不足" : "点击放入精魂槽"}</div></div>`
     };
   }
   if (_v2078.kind === "sup") {
-    let _v2093 = oe[_v2078.gid];
+    let _v2093 = ne[_v2078.gid];
     return {
       b: _v2093.mech ? "#c8a040" : "#2ec4a0",
-      h: `<div class="th" style="color:${_v2093.mech ? "#ffd27a" : "#4fe0c0"}">${_v2093.n}<small>${_v2093.mech ? "机制辅助宝石" : "辅助宝石"}</small></div><div class="tb"><div class="p">适用: ${_v2093.req ? _v2093.req.split("|").map(_v2094 => _v2094.split("+").map(_v2095 => Uc[_v2095] || _v2095).join(" + ")).join(" 或 ") : "所有技能"}${_v2093.noChannel ? " (非引导)" : ""}</div><div class="sep"></div><div class="md">${_v2093.d}</div><div class="sep"></div><div class="p" style="color:${wn[_v2078.gid] ? mo : "#6a5a50"}">${wn[_v2078.gid] ? "<span>插在兽栏 · 对伙伴:</span> " + jh(_v2078.gid) : "插在兽栏: 对伙伴无效"}</div><div class="hint">每个辅助使技能消耗 ×1.1</div></div>`
+      h: `<div class="th" style="color:${_v2093.mech ? "#ffd27a" : "#4fe0c0"}">${_v2093.n}<small>${_v2093.mech ? "机制辅助宝石" : "辅助宝石"}</small></div><div class="tb"><div class="p">适用: ${_v2093.req ? _v2093.req.split("|").map(_v2094 => _v2094.split("+").map(_v2095 => gf[_v2095] || _v2095).join(" + ")).join(" 或 ") : "所有技能"}${_v2093.noChannel ? " (非引导)" : ""}</div><div class="sep"></div><div class="md">${_v2093.d}</div><div class="sep"></div><div class="p" style="color:${An[_v2078.gid] ? ko : "#6a5a50"}">${An[_v2078.gid] ? "<span>插在兽栏 · 对伙伴:</span> " + km(_v2078.gid) : "插在兽栏: 对伙伴无效"}</div><div class="hint">每个辅助使技能消耗 ×1.1</div></div>`
     };
   }
   if (_v2078.kind === "map") {
-    let _v2096 = Ps(_v2078);
+    let _v2096 = Ds(_v2078);
     return {
       b: "#c8c8c8",
-      h: `<div class="th" style="color:${["#f0f0f0", "#8a8cff", "#ecd85a"][_v2078.rarity]}">${F(_v2078.name)}<small>T${_v2078.tier} 地图 · ${F(_v2078.base)}</small></div><div class="tb"><div class="p">区域等级 <b>${Mo(_v2078.tier)}</b> · 物品数量 <b>+${_v2096.quant}%</b> · 稀有度 <b>+${_v2096.rar}%</b></div>${_v2078.tier >= 17 ? '<div class="p t17">深渊之境 · 怪物生命 +120% · 伤害 +60% · 速度 +20% · 魔法/稀有怪大幅增加</div><div class="p t17r">首领必掉神圣石与崇高石 ×2 · 高几率额外传奇 · 40% 掉落新的 T17</div>' : ""}${_v2078.dbg ? '<div class="p" style="color:#7fe0ff">' + Gv(_v2078) + "</div>" : ""}${_v2078.mods.length ? '<div class="sep"></div>' + _v2078.mods.map(_v2097 => {
-        let _v2098 = nn[_v2097.id];
-        return `<div class="md">${F(Ks(_v2098, _v2097.v))}<span class="tg">${_v2098.t === "P" ? "前缀" : "后缀"} 数量+${_v2098.q[_v2097.ti]}%</span></div>`;
-      }).join("") : ""}${_v2078.invest ? '<div class="sep"></div><div class="p">已投入 <b>' + zt(_v2078.invest) + "c</b></div>" : ""}<div class="sep"></div><div class="hint">${_v2079 === "dev" ? "点击取回" : "点击放入地图装置"} · 可用通货改造</div></div>`
+      h: `<div class="th" style="color:${["#f0f0f0", "#8a8cff", "#ecd85a"][_v2078.rarity]}">${O(_v2078.name)}<small>T${_v2078.tier} 地图 · ${O(_v2078.base)}</small></div><div class="tb"><div class="p">区域等级 <b>${Ro(_v2078.tier)}</b> · 物品数量 <b>+${_v2096.quant}%</b> · 稀有度 <b>+${_v2096.rar}%</b></div>${_v2078.tier >= 17 ? '<div class="p t17">深渊之境 · 怪物生命 +120% · 伤害 +60% · 速度 +20% · 魔法/稀有怪大幅增加</div><div class="p t17r">首领必掉神圣石与崇高石 ×2 · 高几率额外传奇 · 40% 掉落新的 T17</div>' : ""}${_v2078.dbg ? '<div class="p" style="color:#7fe0ff">' + Xk(_v2078) + "</div>" : ""}${_v2078.mods.length ? '<div class="sep"></div>' + _v2078.mods.map(_v2097 => {
+        let _v2098 = Wo[_v2097.id];
+        return `<div class="md">${O(Xs(_v2098, _v2097.v))}<span class="tg">${_v2098.t === "P" ? "前缀" : "后缀"} 数量+${_v2098.q[_v2097.ti]}%</span></div>`;
+      }).join("") : ""}${_v2078.invest ? '<div class="sep"></div><div class="p">已投入 <b>' + Gt(_v2078.invest) + "c</b></div>" : ""}<div class="sep"></div><div class="hint">${_v2079 === "dev" ? "点击取回" : "点击放入地图装置"} · 可用通货改造</div></div>`
     };
   }
-  if (_v2078.kind === "soul") return fT(_v2078, _v2079);
-  let _v2099 = pe[_v2078.base], _v2100 = _v2078.rarity === 3 ? Na[_v2078.uniq] : null, _v2101 = `<div class="th" style="color:${Zo[_v2078.rarity]}">${F(_v2078.name)}${_v2078.rarity >= 2 || _v2100 ? "<small>" + F(_v2078.base) + "</small>" : ""}</div><div class="tb"><div class="p">${_v2099.wt ? Wt[_v2099.wt] : $s[_v2078.slot]} · 物品等级 <b>${_v2078.ilvl}</b></div>`;
+  if (_v2078.kind === "soul") return J$(_v2078, _v2079);
+  let _v2099 = pe[_v2078.base], _v2100 = _v2078.rarity === 3 ? Ua[_v2078.uniq] : null, _v2101 = `<div class="th" style="color:${Yo[_v2078.rarity]}">${O(_v2078.name)}${_v2078.rarity >= 2 || _v2100 ? "<small>" + O(_v2078.base) + "</small>" : ""}</div><div class="tb"><div class="p">${_v2099.wt ? _t[_v2099.wt] : Es[_v2078.slot]} · 物品等级 <b>${_v2078.ilvl}</b></div>`;
   if (_v2099.wpn) {
     let _v2102 = _v2078.mods.filter(_v2103 => _v2103.id === "physInc").reduce((_v2104, _v2105) => _v2104 + _v2105.v[0], 0) + RunePhysIncOf(_v2078), _v2106 = _v2078.mods.filter(_v2107 => _v2107.id === "addPhys").reduce((_v2108, _v2109) => [_v2108[0] + _v2109.v[0], _v2108[1] + _v2109.v[1]], [0, 0]);
-    (_v2101 += `<div class="p">物理伤害 <b style="color:${_v2102 || _v2106[0] ? "#8f9cff" : ""}">${Math.round((_v2099.wpn[0] + _v2106[0]) * (1 + _v2102 / 100))}–${Math.round((_v2099.wpn[1] + _v2106[1]) * (1 + _v2102 / 100))}</b> · 攻速 <b>${_v2099.aps}</b> · 暴击 <b>${_v2099.crit}%</b></div>`, _v2099.wt !== ie[u.cls].wt && (_v2101 += '<div class="hint">非本职业初始武器, 需要配合对应技能宝石</div>'));
+    (_v2101 += `<div class="p">物理伤害 <b style="color:${_v2102 || _v2106[0] ? "#8f9cff" : ""}">${Math.round((_v2099.wpn[0] + _v2106[0]) * (1 + _v2102 / 100))}–${Math.round((_v2099.wpn[1] + _v2106[1]) * (1 + _v2102 / 100))}</b> · 攻速 <b>${_v2099.aps}</b> · 暴击 <b>${_v2099.crit}%</b></div>`, _v2099.wt !== le[u.cls].wt && (_v2101 += '<div class="hint">非本职业初始武器, 需要配合对应技能宝石</div>'));
   }
-  if ((_v2099.def && (_v2101 += `<div class="p">${Object.entries(_v2099.def).map(([_v2110, _v2111]) => (_v2110 === "es" ? "能量护盾 " : "护甲 ") + "<b>" + _v2111 + "</b>").join(" · ")}</div>`), _v2078.impl.length && (_v2101 += '<div class="sep"></div>' + _v2078.impl.map(_v2112 => `<div class="md">${F(Ks(Yt[_v2112.id], _v2112.v))}</div>`).join("")), _v2078.cimpl && (_v2101 += '<div class="sep"></div><div class="md" style="color:#ff6060">' + F(Wa(_v2078.cimpl.k, _v2078.cimpl.v)) + '<span class="tg">腐化</span></div>'), _v2078.cimpl2 && (_v2101 += '<div class="md" style="color:#ff6060">' + F(Wa(_v2078.cimpl2.k, _v2078.cimpl2.v)) + '<span class="tg">双重腐化</span></div>'), _v2078.mods.length && (_v2101 += AffixBlocksHTML(_v2078)), _v2078.meta && (_v2101 += `<div class="md metal">◈ ${_v2078.meta === "P" ? "前缀无法被改变" : "后缀无法被改变"} <span class="tg">${_v2078.meta === "P" ? "工艺 · 占用 1 个后缀" : "工艺 · 占用 1 个前缀"}</span></div>`), _v2078.ds && (_v2101 += `<div class="md dsline">◇ 未揭示的渎灵词缀 <span class="tg ds">${z[_v2078.ds.bone].n}</span> <small class="dim">去灵魂之井揭示</small></div>`), _v2100 && (_v2101 += _v2100.st.map(_v2113 => `<div class="sp">${_v2113}</div>`).join(""), _v2101 += `<div class="sep"></div><div class="fl">${_v2100.fl}</div>`), _v2078.rsock)) {
+  if ((_v2099.def && (_v2101 += `<div class="p">${Object.entries(_v2099.def).map(([_v2110, _v2111]) => (_v2110 === "es" ? "能量护盾 " : "护甲 ") + "<b>" + _v2111 + "</b>").join(" · ")}</div>`), _v2078.impl.length && (_v2101 += '<div class="sep"></div>' + _v2078.impl.map(_v2112 => `<div class="md">${O(Xs(ta[_v2112.id], _v2112.v))}</div>`).join("")), _v2078.cimpl && (_v2101 += '<div class="sep"></div><div class="md" style="color:#ff6060">' + O(_a(_v2078.cimpl.k, _v2078.cimpl.v)) + '<span class="tg">腐化</span></div>'), _v2078.cimpl2 && (_v2101 += '<div class="md" style="color:#ff6060">' + O(_a(_v2078.cimpl2.k, _v2078.cimpl2.v)) + '<span class="tg">双重腐化</span></div>'), _v2078.mods.length && (_v2101 += AffixBlocksHTML(_v2078)), _v2078.meta && (_v2101 += `<div class="md metal">◈ ${_v2078.meta === "P" ? "前缀无法被改变" : "后缀无法被改变"} <span class="tg">${_v2078.meta === "P" ? "工艺 · 占用 1 个后缀" : "工艺 · 占用 1 个前缀"}</span></div>`), _v2078.ds && (_v2101 += `<div class="md dsline">◇ 未揭示的渎灵词缀 <span class="tg ds">${q[_v2078.ds.bone].n}</span> <small class="dim">去灵魂之井揭示</small></div>`), _v2100 && (_v2101 += _v2100.st.map(_v2113 => `<div class="sp">${_v2113}</div>`).join(""), _v2101 += `<div class="sep"></div><div class="fl">${_v2100.fl}</div>`), _v2078.rsock)) {
     _v2101 += '<div class="sep"></div>';
     if ((_v2078.runes || []).length) _v2101 += '<div class="hint" style="color:#e8c870">按住 Shift 锁定预览，再点取出</div>';
     let __specialFrom = _v2078.rsock - (_v2078.specialRsock || 0);
     for (let _v2114 = 0; _v2114 < _v2078.rsock; _v2114++) {
       let _v2115 = (_v2078.runes || [])[_v2114];
       let __isSp = _v2114 >= __specialFrom;
-      _v2101 += _v2115 ? `<div class="md" style="color:${z[_v2115].col}">◆ ${z[_v2115].n}: ${zw(_v2115, _v2078.slot)}${__isSp ? ' <span class="tg">符文之语</span>' : ""} <button class="btn small" data-runeout="${_v2078.uid}:${_v2114}" style="padding:0 5px;font-size:10px">取出</button></div>` : `<div class="p dim">◇ ${__isSp ? "特殊符文槽 · 仅限符文之语" : "空符文插槽"}</div>`;
+      _v2101 += _v2115 ? `<div class="md" style="color:${q[_v2115].col}">◆ ${q[_v2115].n}: ${i3(_v2115, _v2078.slot)}${__isSp ? ' <span class="tg">符文之语</span>' : ""} <button class="btn small" data-runeout="${_v2078.uid}:${_v2114}" style="padding:0 5px;font-size:10px">取出</button></div>` : `<div class="p dim">◇ ${__isSp ? "特殊符文槽 · 仅限符文之语" : "空符文插槽"}</div>`;
     }
   }
   _v2101 += RuneWordTipHTML(_v2078);
-  if (Nc(_v2078.slot)) {
+  if (hf(_v2078.slot)) {
     let _v2116 = u.equip.weapon && pe[u.equip.weapon.base].wt || "none";
-    (Ra[_v2116] || []).includes(ja[_v2078.slot]) || (_v2101 += '<div class="hint" style="color:var(--down)">与当前武器不兼容</div>');
+    (ya[_v2116] || []).includes(va[_v2078.slot]) || (_v2101 += '<div class="hint" style="color:var(--down)">与当前武器不兼容</div>');
   }
-  return (_v2078.corrupted && (_v2101 += `<div class="p" style="color:#ff5050;font-weight:700">${_v2078.cimpl2 ? "双重腐化" : "已腐化"}</div>`), _v2101 += vf(_v2078), _v2079 === "inv" && (_v2101 += _r(_v2078)), _v2101 += `<div class="sep"></div><div class="hint">${_v2079 === "inv" ? "左键装备 - 右键出售 - Alt+左键锁定" : _v2079 === "eq" ? "点击卸下" : ""}</div></div>`, {
+  return (_v2078.corrupted && (_v2101 += `<div class="p" style="color:#ff5050;font-weight:700">${_v2078.cimpl2 ? "双重腐化" : "已腐化"}</div>`), _v2101 += Hf(_v2078), _v2079 === "inv" && (_v2101 += oi(_v2078)), _v2101 += `<div class="sep"></div><div class="hint">${_v2079 === "inv" ? "左键装备 - 右键出售 - Alt+左键锁定" : _v2079 === "eq" ? "点击卸下" : ""}</div></div>`, {
     b: _v2078.rarity === 3 ? "#d2803a" : _v2078.rarity === 2 ? "#8a7a24" : _v2078.rarity === 1 ? "#3e40a0" : "#666",
     h: _v2101
   });
 };
-Bi = function (_v2117) {
-  let _v2118 = z[_v2117];
+el = function (_v2117) {
+  let _v2118 = q[_v2117];
   if (_v2118.grp === "rune") {
     let _v2119 = (RUNE_WORDS || []).filter(function (_v2120) {
       return _v2120.seq.indexOf(_v2117) >= 0;
@@ -8568,121 +8568,121 @@ Bi = function (_v2117) {
     }).join(" / ");
     return {
       b: _v2118.col,
-      h: '<div class="th" style="color:' + _v2118.col + '">' + _v2118.n + "<small>符文 · 持有 " + (u.cur[_v2117] || 0) + '</small></div><div class="tb"><div class="md">武器: ' + zw(_v2117, "W") + '</div><div class="md">防具: ' + zw(_v2117, "A") + "</div>" + (_v2119 ? '<div class="sep"></div><div class="p" style="color:#e8c870">参与符文之语: ' + _v2119 + "</div>" : "") + '<div class="sep"></div><div class="p">账本估值 <b>' + zt(_v2118.v) + 'c</b> · 获取: 工艺台「符文合成」</div><div class="hint">镶嵌在装备上生效 · 多颗符文的镶嵌顺序决定符文之语</div></div>'
+      h: '<div class="th" style="color:' + _v2118.col + '">' + _v2118.n + "<small>符文 · 持有 " + (u.cur[_v2117] || 0) + '</small></div><div class="tb"><div class="md">武器: ' + i3(_v2117, "W") + '</div><div class="md">防具: ' + i3(_v2117, "A") + "</div>" + (_v2119 ? '<div class="sep"></div><div class="p" style="color:#e8c870">参与符文之语: ' + _v2119 + "</div>" : "") + '<div class="sep"></div><div class="p">账本估值 <b>' + Gt(_v2118.v) + 'c</b> · 获取: 工艺台「符文合成」</div><div class="hint">镶嵌在装备上生效 · 多颗符文的镶嵌顺序决定符文之语</div></div>'
     };
   }
   if (_v2118.grp === "omen") {
     let _v2122 = OmActive(_v2117), _v2123 = _v2118.og === "worldRes" || _v2118.og === "worldExp", _v2124 = OmIsAbyss(_v2117) ? "深渊预兆" : OmIsWorld(_v2117) ? "冒险预兆" : "工艺预兆", _v2125 = _v2118.mt > 1 ? "T" + _v2118.mt + "+ " : "", _v2126 = _v2123 ? "每个副本只能在战斗中触发一个预兆。" : OmIsAbyss(_v2117) ? "只在深渊/渎灵相关操作中生效 · 同类只能激活 1 个" : OmIsWorld(_v2117) ? "满足条件时自动触发并消耗" : "同类预兆只能激活 1 个 · 工艺预兆可以与其他类别并存";
     return {
       b: _v2122 ? "#c070ff" : "#8a7a9a",
-      h: `<div class="th" style="color:${_v2122 ? "#d8a8ff" : "#b8a8c8"}">${_v2118.n}<small>预兆 · 持有 ${u.cur[_v2117] || 0}</small></div><div class="tb"><div class="md">此物品在你的背包中激活时, ${_v2118.d}</div><div class="sep"></div><div class="md">${_v2122 ? '<span style="color:#c070ff">已激活 · 下次满足条件时生效</span>' : "未激活 · 点击通货栏或工艺台里的预兆激活"}</div><div class="p">${_v2124} · ${_v2126}</div><div class="p">账本估值 <b>${zt(_v2118.v)}c</b> · 来源: ${_v2125}宝箱、稀有怪与首领</div><div class="hint">点击此物品以将其激活。此物品触发效果时会被消耗。</div></div>`
+      h: `<div class="th" style="color:${_v2122 ? "#d8a8ff" : "#b8a8c8"}">${_v2118.n}<small>预兆 · 持有 ${u.cur[_v2117] || 0}</small></div><div class="tb"><div class="md">此物品在你的背包中激活时, ${_v2118.d}</div><div class="sep"></div><div class="md">${_v2122 ? '<span style="color:#c070ff">已激活 · 下次满足条件时生效</span>' : "未激活 · 点击通货栏或工艺台里的预兆激活"}</div><div class="p">${_v2124} · ${_v2126}</div><div class="p">账本估值 <b>${Gt(_v2118.v)}c</b> · 来源: ${_v2125}宝箱、稀有怪与首领</div><div class="hint">点击此物品以将其激活。此物品触发效果时会被消耗。</div></div>`
     };
   }
   return {
     b: "#b4a070",
-    h: `<div class="th" style="color:#e8d8a8">${_v2118.n}<small>通货 · 持有 ${u.cur[_v2117] || 0}</small></div><div class="tb"><div class="md">${_v2118.d}</div>${_v2118.grp === "bone" ? DsBoneTip(_v2117) : ""}<div class="sep"></div><div class="p">账本估值 <b>${zt(_v2118.v)}c</b> · 掉落权重 <b>${_v2118.w}</b></div><div class="hint">点击选中, 再点击物品或地图使用</div></div>`
+    h: `<div class="th" style="color:#e8d8a8">${_v2118.n}<small>通货 · 持有 ${u.cur[_v2117] || 0}</small></div><div class="tb"><div class="md">${_v2118.d}</div>${_v2118.grp === "bone" ? DsBoneTip(_v2117) : ""}<div class="sep"></div><div class="p">账本估值 <b>${Gt(_v2118.v)}c</b> · 掉落权重 <b>${_v2118.w}</b></div><div class="hint">点击选中, 再点击物品或地图使用</div></div>`
   };
 };
-Mf = function (_v2127, _v2128) {
-  let _v2129 = _v2127.mods.filter(_v2130 => _v2130.t === _v2128 && AffixClass(_v2130) === "regular"), _v2131 = AffixSideCap(_v2127, _v2128), _v2132 = ye.last && ye.last.d ? ye.last.d.filter(_v2133 => _v2133.k === "add" || _v2133.k === "ch" || _v2133.k === "fr").map(_v2134 => _v2134.m.id) : [], _v2135 = _v2129.map(_v2136 => {
-    let _v2137 = Da(_v2127, _v2136.id), _v2138 = _v2137.ranges.length - _v2136.ti, _v2139 = (_v2136.fr ? '<i class="bst fr">破溃</i>' : _v2127.meta === _v2128 ? '<i class="bst lk">锁定</i>' : "") + (_v2136.ex ? '<i class="bst ex">超越</i>' : "") + (_v2136.dsec ? '<i class="bst ds">渎灵</i>' : "");
-    return `<div class="baff${_v2138 === 1 ? " t1" : ""}${qr(_v2127, _v2136) ? " fixed" : ""}${_v2136.fr ? " frx" : ""}${_v2132.includes(_v2136.id) ? " fresh" : ""}"><span class="btier">T${_v2138}</span><span class="btxt">${F(Ks(_v2137, _v2136.v))}</span>${_v2139}</div>`;
+Vf = function (_v2127, _v2128) {
+  let _v2129 = _v2127.mods.filter(_v2130 => _v2130.t === _v2128 && AffixClass(_v2130) === "regular"), _v2131 = AffixSideCap(_v2127, _v2128), _v2132 = we.last && we.last.d ? we.last.d.filter(_v2133 => _v2133.k === "add" || _v2133.k === "ch" || _v2133.k === "fr").map(_v2134 => _v2134.m.id) : [], _v2135 = _v2129.map(_v2136 => {
+    let _v2137 = qa(_v2127, _v2136.id), _v2138 = _v2137.ranges.length - _v2136.ti, _v2139 = (_v2136.fr ? '<i class="bst fr">破溃</i>' : _v2127.meta === _v2128 ? '<i class="bst lk">锁定</i>' : "") + (_v2136.ex ? '<i class="bst ex">超越</i>' : "") + (_v2136.dsec ? '<i class="bst ds">渎灵</i>' : "");
+    return `<div class="baff${_v2138 === 1 ? " t1" : ""}${Qr(_v2127, _v2136) ? " fixed" : ""}${_v2136.fr ? " frx" : ""}${_v2132.includes(_v2136.id) ? " fresh" : ""}"><span class="btier">T${_v2138}</span><span class="btxt">${O(Xs(_v2137, _v2136.v))}</span>${_v2139}</div>`;
   }).join("");
   _v2127.meta && _v2127.meta !== _v2128 && (_v2135 += `<div class="baff metarow"><span class="btier">◈</span><span class="btxt">${_v2127.meta === "P" ? "前缀锁定 · 占用 1 个后缀位" : "后缀锁定 · 占用 1 个前缀位"}</span><i class="bst lk">工艺</i></div>`);
   for (let _v2140 = _v2129.length; _v2140 < _v2131; _v2140++) _v2135 += '<div class="baff empty"><span class="btier">—</span><span class="btxt">空位</span></div>';
   return _v2135;
 };
-p6 = function (_v2141, _v2142) {
-  let _v2143 = _v2142 ? F0(_v2141, _v2142) : "先选一件装备", _v2144 = u.cur[_v2141] || 0, _v2145 = OmHint(_v2141), _v2146 = _v2145 ? "预兆生效 · " + _v2145 : _v2141 === "vaal" && !_v2143 ? (u.pity || 0) >= Ri ? "怨念已满 · 必出腐化词缀" : "赌一把 · 怨念 " + (u.pity || 0) + "/" + Ri : Dh[_v2141] || "必定带有对应词缀";
-  return `<button class="bcur${_v2143 ? " no" : ""}${_v2141 === "frac" ? " rare" : ""}${_v2145 ? " om" : ""}" data-bu="${_v2141}" data-tt="cur:${_v2141}"${_v2143 ? ` title="${F(_v2143)}"` : ""}><img src="${_e[_v2141]}" alt=""><span class="bn">${z[_v2141].n}</span><b>${_v2144}</b><small>${_v2143 ? F(_v2143) : _v2146}</small></button>`;
+q6 = function (_v2141, _v2142) {
+  let _v2143 = _v2142 ? pp(_v2141, _v2142) : "先选一件装备", _v2144 = u.cur[_v2141] || 0, _v2145 = OmHint(_v2141), _v2146 = _v2145 ? "预兆生效 · " + _v2145 : _v2141 === "vaal" && !_v2143 ? (u.pity || 0) >= _i ? "怨念已满 · 必出腐化词缀" : "赌一把 · 怨念 " + (u.pity || 0) + "/" + _i : Am[_v2141] || "必定带有对应词缀";
+  return `<button class="bcur${_v2143 ? " no" : ""}${_v2141 === "frac" ? " rare" : ""}${_v2145 ? " om" : ""}" data-bu="${_v2141}" data-tt="cur:${_v2141}"${_v2143 ? ` title="${O(_v2143)}"` : ""}><img src="${Ye[_v2141]}" alt=""><span class="bn">${q[_v2141].n}</span><b>${_v2144}</b><small>${_v2143 ? O(_v2143) : _v2146}</small></button>`;
 };
-Ko = function () {
+en = function () {
   OmPrune();
-  let _v2147 = ye.mode === "rune";
-  let _v2148 = yo(), {eq: _v2149, inv: _v2150} = Tf(), _v2151 = (ye.from === "eq" ? _v2149 : _v2150).map(_v2152 => vo(_v2152, "bench", `data-bsel="${_v2152.uid}"${_v2152.uid === ye.sel ? ' data-on="1"' : ""}`)).join("") || '<p class="dim">没有装备</p>', _v2153;
-  if (_v2147) _v2153 = RuneCraftHTML(); else if (!_v2148) _v2153 = ye.mode === "altar" ? `<div class="bempty">左边选一件<b>已腐化</b>的装备放上祭坛。</div>${kf(null)}` : '<div class="bempty">左边选一件装备开始。</div>'; else {
-    let _v2154 = _v2148.kind === "soul" ? {} : pe[_v2148.base], _v2155 = `<div class="bhead"><div class="bname" style="color:${Zo[_v2148.rarity]}">${F(_v2148.name)}</div><div class="bsub">${_v2148.kind === "soul" ? Ae[_v2148.beast].cls === "boss" ? "首领兽魂" : "野兽兽魂" : _v2154.wt ? Wt[_v2154.wt] : $s[_v2148.slot]} · ${Sf[_v2148.rarity]} · 物品等级 ${_v2148.ilvl}${O0(_v2148) ? ' · <span class="on">已装备</span>' : ""}${_v2148.dc ? ' · <span class="cor">双重腐化</span>' : _v2148.corrupted ? ' · <span class="cor">已腐化</span>' : ""}${(() => { try { var __rws = RuneWordMatches(_v2148); return __rws.length ? ' · <span style="color:#9dffb4">✦ ' + __rws.map(function (w) { return F(w.n); }).join(" / ") + '（符文之语）已激活</span>' : ""; } catch (e) { return ""; } })()}</div><button class="bshare" data-bshare="1" title="把这件装备和它的铸造履历做成一张图">晒图卡</button>${_v2148.kind === "soul" ? `<div class="bdps">伙伴单体伤害估算 <b style="color:${Ae[_v2148.beast].col}">${Oe(gs(_v2148))}</b>/秒</div>` : ""}</div>`, _v2156;
-    _v2148.rarity === 3 ? _v2156 = `<div class="bcol wide"><h4>传奇词缀 <small>固定</small></h4>${_v2148.mods.filter(_v2157 => _v2157.t === "U").map(_v2158 => `<div class="baff"><span class="btier">U</span><span class="btxt">${F(Ks(Da(_v2148, _v2158.id), _v2158.v))}</span></div>`).join("")}<p class="dim bhint">传奇固定词缀不占 10 词条栏位，也不受栏位限制；传奇装备只能用神圣石重随数值, 或者用瓦尔宝珠腐化。</p></div>` : _v2148.rarity === 0 ? _v2156 = '<div class="bcol wide"><h4>没有词缀</h4><p class="dim bhint">普通物品: 用蜕变石变成魔法, 点金石变成稀有, 或者用精华直接做出带指定词缀的稀有装备。</p></div>' : _v2156 = `<div class="bcol"><h4>前缀 <small>${AffixRegCount(_v2148, "P")}/${AffixSlotCfg().regularPerSide}</small></h4>${Mf(_v2148, "P")}</div><div class="bcol"><h4>后缀 <small>${AffixRegCount(_v2148, "S")}/${AffixSlotCfg().regularPerSide}</small></h4>${Mf(_v2148, "S")}</div>${AffixSlotRowsHTML(_v2148, "sp")}${AffixSlotRowsHTML(_v2148, "dsec")}`;
+  let _v2147 = we.mode === "rune";
+  let _v2148 = So(), {eq: _v2149, inv: _v2150} = Jf(), _v2151 = (we.from === "eq" ? _v2149 : _v2150).map(_v2152 => Mo(_v2152, "bench", `data-bsel="${_v2152.uid}"${_v2152.uid === we.sel ? ' data-on="1"' : ""}`)).join("") || '<p class="dim">没有装备</p>', _v2153;
+  if (_v2147) _v2153 = RuneCraftHTML(); else if (!_v2148) _v2153 = we.mode === "altar" ? `<div class="bempty">左边选一件<b>已腐化</b>的装备放上祭坛。</div>${_f(null)}` : '<div class="bempty">左边选一件装备开始。</div>'; else {
+    let _v2154 = _v2148.kind === "soul" ? {} : pe[_v2148.base], _v2155 = `<div class="bhead"><div class="bname" style="color:${Yo[_v2148.rarity]}">${O(_v2148.name)}</div><div class="bsub">${_v2148.kind === "soul" ? je[_v2148.beast].cls === "boss" ? "首领兽魂" : "野兽兽魂" : _v2154.wt ? _t[_v2154.wt] : Es[_v2148.slot]} · ${Kf[_v2148.rarity]} · 物品等级 ${_v2148.ilvl}${dp(_v2148) ? ' · <span class="on">已装备</span>' : ""}${_v2148.dc ? ' · <span class="cor">双重腐化</span>' : _v2148.corrupted ? ' · <span class="cor">已腐化</span>' : ""}${(() => { try { var __rws = RuneWordMatches(_v2148); return __rws.length ? ' · <span style="color:#9dffb4">✦ ' + __rws.map(function (w) { return O(w.n); }).join(" / ") + '（符文之语）已激活</span>' : ""; } catch (e) { return ""; } })()}</div><button class="bshare" data-bshare="1" title="把这件装备和它的铸造履历做成一张图">晒图卡</button>${_v2148.kind === "soul" ? `<div class="bdps">伙伴单体伤害估算 <b style="color:${je[_v2148.beast].col}">${ze(ks(_v2148))}</b>/秒</div>` : ""}</div>`, _v2156;
+    _v2148.rarity === 3 ? _v2156 = `<div class="bcol wide"><h4>传奇词缀 <small>固定</small></h4>${_v2148.mods.filter(_v2157 => _v2157.t === "U").map(_v2158 => `<div class="baff"><span class="btier">U</span><span class="btxt">${O(Xs(qa(_v2148, _v2158.id), _v2158.v))}</span></div>`).join("")}<p class="dim bhint">传奇固定词缀不占 10 词条栏位，也不受栏位限制；传奇装备只能用神圣石重随数值, 或者用瓦尔宝珠腐化。</p></div>` : _v2148.rarity === 0 ? _v2156 = '<div class="bcol wide"><h4>没有词缀</h4><p class="dim bhint">普通物品: 用蜕变石变成魔法, 点金石变成稀有, 或者用精华直接做出带指定词缀的稀有装备。</p></div>' : _v2156 = `<div class="bcol"><h4>前缀 <small>${AffixRegCount(_v2148, "P")}/${AffixSlotCfg().regularPerSide}</small></h4>${Vf(_v2148, "P")}</div><div class="bcol"><h4>后缀 <small>${AffixRegCount(_v2148, "S")}/${AffixSlotCfg().regularPerSide}</small></h4>${Vf(_v2148, "S")}</div>${AffixSlotRowsHTML(_v2148, "sp")}${AffixSlotRowsHTML(_v2148, "dsec")}`;
     let _v2159 = _v2148.rarity <= 2 && !_v2148.corrupted && _v2148.kind !== "soul";
-    _v2153 = ye.mode === "altar" ? `${_v2155}${AffixStatusHTML(_v2148)}<div class="baffs">${_v2156}</div>${kf(_v2148)}` : `${_v2155}${AffixStatusHTML(_v2148)}<div class="baffs">${_v2156}</div>
-		  <div class="bsec"><h4>通货 <small>灰色的按钮会说明为什么不能用</small></h4><div class="bcurs">${Fh.map(_v2160 => p6(_v2160, _v2148)).join("")}</div>
-		  ${_v2159 ? `<h4>精华 <small>普通/魔法 → 稀有; 稀有装备会重铸 (保留破溃和锁定的一侧), 必定带有对应词缀</small></h4><div class="bcurs ess">${P0.map(_v2161 => p6(_v2161, _v2148)).join("")}</div>` : ""}</div>
+    _v2153 = we.mode === "altar" ? `${_v2155}${AffixStatusHTML(_v2148)}<div class="baffs">${_v2156}</div>${_f(_v2148)}` : `${_v2155}${AffixStatusHTML(_v2148)}<div class="baffs">${_v2156}</div>
+		  <div class="bsec"><h4>通货 <small>灰色的按钮会说明为什么不能用</small></h4><div class="bcurs">${$m.map(_v2160 => q6(_v2160, _v2148)).join("")}</div>
+		  ${_v2159 ? `<h4>精华 <small>普通/魔法 → 稀有; 稀有装备会重铸 (保留破溃和锁定的一侧), 必定带有对应词缀</small></h4><div class="bcurs ess">${fp.map(_v2161 => q6(_v2161, _v2148)).join("")}</div>` : ""}</div>
 		  <div class="bsec"><h4>预兆 <small>点击激活 · 同类只能激活 1 个 · 下次对应操作时自动消耗</small></h4><div class="bcurs oms">${OmBenchRow()}</div></div>
-		  <div class="bsec"><h4>工艺 · 神圣石 <small>锁定会占用另一侧 1 个位置, 解除免费</small></h4><div class="bmetas">${E2("lockP", _v2148)}${E2("lockS", _v2148)}<button class="bmeta${_v2148.meta ? "" : " no"}" data-bu="unlock"><span class="bn">解除锁定</span><span class="bcost">免费</span><small>${_v2148.meta ? "腾出被占用的位置" : "没有锁定"}</small></button></div></div>
+		  <div class="bsec"><h4>工艺 · 神圣石 <small>锁定会占用另一侧 1 个位置, 解除免费</small></h4><div class="bmetas">${Nv("lockP", _v2148)}${Nv("lockS", _v2148)}<button class="bmeta${_v2148.meta ? "" : " no"}" data-bu="unlock"><span class="bn">解除锁定</span><span class="bcost">免费</span><small>${_v2148.meta ? "腾出被占用的位置" : "没有锁定"}</small></button></div></div>
 		`;
   }
-  let _v2162 = ye.mode === "altar";
-  let _v2163 = _v2147 ? RuneBenchHelp() : `<section class="bpick"><div class="shoptabs"><button class="${ye.from === "eq" ? "on" : ""}" data-bfrom="eq">已装备 <small>${_v2149.length}</small></button><button class="${ye.from === "inv" ? "on" : ""}" data-bfrom="inv">背包 <small>${_v2150.length}</small></button></div><div class="grid bgrid">${_v2151}</div><div class="blastw"><h4>上一次操作</h4>${Gh()}</div></section>`;
-  (Ke(`<div class="ovbox bench${_v2162 ? " altarmode" : ""}${_v2147 ? " runemode" : ""}"><div class="bmodes"><button class="${!_v2162 && !_v2147 ? "on" : ""}" data-bmode="craft">工艺台</button><button class="${_v2162 ? "on" : ""}" data-bmode="altar">余烬祭坛</button><button class="${_v2147 ? "on" : ""}" data-bmode="rune">符文合成</button></div><p class="bintro">${_v2147 ? "40 级符文 · <b>低阶合成 / 升阶合成 / 定向合成</b> 三条路线 · 符文镶嵌顺序决定符文之语是否激活" : _v2162 ? "已腐化的装备可以在这里<b>再腐化一次</b> · 30% 超越 T1 · 30% 化为余烬 · 每件装备只能献祭一次" : "通货操作<b>不可逆</b>，点击即生效，请谨慎操作 · 每次结果都会标出<b>出现概率</b>"}</p>
+  let _v2162 = we.mode === "altar";
+  let _v2163 = _v2147 ? RuneBenchHelp() : `<section class="bpick"><div class="shoptabs"><button class="${we.from === "eq" ? "on" : ""}" data-bfrom="eq">已装备 <small>${_v2149.length}</small></button><button class="${we.from === "inv" ? "on" : ""}" data-bfrom="inv">背包 <small>${_v2150.length}</small></button></div><div class="grid bgrid">${_v2151}</div><div class="blastw"><h4>上一次操作</h4>${Em()}</div></section>`;
+  (Ve(`<div class="ovbox bench${_v2162 ? " altarmode" : ""}${_v2147 ? " runemode" : ""}"><div class="bmodes"><button class="${!_v2162 && !_v2147 ? "on" : ""}" data-bmode="craft">工艺台</button><button class="${_v2162 ? "on" : ""}" data-bmode="altar">余烬祭坛</button><button class="${_v2147 ? "on" : ""}" data-bmode="rune">符文合成</button></div><p class="bintro">${_v2147 ? "40 级符文 · <b>低阶合成 / 升阶合成 / 定向合成</b> 三条路线 · 符文镶嵌顺序决定符文之语是否激活" : _v2162 ? "已腐化的装备可以在这里<b>再腐化一次</b> · 30% 超越 T1 · 30% 化为余烬 · 每件装备只能献祭一次" : "通货操作<b>不可逆</b>，点击即生效，请谨慎操作 · 每次结果都会标出<b>出现概率</b>"}</p>
 		 <div class="bcols">
 		  ${_v2163}
 		  <section class="bwork">${_v2153}</section>
 		 </div>
-		 <div class="ovbtns"><button class="btn" id="bClose">离开 <kbd>Esc</kbd></button></div></div>`), C("#bClose").onclick = qh, document.querySelectorAll("#overlay [data-bfrom]").forEach(_v2164 => _v2164.onclick = () => {
-    (ye.from = _v2164.dataset.bfrom, Ko());
+		 <div class="ovbtns"><button class="btn" id="bClose">离开 <kbd>Esc</kbd></button></div></div>`), C("#bClose").onclick = jm, document.querySelectorAll("#overlay [data-bfrom]").forEach(_v2164 => _v2164.onclick = () => {
+    (we.from = _v2164.dataset.bfrom, en());
   }), document.querySelectorAll("#overlay [data-bsel]").forEach(_v2165 => _v2165.onclick = _v2166 => {
-    (_v2166.stopPropagation(), ye.sel = +_v2165.dataset.bsel, ye.last = null, T("pick", 0.5), Ko());
+    (_v2166.stopPropagation(), we.sel = +_v2165.dataset.bsel, we.last = null, $("pick", 0.5), en());
   }), document.querySelectorAll("#overlay [data-bu]").forEach(_v2167 => _v2167.onclick = () => {
-    if (Bh(_v2167.dataset.bu)) {
-      Ko();
+    if (Cm(_v2167.dataset.bu)) {
+      en();
       let _v2168 = document.querySelector("#overlay .blast");
-      (_v2168 && _v2168.classList.add("pop"), ye.last && ye.last.vaal && xf(Gl(yo(), ye.last.vaal)));
+      (_v2168 && _v2168.classList.add("pop"), we.last && we.last.vaal && Uf(rc(So(), we.last.vaal)));
     }
   }), document.querySelectorAll("#overlay [data-omen]").forEach(_v2169 => _v2169.onclick = _v2170 => {
-    (_v2170.stopPropagation(), OmToggle(_v2169.dataset.omen), Ko());
+    (_v2170.stopPropagation(), OmToggle(_v2169.dataset.omen), en());
   }), document.querySelectorAll("#overlay [data-rune]").forEach(_v2171 => _v2171.onclick = () => {
     let _v2172 = RuneCraft(_v2171.dataset.rune);
-    if (_v2172) (I(_v2172), T("nomana", 0.5)); else (T("craft"), I("合成成功 · " + z[RuneRecipes().filter(_v2173 => _v2173.id === _v2171.dataset.rune)[0].out].n));
-    Ko();
+    if (_v2172) (P(_v2172), $("nomana", 0.5)); else ($("craft"), P("合成成功 · " + q[RuneRecipes().filter(_v2173 => _v2173.id === _v2171.dataset.rune)[0].out].n));
+    en();
   }), document.querySelectorAll("#overlay [data-bmode]").forEach(_v2174 => _v2174.onclick = () => {
-    ye.mode !== _v2174.dataset.bmode && (ye.mode = _v2174.dataset.bmode, ye.last = null, T("pick", 0.5), Ko());
+    we.mode !== _v2174.dataset.bmode && (we.mode = _v2174.dataset.bmode, we.last = null, $("pick", 0.5), en());
   }));
   let _v2175 = document.querySelector("#overlay [data-bshare]");
-  (_v2175 && (_v2175.onclick = () => wf(yo(), "item")), document.querySelectorAll("#overlay [data-altar]").forEach(_v2176 => _v2176.onclick = () => zh(_v2176.dataset.altar)));
+  (_v2175 && (_v2175.onclick = () => Zf(So(), "item")), document.querySelectorAll("#overlay [data-altar]").forEach(_v2176 => _v2176.onclick = () => Rm(_v2176.dataset.altar)));
 };
-RT = function (_v2177, _v2178) {
-  let _v2179 = (n.S.rarity + n.Z.ms.rar + DelRarityBonus() + (n.endlessMode ? n.endlessIntensity * 70 : 0) + _v2178) / 100, _v2180 = n.Z && n.Z.th && n.Z.th.key === "swamp" ? 1.6 : 1, _v2181 = lt([0, 1, 2, 3], _v2182 => [100, 32 * (1 + _v2179), 7 * (1 + _v2179), 0.6 * (1 + _v2179) * _v2180][_v2182]);
+mA = function (_v2177, _v2178) {
+  let _v2179 = (n.S.rarity + n.Z.ms.rar + DelRarityBonus() + (n.endlessMode ? n.endlessIntensity * 70 : 0) + _v2178) / 100, _v2180 = n.Z && n.Z.th && n.Z.th.key === "swamp" ? 1.6 : 1, _v2181 = ht([0, 1, 2, 3], _v2182 => [100, 32 * (1 + _v2179), 7 * (1 + _v2179), 0.6 * (1 + _v2179) * _v2180][_v2182]);
   if (_v2181 === 3) {
-    let _v2183 = pt.filter(_v2184 => _v2184.src === "world" && !_v2184.noDrop && _v2184.lv <= _v2177 + 5);
-    if (_v2183.length) return Ut(ae(_v2183), _v2177);
+    let _v2183 = yt.filter(_v2184 => _v2184.src === "world" && !_v2184.noDrop && _v2184.lv <= _v2177 + 5);
+    if (_v2183.length) return Kt(oe(_v2183), _v2177);
   }
-  let _v2185 = lt(["W", "O", "H", "B", "G", "F", "L", "R", "A"], _v2186 => _v2186 === "O" ? 0.9 : _v2186 === "L" ? 0.7 : _v2186 === "W" && n.Z && n.Z.th && n.Z.th.key === "lava" ? 1.6 : 1), _v2187 = [_v2185];
+  let _v2185 = ht(["W", "O", "H", "B", "G", "F", "L", "R", "A"], _v2186 => _v2186 === "O" ? 0.9 : _v2186 === "L" ? 0.7 : _v2186 === "W" && n.Z && n.Z.th && n.Z.th.key === "lava" ? 1.6 : 1), _v2187 = [_v2185];
   if (_v2185 === "O") {
-    let _v2188 = ["Q", "S", "X", "K"], _v2189 = u.equip.weapon && pe[u.equip.weapon.base].wt || "none", _v2190 = Ra[_v2189] || [], _v2191 = _v2188.filter(_v2192 => _v2190.includes(ja[_v2192]));
-    _v2187 = _v2191.length && E() < 0.7 ? _v2191 : _v2188;
+    let _v2188 = ["Q", "S", "X", "K"], _v2189 = u.equip.weapon && pe[u.equip.weapon.base].wt || "none", _v2190 = ya[_v2189] || [], _v2191 = _v2188.filter(_v2192 => _v2190.includes(va[_v2192]));
+    _v2187 = _v2191.length && I() < 0.7 ? _v2191 : _v2188;
   }
-  let _v2193 = Ea.filter(_v2194 => _v2187.includes(_v2194.slot) && _v2194.lv <= _v2177);
-  if ((_v2193.length || (_v2193 = Ea.filter(_v2195 => _v2195.slot === "H" && _v2195.lv <= _v2177)), _v2185 === "W" && E() < 0.6)) {
-    let _v2196 = _v2193.filter(_v2197 => Nt[u.cls].wts.includes(_v2197.wt));
+  let _v2193 = Pa.filter(_v2194 => _v2187.includes(_v2194.slot) && _v2194.lv <= _v2177);
+  if ((_v2193.length || (_v2193 = Pa.filter(_v2195 => _v2195.slot === "H" && _v2195.lv <= _v2177)), _v2185 === "W" && I() < 0.6)) {
+    let _v2196 = _v2193.filter(_v2197 => Ut[u.cls].wts.includes(_v2197.wt));
     _v2196.length && (_v2193 = _v2196);
   }
-  let _v2198 = lt(_v2193, _v2199 => 1 + _v2199.lv / 20);
-  return Et(_v2198, _v2177, Math.min(2, _v2181));
+  let _v2198 = ht(_v2193, _v2199 => 1 + _v2199.lv / 20);
+  return Ft(_v2198, _v2177, Math.min(2, _v2181));
 };
-jT = function (_v2200) {
+gA = function (_v2200) {
   if (_v2200.kind === "cur") {
     let _v2201 = _v2200.cur;
-    (_v2200.txt = z[_v2201].n, _v2200.fg = "#c8b890", _v2200.bg = "rgba(10,8,12,0.82)", _v2200.bd = null, _v2200.size = 6, (_v2201 === "chaos" || _v2201 === "alch" || _v2201 === "regal") && (_v2200.fg = "#e8c870", _v2200.bd = "#7a6430"));
-    let _v2202 = z[_v2201].grp;
-    (_v2202 === "sock" && (_v2200.fg = "#5fe0c0", _v2200.bd = "#1f6a58", (_v2201 === "jewel3" || _v2201 === "artif") && (_v2200.beam = "#5fe0c0", _v2200.size = 6.5)), _v2202 === "rune" && (_v2200.fg = z[_v2201].col, _v2200.bd = "#5a5a5a"), _v2202 === "ess" && (_v2200.fg = z[_v2201].col, _v2200.bd = z[_v2201].col, _v2200.size = 6.5, _v2200.beam = z[_v2201].col), _v2202 === "omen" && (_v2200.fg = "#e8d090", _v2200.bg = "rgba(20,8,28,0.94)", _v2200.bd = "#a05ad0", _v2200.size = 7, _v2200.beam = "#c070ff", _v2200.snd = "exalt"), _v2201 === "vaal" && (_v2200.fg = "#ff6060", _v2200.bd = "#801818"), _v2202 === "sig" && (_v2200.fg = z[_v2201].col, _v2200.bd = z[_v2201].col, _v2200.bg = "rgba(16,6,24,0.92)", _v2200.size = 7.5, _v2200.beam = z[_v2201].col, _v2200.snd = "unique", _v2200.big = 1), _v2201 === "exalt" && (_v2200.fg = "#fff0b0", _v2200.bd = "#e8c870", _v2200.size = 7, _v2200.beam = "#ffe080", _v2200.snd = "exalt"), _v2201 === "ember" && (_v2200.fg = "#ffb080", _v2200.bg = "rgba(42,8,2,0.94)", _v2200.bd = "#ff5a24", _v2200.size = 7.5, _v2200.beam = "#ff5a24", _v2200.snd = "unique", _v2200.big = 1), _v2201 === "ash" && (_v2200.fg = "#c8bab2", _v2200.bd = "#6a5e58"), _v2201 === "frac" && (_v2200.fg = "#ffd8a8", _v2200.bg = "rgba(40,18,6,0.94)", _v2200.bd = "#d89a5a", _v2200.size = 7.5, _v2200.beam = "#ffb060", _v2200.snd = "exalt", _v2200.big = 1), _v2201 === "divine" && (_v2200.fg = "#b01818", _v2200.bg = "rgba(248,240,226,0.96)", _v2200.bd = "#b01818", _v2200.size = 8, _v2200.beam = "#fff2d0", _v2200.snd = "divine", _v2200.big = 1), _v2200.snd || (_v2200.snd = _v2201 === "chaos" ? "chaos" : "drop"));
+    (_v2200.txt = q[_v2201].n, _v2200.fg = "#c8b890", _v2200.bg = "rgba(10,8,12,0.82)", _v2200.bd = null, _v2200.size = 6, (_v2201 === "chaos" || _v2201 === "alch" || _v2201 === "regal") && (_v2200.fg = "#e8c870", _v2200.bd = "#7a6430"));
+    let _v2202 = q[_v2201].grp;
+    (_v2202 === "sock" && (_v2200.fg = "#5fe0c0", _v2200.bd = "#1f6a58", (_v2201 === "jewel3" || _v2201 === "artif") && (_v2200.beam = "#5fe0c0", _v2200.size = 6.5)), _v2202 === "rune" && (_v2200.fg = q[_v2201].col, _v2200.bd = "#5a5a5a"), _v2202 === "ess" && (_v2200.fg = q[_v2201].col, _v2200.bd = q[_v2201].col, _v2200.size = 6.5, _v2200.beam = q[_v2201].col), _v2202 === "omen" && (_v2200.fg = "#e8d090", _v2200.bg = "rgba(20,8,28,0.94)", _v2200.bd = "#a05ad0", _v2200.size = 7, _v2200.beam = "#c070ff", _v2200.snd = "exalt"), _v2201 === "vaal" && (_v2200.fg = "#ff6060", _v2200.bd = "#801818"), _v2202 === "sig" && (_v2200.fg = q[_v2201].col, _v2200.bd = q[_v2201].col, _v2200.bg = "rgba(16,6,24,0.92)", _v2200.size = 7.5, _v2200.beam = q[_v2201].col, _v2200.snd = "unique", _v2200.big = 1), _v2201 === "exalt" && (_v2200.fg = "#fff0b0", _v2200.bd = "#e8c870", _v2200.size = 7, _v2200.beam = "#ffe080", _v2200.snd = "exalt"), _v2201 === "ember" && (_v2200.fg = "#ffb080", _v2200.bg = "rgba(42,8,2,0.94)", _v2200.bd = "#ff5a24", _v2200.size = 7.5, _v2200.beam = "#ff5a24", _v2200.snd = "unique", _v2200.big = 1), _v2201 === "ash" && (_v2200.fg = "#c8bab2", _v2200.bd = "#6a5e58"), _v2201 === "frac" && (_v2200.fg = "#ffd8a8", _v2200.bg = "rgba(40,18,6,0.94)", _v2200.bd = "#d89a5a", _v2200.size = 7.5, _v2200.beam = "#ffb060", _v2200.snd = "exalt", _v2200.big = 1), _v2201 === "divine" && (_v2200.fg = "#b01818", _v2200.bg = "rgba(248,240,226,0.96)", _v2200.bd = "#b01818", _v2200.size = 8, _v2200.beam = "#fff2d0", _v2200.snd = "divine", _v2200.big = 1), _v2200.snd || (_v2200.snd = _v2201 === "chaos" ? "chaos" : "drop"));
     return;
   }
   let _v2203 = _v2200.it;
   if (_v2203.kind === "meta") {
-    (_v2200.txt = We[_v2203.gid].n + " (元技能)", _v2200.fg = "#fff0b0", _v2200.bg = "rgba(24,16,4,0.9)", _v2200.bd = "#ffd060", _v2200.size = 7, _v2200.beam = "#ffd060", _v2200.snd = "unique");
+    (_v2200.txt = Ze[_v2203.gid].n + " (元技能)", _v2200.fg = "#fff0b0", _v2200.bg = "rgba(24,16,4,0.9)", _v2200.bd = "#ffd060", _v2200.size = 7, _v2200.beam = "#ffd060", _v2200.snd = "unique");
     return;
   }
   if (_v2203.kind === "buff") {
-    (_v2200.txt = ze[_v2203.gid].n + " (精魄)", _v2200.fg = "#ffe080", _v2200.bg = "rgba(20,14,4,0.88)", _v2200.bd = "#e8c060", _v2200.size = 6.5, _v2200.beam = "#e8c060", _v2200.snd = "unique");
+    (_v2200.txt = He[_v2203.gid].n + " (精魄)", _v2200.fg = "#ffe080", _v2200.bg = "rgba(20,14,4,0.88)", _v2200.bd = "#e8c060", _v2200.size = 6.5, _v2200.beam = "#e8c060", _v2200.snd = "unique");
     return;
   }
   if (_v2203.kind === "gem" || _v2203.kind === "sup") {
-    let _v2204 = _v2203.kind === "gem" && (te[_v2203.gid].wt || []).includes(ie[u.cls].wt);
-    (_v2200.txt = (_v2203.kind === "gem" ? te[_v2203.gid].n : oe[_v2203.gid].n) + (_v2203.kind === "gem" ? " (主动)" : " (辅助)"), _v2200.fg = "#4fe0c0", _v2200.bg = "rgba(6,16,14,0.85)", _v2200.bd = _v2204 ? "#e8c870" : "#1f6a58", _v2200.size = 6, _v2200.snd = "drop");
+    let _v2204 = _v2203.kind === "gem" && (se[_v2203.gid].wt || []).includes(le[u.cls].wt);
+    (_v2200.txt = (_v2203.kind === "gem" ? se[_v2203.gid].n : ne[_v2203.gid].n) + (_v2203.kind === "gem" ? " (主动)" : " (辅助)"), _v2200.fg = "#4fe0c0", _v2200.bg = "rgba(6,16,14,0.85)", _v2200.bd = _v2204 ? "#e8c870" : "#1f6a58", _v2200.size = 6, _v2200.snd = "drop");
     return;
   }
   if (_v2203.kind === "soul") {
-    let _v2205 = Ae[_v2203.beast];
+    let _v2205 = je[_v2203.beast];
     (_v2200.txt = _v2203.name, _v2200.fg = ["#e8e0d0", "#8a8cff", "#ecd85a"][_v2203.rarity], _v2200.bg = "rgba(8,20,16,0.9)", _v2200.bd = _v2205.cls === "boss" ? "#ffd27a" : "#7affc8", _v2200.size = _v2205.cls === "boss" ? 7.5 : 6.5, _v2200.beam = _v2205.cls === "boss" ? _v2205.col : _v2203.rarity === 2 ? "#7affc8" : null, _v2200.snd = _v2205.cls === "boss" ? "unique" : "drop", _v2200.big = _v2205.cls === "boss" ? 1 : 0);
     return;
   }
@@ -8691,58 +8691,58 @@ jT = function (_v2200) {
     return;
   }
   (_v2200.txt = _v2203.rarity === 3 ? pe[_v2203.base].n : _v2203.name, _v2200.size = _v2203.rarity >= 2 ? 6.5 : 6, _v2200.bg = "rgba(10,8,12,0.78)", _v2200.bd = null, _v2200.fg = ["#d8d4cc", "#8a8cff", "#ecd85a", "#d2803a"][_v2203.rarity], _v2203.rarity === 3 ? (_v2200.bd = "#d2803a", _v2200.beam = "#e0904a", _v2200.snd = "unique", _v2200.size = 7) : _v2200.snd = null);
-  let _v2206 = _v2203.rarity >= 1 && _v2203.rarity <= 2 ? nl(_v2203) : 0;
+  let _v2206 = _v2203.rarity >= 1 && _v2203.rarity <= 2 ? Sl(_v2203) : 0;
   _v2206 && (_v2200.txt += " · T1" + (_v2206 > 1 ? "×" + _v2206 : ""), _v2200.bd = "#ffd27a", _v2203.rarity === 2 && (_v2200.size = 6.5));
 };
-Zs = function (_v2207) {
+Js = function (_v2207) {
   if (_v2207.kind === "cur") {
-    let _v2208 = !!(z[_v2207.cur] && z[_v2207.cur].grp === "omen" && !u.omenSeen);
-    return (u.cur[_v2207.cur] = (u.cur[_v2207.cur] || 0) + 1, n.run && (n.run.cur[_v2207.cur] = (n.run.cur[_v2207.cur] || 0) + 1, n.run.value += z[_v2207.cur].v, (!n.run.best || z[_v2207.cur].v > n.run.best.v) && (n.run.best = {
-      n: z[_v2207.cur].n,
-      v: z[_v2207.cur].v
-    })), T("pick"), H(n.pl.x, n.pl.y - 22, 0, !1, "info", "+" + z[_v2207.cur].n), _v2208 && (u.omenSeen = 1, setTimeout(() => ke("预兆", "在通货栏或工艺台点击预兆即可激活 · 下次对应操作时自动生效并被消耗"), 600)), !0);
+    let _v2208 = !!(q[_v2207.cur] && q[_v2207.cur].grp === "omen" && !u.omenSeen);
+    return (u.cur[_v2207.cur] = (u.cur[_v2207.cur] || 0) + 1, n.run && (n.run.cur[_v2207.cur] = (n.run.cur[_v2207.cur] || 0) + 1, n.run.value += q[_v2207.cur].v, (!n.run.best || q[_v2207.cur].v > n.run.best.v) && (n.run.best = {
+      n: q[_v2207.cur].n,
+      v: q[_v2207.cur].v
+    })), $("pick"), U(n.pl.x, n.pl.y - 22, 0, !1, "info", "+" + q[_v2207.cur].n), _v2208 && (u.omenSeen = 1, setTimeout(() => ke("预兆", "在通货栏或工艺台点击预兆即可激活 · 下次对应操作时自动生效并被消耗"), 600)), !0);
   }
   let _v2209 = _v2207.it;
   if (_v2209.kind === "gem" || _v2209.kind === "sup" || _v2209.kind === "buff" || _v2209.kind === "meta") u.gems.push(_v2209); else {
-    if (!No(_v2209)) return (I(_v2209.kind === "map" ? n.touchMode ? "地图袋已满 (" + ga + ") · 在地图页批量出售, 或 3 张换 1 张高阶" : "地图袋已满 (" + ga + ") · 地图页(M)里右键出售, 或 3 张换 1 张高阶" : "背包已满, 打开背包出售物品"), !1);
-    (u.inv.push(_v2209), Zr(_v2209));
+    if (!Vo(_v2209)) return (P(_v2209.kind === "map" ? n.touchMode ? "地图袋已满 (" + xa + ") · 在地图页批量出售, 或 3 张换 1 张高阶" : "地图袋已满 (" + xa + ") · 地图页(M)里右键出售, 或 3 张换 1 张高阶" : "背包已满, 打开背包出售物品"), !1);
+    (u.inv.push(_v2209), si(_v2209));
   }
-  let _v2210 = o5(_v2209);
+  let _v2210 = $3(_v2209);
   return (n.run && (n.run.value += _v2210, n.run.items++, (_v2209.rarity === 3 || !n.run.best || _v2210 > n.run.best.v) && (n.run.best = {
-    n: _v2209.name || _v2209.kind === "buff" && ze[_v2209.gid].n || _v2209.kind === "meta" && We[_v2209.gid].n || te[_v2209.gid] && te[_v2209.gid].n || oe[_v2209.gid] && oe[_v2209.gid].n || "宝石",
+    n: _v2209.name || _v2209.kind === "buff" && He[_v2209.gid].n || _v2209.kind === "meta" && Ze[_v2209.gid].n || se[_v2209.gid] && se[_v2209.gid].n || ne[_v2209.gid] && ne[_v2209.gid].n || "宝石",
     v: _v2210
-  })), T("pick"), !0);
+  })), $("pick"), !0);
 };
-qf = function () {
+dd = function () {
   let _v2211 = null, _v2212 = 1e9;
   for (let _v2213 of n.objs) {
-    if (!(_v2213.kind === "box" && !_v2213.open || $C.has(_v2213.kind))) continue;
+    if (!(_v2213.kind === "box" && !_v2213.open || yj.has(_v2213.kind))) continue;
     let _v2214 = (_v2213.x - n.pl.x) ** 2 + (_v2213.y - n.pl.y) ** 2, _v2215 = _v2213.kind === "device" ? 42 : _v2213.kind === "vendor" || _v2213.kind === "stash" || _v2213.kind === "bench" || _v2213.kind === "altar" || _v2213.kind === "monument" || _v2213.kind === "dog" || _v2213.kind === "well" || _v2213.kind === "ritual" || _v2213.kind === "simulacrum" ? 34 : 36;
     _v2214 < _v2215 * _v2215 && _v2214 < _v2212 && (_v2212 = _v2214, _v2211 = _v2213);
   }
   if (_v2211) {
-    if (_v2211.kind === "box" && !_v2211.open) return (xp(_v2211), !0);
-    if (_v2211.kind === "device") return (Ta("map"), !0);
-    if (_v2211.kind === "vendor") return (C0(), !0);
-    if (_v2211.kind === "stash") return (wp(), !0);
-    if (_v2211.kind === "bench" || _v2211.kind === "altar") return (Hl(_v2211.kind === "altar" ? "altar" : "craft"), !0);
+    if (_v2211.kind === "box" && !_v2211.open) return (ou(_v2211), !0);
+    if (_v2211.kind === "device") return (ja("map"), !0);
+    if (_v2211.kind === "vendor") return (op(), !0);
+    if (_v2211.kind === "stash") return (nu(), !0);
+    if (_v2211.kind === "bench" || _v2211.kind === "altar") return (cc(_v2211.kind === "altar" ? "altar" : "craft"), !0);
     if (_v2211.kind === "well") return (DsWell(), !0);
     if (_v2211.kind === "ritual") return (RitualInteract(_v2211), !0);
     if (_v2211.kind === "simulacrum") return (SimulacrumInteract(), !0);
-    if (_v2211.kind === "monument") return (kp(), !0);
-    if (_v2211.kind === "dog") return (vp(), !0);
+    if (_v2211.kind === "monument") return (su(), !0);
+    if (_v2211.kind === "dog") return (au(), !0);
   }
-  return LT();
+  return yA();
 };
-xp = function (_v2216) {
+ou = function (_v2216) {
   jiBox(_v2216);
 };
-Mx = function (_v2217) {
+Zw = function (_v2217) {
   if (n.ritualPause) {
     let _v2218 = document.getElementById("overlay");
     if (!_v2218 || _v2218.hidden || !_v2218.querySelector(".ovbox.ritual")) n.ritualPause = !1; else return;
   }
-  (n.T += _v2217, a5(_v2217), n.endlessMode && n.Z && n.Z.type === "map" && n.state === "play" && !n.pl.dead && (n.endlessSpawnT -= _v2217, n.endlessSpawnT <= 0 && (n.endlessSpawnT += 1, (function () {
+  (n.T += _v2217, M3(_v2217), n.endlessMode && n.Z && n.Z.type === "map" && n.state === "play" && !n.pl.dead && (n.endlessSpawnT -= _v2217, n.endlessSpawnT <= 0 && (n.endlessSpawnT += 1, (function () {
     const _v2219 = n.endlessIntensity;
     n.endlessIntensityT = (n.endlessIntensityT ?? 0) - 1;
     const _v2220 = n.endlessIntensityT <= 0;
@@ -8759,18 +8759,18 @@ Mx = function (_v2217) {
       _v2222.maxhp *= _v2221;
       for (const _v2223 of ["phys", "fire", "cold", "light"]) _v2222.res[_v2223] = Math.min(75, Math.max(_v2222.res[_v2223] || 0, n.endlessIntensity * 10));
     }
-    const _v2224 = [...new Set(Object.values(na).flatMap(_v2225 => Object.keys(_v2225.mon || ({}))))].filter(_v2226 => kt[_v2226] && _v2226 !== "boss" && _v2226 !== "dummy");
-    const _v2227 = [...new Set(Object.values(ft).map(_v2228 => _v2228.boss).filter(_v2229 => _v2229 && kt[_v2229]))];
+    const _v2224 = [...new Set(Object.values(la).flatMap(_v2225 => Object.keys(_v2225.mon || ({}))))].filter(_v2226 => $t[_v2226] && _v2226 !== "boss" && _v2226 !== "dummy");
+    const _v2227 = [...new Set(Object.values(gt).map(_v2228 => _v2228.boss).filter(_v2229 => _v2229 && $t[_v2229]))];
     const _v2230 = n.mons.reduce((_v2231, _v2232) => _v2231 + (!_v2232.dead ? 1 : 0), 0);
     const _v2233 = Math.min(8, 3 + Math.floor(n.endlessIntensity / 20));
     for (let _v2234 = 0; _v2234 < _v2233 && _v2230 + _v2234 < 120 && _v2224.length; _v2234++) {
-      let _v2235 = He(n.pl.x, n.pl.y, D(150, 320));
-      let _v2236 = Se(_v2235.x, 48, n.Z.M.W * Z - 48), _v2237 = Se(_v2235.y, 48, n.Z.M.H * Z - 48);
-      if (ma(_v2236, _v2237, 5)) continue;
+      let _v2235 = We(n.pl.x, n.pl.y, B(150, 320));
+      let _v2236 = $e(_v2235.x, 48, n.Z.M.W * K - 48), _v2237 = $e(_v2235.y, 48, n.Z.M.H * K - 48);
+      if (ka(_v2236, _v2237, 5)) continue;
       let _v2238 = _v2224[n.endlessSpawnIndex++ % _v2224.length];
-      let _v2239 = E();
+      let _v2239 = I();
       let _v2240 = _v2239 < 0.025 ? 3 : _v2239 < Math.min(0.42, 0.12 + n.endlessIntensity * 0.001) ? 2 : _v2239 < 0.62 ? 1 : 0;
-      let _v2241 = et(_v2238, _v2236, _v2237, Math.max(n.Z.lvl, Math.floor(n.Z.lvl + n.endlessIntensity / 4)), _v2240);
+      let _v2241 = nt(_v2238, _v2236, _v2237, Math.max(n.Z.lvl, Math.floor(n.Z.lvl + n.endlessIntensity / 4)), _v2240);
       _v2241.aggro = true;
       _v2241.kbx = 0;
       _v2241.kby = 0;
@@ -8780,23 +8780,23 @@ Mx = function (_v2217) {
     if (_v2227.length && n.endlessBossSpawnT <= 0 && _v2230 < 116) {
       n.endlessBossSpawnT = 5;
       const _v2242 = _v2227[n.endlessSpawnIndex++ % _v2227.length];
-      const _v2243 = He(n.pl.x, n.pl.y, D(260, 380));
-      const _v2244 = Se(_v2243.x, 56, n.Z.M.W * Z - 56), _v2245 = Se(_v2243.y, 56, n.Z.M.H * Z - 56);
-      if (!ma(_v2244, _v2245, 6)) {
-        const _v2246 = et(_v2242, _v2244, _v2245, Math.max(n.Z.lvl, Math.floor(n.Z.lvl + n.endlessIntensity / 4)), 3);
+      const _v2243 = We(n.pl.x, n.pl.y, B(260, 380));
+      const _v2244 = $e(_v2243.x, 56, n.Z.M.W * K - 56), _v2245 = $e(_v2243.y, 56, n.Z.M.H * K - 56);
+      if (!ka(_v2244, _v2245, 6)) {
+        const _v2246 = nt(_v2242, _v2244, _v2245, Math.max(n.Z.lvl, Math.floor(n.Z.lvl + n.endlessIntensity / 4)), 3);
         _v2246.aggro = true;
         _v2246.kbx = 0;
         _v2246.kby = 0;
         _v2246.endlessBoss = true;
         n.mons.push(_v2246);
-        ke("无尽首领出现", (kt[_v2242].n || _v2242) + " · 来自全地图首领池");
+        ke("无尽首领出现", ($t[_v2242].n || _v2242) + " · 来自全地图首领池");
       }
     }
     if (Math.floor(_v2219 / 20) !== Math.floor(n.endlessIntensity / 20)) ke("无尽强度 " + n.endlessIntensity, "怪物不受击退 · 全地图怪物、传奇怪物、稀有怪与首领持续刷新");
-  })())), n.Z.type === "map" && (n.Z.flowT -= _v2217, n.Z.flowT <= 0 && (n.Z.flowT = 0.3, qx()), n.Z.revT -= _v2217, n.Z.revT <= 0 && (n.Z.revT = 0.25, OT()), n.run && !n.pl.dead && (n.run.t += _v2217)));
+  })())), n.Z.type === "map" && (n.Z.flowT -= _v2217, n.Z.flowT <= 0 && (n.Z.flowT = 0.3, c5()), n.Z.revT -= _v2217, n.Z.revT <= 0 && (n.Z.revT = 0.25, xA()), n.run && !n.pl.dead && (n.run.t += _v2217)));
   let _v2247 = [];
-  for (let _v2248 of n.mons) _v2248.dead || Math.abs(_v2248.x - n.pl.x) < 380 && Math.abs(_v2248.y - n.pl.y) < 260 && (Mw(_v2248, _v2217), _v2248.dead || _v2247.push(_v2248));
-  (PT(_v2247), e5(_v2217), t5(_v2217));
+  for (let _v2248 of n.mons) _v2248.dead || Math.abs(_v2248.x - n.pl.x) < 380 && Math.abs(_v2248.y - n.pl.y) < 260 && (Z5(_v2248, _v2217), _v2248.dead || _v2247.push(_v2248));
+  (kA(_v2247), w3(_v2217), S3(_v2217));
   for (let _v2249 = n.pend.length - 1; _v2249 >= 0; _v2249--) {
     let _v2250 = n.pend[_v2249];
     if ((_v2250.t -= _v2217, _v2250.t <= 0)) {
@@ -8808,29 +8808,29 @@ Mx = function (_v2217) {
       }
     }
   }
-  (s5(_v2217), IT(_v2217), AbyssUpdate(_v2217), AbyssMods(_v2217), DeliriumUpdate(_v2217), RitualUpdate(_v2217), SimulacrumUpdate(_v2217), ET(_v2217), Jm(_v2217), n.mons.some(_v2252 => _v2252.dead) && (n.mons = n.mons.filter(_v2253 => !_v2253.dead)));
-  let _v2254 = n.camFocus, _v2255 = (_v2254 ? _v2254.x : n.pl.x) - so / 2, _v2256 = (_v2254 ? _v2254.y : n.pl.y) - oo / 2 + (_v2254 ? 0 : 10);
-  (Va.x += (_v2255 - Va.x) * Math.min(1, _v2217 * 9), Va.y += (_v2256 - Va.y) * Math.min(1, _v2217 * 9));
-  let _v2257 = n.Z.M.W * Z, _v2258 = n.Z.M.H * Z;
-  (_v2254 && _v2254.free || (Va.x = _v2257 > so ? Se(Va.x, 0, _v2257 - so) : (_v2257 - so) / 2, Va.y = _v2258 > oo ? Se(Va.y, 0, _v2258 - oo) : (_v2258 - oo) / 2), Sw());
+  (T3(_v2217), vA(_v2217), AbyssUpdate(_v2217), AbyssMods(_v2217), DeliriumUpdate(_v2217), RitualUpdate(_v2217), SimulacrumUpdate(_v2217), bA(_v2217), G1(_v2217), n.mons.some(_v2252 => _v2252.dead) && (n.mons = n.mons.filter(_v2253 => !_v2253.dead)));
+  let _v2254 = n.camFocus, _v2255 = (_v2254 ? _v2254.x : n.pl.x) - lo / 2, _v2256 = (_v2254 ? _v2254.y : n.pl.y) - co / 2 + (_v2254 ? 0 : 10);
+  (es.x += (_v2255 - es.x) * Math.min(1, _v2217 * 9), es.y += (_v2256 - es.y) * Math.min(1, _v2217 * 9));
+  let _v2257 = n.Z.M.W * K, _v2258 = n.Z.M.H * K;
+  (_v2254 && _v2254.free || (es.x = _v2257 > lo ? $e(es.x, 0, _v2257 - lo) : (_v2257 - lo) / 2, es.y = _v2258 > co ? $e(es.y, 0, _v2258 - co) : (_v2258 - co) / 2), U5());
 };
-Un = function (_v2259) {
+er = function (_v2259) {
   let _v2260 = u.inv.indexOf(_v2259);
   if (_v2260 < 0) return;
   u.inv.splice(_v2260, 1);
   // 珠宝也能出售：按阶级给改造石（T1=1 … 上限 6），其它物品走原价表
-  let _v2261 = (_v2259 && _v2259.kind === "jewel") ? { alt: Math.max(1, Math.min(6, +(_v2259.tier || 1))) } : Sp(_v2259);
+  let _v2261 = (_v2259 && _v2259.kind === "jewel") ? { alt: Math.max(1, Math.min(6, +(_v2259.tier || 1))) } : ru(_v2259);
   OmTake("omen_barter") && Object.keys(_v2261).forEach(_v2262 => _v2261[_v2262] *= 2);
   for (let _v2263 in _v2261) u.cur[_v2263] = (u.cur[_v2263] || 0) + _v2261[_v2263];
-  mf(_v2259, _v2261);
-  let _v2264 = Object.entries(_v2261).map(([_v2265, _v2266]) => z[_v2265].n + (_v2266 > 1 ? "×" + _v2266 : "")).join(" ");
-  (I(_v2264 ? "出售获得 " + _v2264 : "已出售"), T("pick"));
+  qf(_v2259, _v2261);
+  let _v2264 = Object.entries(_v2261).map(([_v2265, _v2266]) => q[_v2265].n + (_v2266 > 1 ? "×" + _v2266 : "")).join(" ");
+  (P(_v2264 ? "出售获得 " + _v2264 : "已出售"), $("pick"));
 };
 /* 投射物过多时限制动态光源数量：防止光源缓冲过大导致场景贴图/文字渲染异常 */
 try {
-  var __baseLightRebuild = _5;
+  var __baseLightRebuild = m4;
   if (typeof __baseLightRebuild === "function") {
-    _5 = function () {
+    m4 = function () {
       var r = __baseLightRebuild.apply(this, arguments);
       try { if (n.LIGHTS && n.LIGHTS.length > 160) n.LIGHTS.length = 160; } catch (e) {}
       return r;
@@ -8840,7 +8840,7 @@ try {
 /* 一层天赋树：绿色加厚最短路径 */
 function __drawBaseTreePath() {
   try {
-    if (typeof C !== "function" || typeof be === "undefined" || typeof K === "undefined") return;
+    if (typeof C !== "function" || typeof xe === "undefined" || typeof Q === "undefined") return;
     var path = window.__baseTreePath || [];
     if (!path.length) return;
     var cv = C("#treecv");
@@ -8848,22 +8848,22 @@ function __drawBaseTreePath() {
     var ctx = cv.getContext("2d");
     var dpr = Math.min(2, window.devicePixelRatio || 1);
     ctx.save();
-    ctx.setTransform(K.s * dpr, 0, 0, K.s * dpr, K.ox * dpr, K.oy * dpr);
+    ctx.setTransform(Q.s * dpr, 0, 0, Q.s * dpr, Q.ox * dpr, Q.oy * dpr);
     var seq = path.slice();
     var src = null;
-    (be.adj[seq[0]] || []).forEach(function (id) { if (u.tree.includes(id)) src = id; });
+    (xe.adj[seq[0]] || []).forEach(function (id) { if (u.tree.includes(id)) src = id; });
     if (src != null) seq.unshift(src);
     ctx.strokeStyle = "#7fd8a0";
     ctx.lineWidth = 5.5;
     ctx.lineCap = "round";
     ctx.globalAlpha = 0.95;
     for (var i = 0; i + 1 < seq.length; i++) {
-      var a = be.nodes[seq[i]], b = be.nodes[seq[i + 1]];
+      var a = xe.nodes[seq[i]], b = xe.nodes[seq[i + 1]];
       if (!a || !b) continue;
       ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
     }
     for (var j = 0; j < seq.length; j++) {
-      var nd = be.nodes[seq[j]];
+      var nd = xe.nodes[seq[j]];
       if (!nd) continue;
       var rr = (nd.kind === "key" ? 14 : nd.kind === "notable" ? 9 : 7) + 5;
       ctx.globalAlpha = 0.3;
@@ -8880,8 +8880,8 @@ function __drawBaseTreePath() {
 (function () {
   if (window.__baseTreePathWrapped) return;
   window.__baseTreePathWrapped = 1;
-  var __baseJa = $a;
-  $a = function () {
+  var __baseJa = Ea;
+  Ea = function () {
     __baseJa.apply(this, arguments);
     __drawBaseTreePath();
   };
@@ -8899,11 +8899,11 @@ function __drawBaseTreePath() {
       if (typeof n !== "undefined" && n && n.touchMode && ev.pointerType === "touch") return;
       var b = ev.target && ev.target.closest ? ev.target.closest("[data-rune]") : null;
       if (!b) { el.style.display = "none"; return; }
-      if (typeof RuneRecipes !== "function" || typeof Bi !== "function") { el.style.display = "none"; return; }
+      if (typeof RuneRecipes !== "function" || typeof el !== "function") { el.style.display = "none"; return; }
       var rid = b.getAttribute("data-rune");
       var rec = (RuneRecipes() || []).filter(function (r) { return r.id === rid; })[0];
       if (!rec) { el.style.display = "none"; return; }
-      var info = Bi(rec.out);
+      var info = el(rec.out);
       if (!info || !info.h) { el.style.display = "none"; return; }
       el.innerHTML = info.h;
       el.style.borderColor = info.b || "#666";
@@ -8932,7 +8932,7 @@ function __drawBaseTreePath() {
     document.body.appendChild(el);
     var fmt = function (arr) {
       return (arr || []).map(function (x) {
-        try { return (typeof Wa === "function" ? Wa(x[0], x[1] || 0) : x[0] + " " + x[1]); } catch (e) { return x[0] + " " + x[1]; }
+        try { return (typeof _a === "function" ? _a(x[0], x[1] || 0) : x[0] + " " + x[1]); } catch (e) { return x[0] + " " + x[1]; }
       }).join("<br>");
     };
     document.addEventListener("pointermove", function (ev) {
@@ -8944,7 +8944,7 @@ function __drawBaseTreePath() {
         var rw = null;
         for (var i = 0; i < RUNE_WORDS.length; i++) if (RUNE_WORDS[i].id === id) { rw = RUNE_WORDS[i]; break; }
         if (!rw) { el.style.display = "none"; return; }
-        var seq = (rw.seq || []).map(function (n) { return (z[n] && z[n].n) || ("#" + n); }).join(" → ");
+        var seq = (rw.seq || []).map(function (n) { return (q[n] && q[n].n) || ("#" + n); }).join(" → ");
         el.innerHTML = '<b style="color:#e8c870">' + rw.n + '</b> <small style="color:#8e98b0">' + RuneReqLabel(rw.req) + '</small><br>' +
           '<span style="color:#b8a888">镶嵌: ' + seq + '</span>' +
           (rw.w && rw.w.length ? '<div class="sep" style="border-top:1px solid #3a3020;margin:5px 0"></div><b style="color:#9dffb4">武器</b><br>' + fmt(rw.w) : "") +
@@ -8965,7 +8965,7 @@ function __drawBaseTreePath() {
 function __riftAscRefund(k) {
   try {
     if (!u || !u.asc || !Array.isArray(u.ascNodes)) return false;
-    var asc = Me && Me[u.asc];
+    var asc = Ce && Ce[u.asc];
     if (!asc || !asc.nodes) return false;
     var byK = {};
     asc.nodes.forEach(function (n) { byK[n.k] = n; });
@@ -8984,10 +8984,10 @@ function __riftAscRefund(k) {
         }
       });
     }
-    if (typeof ge === "function") ge();
-    if (typeof Ds === "function") Ds();
-    T("craft");
-    I("已取消升华节点 · 返还 " + (2) + " 点");
+    if (typeof be === "function") be();
+    if (typeof Gs === "function") Gs();
+    $("craft");
+    P("已取消升华节点 · 返还 " + (2) + " 点");
     return true;
   } catch (e) { return false; }
 }
@@ -9020,19 +9020,19 @@ window.__riftAscRefund = __riftAscRefund;
       if (typeof n !== "undefined" && n && n.touchMode && ev.pointerType === "touch") return;
       var t = ev && ev.target;
       if (!t || t.id !== "treecv") { el.style.display = "none"; return; }
-      if (typeof d7 !== "function" || typeof be === "undefined") { el.style.display = "none"; return; }
-      var id = d7(ev.clientX, ev.clientY);
-      var __p = id >= 0 && typeof Ls === "function" ? (Ls(id) || []) : [];
+      if (typeof sL !== "function" || typeof xe === "undefined") { el.style.display = "none"; return; }
+      var id = sL(ev.clientX, ev.clientY);
+      var __p = id >= 0 && typeof Bs === "function" ? (Bs(id) || []) : [];
       var __pk = (window.__baseTreePath || []).join(",");
       if (__pk !== __p.join(",")) {
         window.__baseTreePath = __p;
-        if (typeof $a === "function") $a();
+        if (typeof Ea === "function") Ea();
       }
       if (id < 0) { el.style.display = "none"; return; }
       var base = document.getElementById("tip");
       if (base && !base.hidden && base.innerHTML) { el.style.display = "none"; return; }
-      if (typeof pp !== "function") { el.style.display = "none"; return; }
-      var info = pp(be.nodes[id]);
+      if (typeof Gp !== "function") { el.style.display = "none"; return; }
+      var info = Gp(xe.nodes[id]);
       if (!info || !info.h) { el.style.display = "none"; return; }
       el.innerHTML = info.h;
       el.style.borderColor = info.b || "#666";
@@ -9053,19 +9053,19 @@ try {
   window.__riftGfxUser = window.__riftGfxUser || !1;
   setInterval(function () {
     try {
-      if (typeof rt !== "undefined" && rt && !rt.on) rt.on = !0;
-      if (typeof Zt !== "undefined" && Zt && Zt.auto && !window.__riftGfxUser && Zt.q !== "high") {
-        Zt.q = "high";
-        Zt.auto = !0;
-        if (typeof V2 === "function") V2("high");
+      if (typeof ut !== "undefined" && ut && !ut.on) ut.on = !0;
+      if (typeof Vt !== "undefined" && Vt && Vt.auto && !window.__riftGfxUser && Vt.q !== "high") {
+        Vt.q = "high";
+        Vt.auto = !0;
+        if (typeof ik === "function") ik("high");
       }
     } catch (e) {}
   }, 800);
 } catch (e) {}
 /* 背包去重：防止同一物品对象被重复 push 导致“捡 1 个变 2 个” */
 try {
-  var __meBase = ge;
-  ge = function () {
+  var __meBase = be;
+  be = function () {
     try {
       if (u && Array.isArray(u.inv)) {
         var __seen = new Set(), __seenUid = {};
@@ -9090,20 +9090,20 @@ try {
 try {
   if (!window.__jewelClickHooked) {
     window.__jewelClickHooked = 1;
-    var __baseL = Of;
-    Of = function (it, shift) {
+    var __baseL = rd;
+    rd = function (it, shift) {
       try {
         if (it && it.kind === "jewel") {
           var sel = n && n.advJewelSel;
           if (sel && typeof AdvJewelSocket === "function") {
             var msg = AdvJewelSocket(sel, it.uid);
-            if (msg) { I(msg); return true; }
-            I("已镶嵌珠宝：" + (it.n || "珠宝"));
-            try { T("craft"); } catch (e2) {}
+            if (msg) { P(msg); return true; }
+            P("已镶嵌珠宝：" + (it.n || "珠宝"));
+            try { $("craft"); } catch (e2) {}
             try { if (typeof __advRender === "function") __advRender(); } catch (e3) {}
             return true;
           }
-          I("珠宝需要在「天赋与升华」→ 珠宝槽里镶嵌 · 先点珠宝槽再点这件珠宝");
+          P("珠宝需要在「天赋与升华」→ 珠宝槽里镶嵌 · 先点珠宝槽再点这件珠宝");
           return true;
         }
       } catch (e4) {}
@@ -9114,9 +9114,9 @@ try {
 /* 宝石界面搜索 + 折叠 */
 (function () {
   try {
-    if (window.__gemSearchWrapped || typeof Ix !== "function") return;
+    if (window.__gemSearchWrapped || typeof a5 !== "function") return;
     window.__gemSearchWrapped = 1;
-    var __gemSearchBase = Ix;
+    var __gemSearchBase = a5;
     var foldedState = window.__gemFolded || (window.__gemFolded = {});
     var foldKey = function (h) {
       return (h.textContent || "").replace(/折叠|展开/g, "").trim();
@@ -9162,7 +9162,7 @@ try {
       for (var i = 0; i < hs.length; i++) toggleFold(hs[i], folded);
     };
 
-    Ix = function () {
+    a5 = function () {
       var body = __gemSearchBase.apply(this, arguments);
       setTimeout(scanFolds, 0);
       return '<div class="gemsearch"><input id="gemSearch" type="text" placeholder="搜索宝石 / 辅助 / 等级…" autocomplete="off"><div class="gemfoldbar"><button type="button" data-gemfold="all">折叠全部</button><button type="button" data-gemfold="none">展开全部</button></div></div>' + body;
@@ -9189,17 +9189,17 @@ try {
 /* 闪现技能图标兜底：复用基础技能图标表 D */
 (function () {
   try {
-    if (typeof G === "undefined" || !G) return;
-    if (!G["mods_blink"]) G["mods_blink"] = G["blink"] || G["arc"] || G["fireball"] || "";
-    if (typeof _e !== "undefined" && _e && !_e["mods_blink"]) _e["mods_blink"] = G["mods_blink"];
+    if (typeof W === "undefined" || !W) return;
+    if (!W["mods_blink"]) W["mods_blink"] = W["blink"] || W["arc"] || W["fireball"] || "";
+    if (typeof Ye !== "undefined" && Ye && !Ye["mods_blink"]) Ye["mods_blink"] = W["mods_blink"];
   } catch (e) {}
 })();
 /* 闪现技能加入所有职业商人的主动技能宝石购买栏 */
 (function () {
   try {
-    if (typeof Nt === "undefined" || !Nt) return;
-    Object.keys(Nt).forEach(function (cls) {
-      var c = Nt[cls];
+    if (typeof Ut === "undefined" || !Ut) return;
+    Object.keys(Ut).forEach(function (cls) {
+      var c = Ut[cls];
       if (c && Array.isArray(c.pool) && c.pool.indexOf("mods_blink") < 0) c.pool.push("mods_blink");
     });
   } catch (e) {}
@@ -9263,9 +9263,9 @@ try {
   };
   // 地图页 Ap() 直接返回 HTML：把面板拼进左侧「升华试炼」下方，避免 DOM 注入跑到页面底部
   try {
-    if (typeof bm === "function") {
-      var __beyondAp = bm;
-      bm = function () {
+    if (typeof i1 === "function") {
+      var __beyondAp = i1;
+      i1 = function () {
         var html = __beyondAp.apply(this, arguments);
         try {
           var idx = html.lastIndexOf("升华试炼");
@@ -9291,8 +9291,8 @@ try {
     try { u.beyond = n; } catch (e) {}
     var inp = document.getElementById("beyondLv");
     if (inp) inp.value = n;
-    try { I(n ? "超越地图已设为 Lv " + n + " · 下次开图生效" : "超越地图已关闭"); } catch (e) {}
-    try { Ds(); } catch (e) {}
+    try { P(n ? "超越地图已设为 Lv " + n + " · 下次开图生效" : "超越地图已关闭"); } catch (e) {}
+    try { Gs(); } catch (e) {}
   };
   document.addEventListener("click", function (e) {
     var b = e.target && e.target.closest ? e.target.closest("[data-beyond]") : null;
@@ -9313,15 +9313,15 @@ try {
       } catch (err) {}
     }, 500);
   } catch (e) {}
-  if (typeof Um === "function") {
-    var __beyondJp = Um;
-    Um = function () {
+  if (typeof B1 === "function") {
+    var __beyondJp = B1;
+    B1 = function () {
       var r = __beyondJp.apply(this, arguments);
       setTimeout(inject, 0);
       return r;
     };
   }
-  $("map:enter", function () {
+  A("map:enter", function () {
     try {
       var L = lv();
       if (!L) return;
@@ -9334,13 +9334,13 @@ try {
       });
       n.Z.beyond = L;
       n.Z.beyondRarity = 50 * L;
-      I("超越地图 Lv " + L + " · 怪物生命/伤害 ×" + mult + " · 稀有度 +" + (50 * L) + "%");
+      P("超越地图 Lv " + L + " · 怪物生命/伤害 ×" + mult + " · 稀有度 +" + (50 * L) + "%");
     } catch (e) {}
   });
   document.addEventListener("click", function (e) {
     try { if (e.target && e.target.id === "btnPortal") setTimeout(inject, 0); } catch (err) {}
   }, true);
-  $("kill:loot", function (ev) {
+  A("kill:loot", function (ev) {
     try {
       if (!n.Z || !n.Z.beyond) return;
       // kill:loot 事件字段是 {m, src, dm, rb}：稀有度加成要写 rb，写 rar 不会生效
@@ -9362,7 +9362,7 @@ try {
         ev.preventDefault();
         ev.stopPropagation();
         n.ritualPause = !1;
-        if (typeof $t === "function") $t();
+        if (typeof xt === "function") xt();
       } catch (e) {}
     }, true);
   } catch (e) {}
@@ -9374,20 +9374,20 @@ try {
     names.forEach(function (name) {
       try {
         var fn = null;
-        if (name === "P6" && typeof OC === "function") fn = OC;
-        if (name === "z6" && typeof FC === "function") fn = FC;
-        if (name === "j6" && typeof IC === "function") fn = IC;
-        if (name === "E6" && typeof EC === "function") fn = EC;
+        if (name === "P6" && typeof Aj === "function") fn = Aj;
+        if (name === "z6" && typeof Cj === "function") fn = Cj;
+        if (name === "j6" && typeof Tj === "function") fn = Tj;
+        if (name === "E6" && typeof Sj === "function") fn = Sj;
         if (!fn) return;
         var wrapped = function () {
           try { d.save(); } catch (e) {}
           try { return fn.apply(this, arguments); }
           finally { try { d.restore(); } catch (e) {} }
         };
-        if (name === "P6") OC = wrapped;
-        if (name === "z6") FC = wrapped;
-        if (name === "j6") IC = wrapped;
-        if (name === "E6") EC = wrapped;
+        if (name === "P6") Aj = wrapped;
+        if (name === "z6") Cj = wrapped;
+        if (name === "j6") Tj = wrapped;
+        if (name === "E6") Sj = wrapped;
       } catch (e) {}
     });
   } catch (e) {}
@@ -9420,7 +9420,7 @@ try {
         e.preventDefault();
         e.stopPropagation();
         var msg = typeof AdvJewelAction === "function" ? AdvJewelAction(b.getAttribute("data-advjewel")) : "珠宝面板未就绪";
-        if (msg && typeof I === "function") I(msg);
+        if (msg && typeof P === "function") P(msg);
         if (typeof __advRender === "function") __advRender();
       } catch (err) {}
     }, true);
@@ -9431,7 +9431,7 @@ try {
   try {
     if (window.__stunMinHooked) return;
     window.__stunMinHooked = 1;
-    $("hit:land", function (e) {
+    A("hit:land", function (e) {
       try {
         if (!e || e.fixed || !e.m) return;
         var m = e.m;
@@ -9461,7 +9461,7 @@ try {
   try {
     if (window.__lowTierEase) return;
     window.__lowTierEase = 1;
-    $("map:enter", function () {
+    A("map:enter", function () {
       try {
         if (!n || !n.Z || n.Z.type !== "map") return;
         var tier = n.Z.tier || 1;
@@ -9544,9 +9544,9 @@ try {
     }, 250);
 
     // 拾取时一次给整堆数量
-    if (typeof Zs === "function") {
-      var __baseIo = Zs;
-      Zs = function (loot) {
+    if (typeof Js === "function") {
+      var __baseIo = Js;
+      Js = function (loot) {
         try {
           if (loot && loot.kind === "cur" && (loot.stackN || 1) > 1) {
             var n = loot.stackN;
@@ -9557,7 +9557,7 @@ try {
                 u.cur[loot.cur] = (u.cur[loot.cur] || 0) + (n - 1);
                 if (n.run) {
                   n.run.cur[loot.cur] = (n.run.cur[loot.cur] || 0) + (n - 1);
-                  n.run.value += (n - 1) * (z[loot.cur] ? z[loot.cur].v : 0);
+                  n.run.value += (n - 1) * (q[loot.cur] ? q[loot.cur].v : 0);
                 }
               } catch (e) {}
             }
@@ -9578,7 +9578,7 @@ try {
         try {
           if (!n || !n.loots || !d) return;
           d.save();
-          d.font = "700 11px " + (typeof tn !== "undefined" && tn ? tn : "'Microsoft YaHei',sans-serif");
+          d.font = "700 11px " + (typeof cn !== "undefined" && cn ? cn : "'Microsoft YaHei',sans-serif");
           d.textAlign = "center";
           d.textBaseline = "middle";
           d.lineWidth = 2;
@@ -9594,14 +9594,14 @@ try {
           // 过滤显示模式下，被过滤物品只画图标不画名字；把名字缓存到屏幕层，等基础绘制结束后再画
           window.__riftLootLabels = [];
           try {
-            if (typeof ir === "function" && ir()) {
+            if (typeof yr === "function" && yr()) {
               var __lm = d.getTransform();
               for (var li = 0; li < n.loots.length; li++) {
                 var ll = n.loots[li];
                 if (!ll || !ll.landed) continue;
                 if (n.pl && Math.hypot(ll.x - n.pl.x, ll.y - n.pl.y) > 320) continue;
                 var nm = "", col = "#c8c8c8";
-                if (ll.kind === "cur") { nm = z[ll.cur] ? z[ll.cur].n : ""; col = "#ffd27a"; }
+                if (ll.kind === "cur") { nm = q[ll.cur] ? q[ll.cur].n : ""; col = "#ffd27a"; }
                 else if (ll.kind === "it" && ll.it) {
                   nm = ll.it.name || (typeof pe !== "undefined" && ll.it.base ? pe[ll.it.base].n : "");
                   col = ll.it.rarity === 3 ? "#ff9a40" : ll.it.rarity === 2 ? "#f0d040" : ll.it.rarity === 1 ? "#6a9aff" : "#d8d8d8";
@@ -9658,18 +9658,18 @@ try {
           }
         }
         if (!rid) {
-          I("取出失败：找不到装备或符文");
+          P("取出失败：找不到装备或符文");
           return;
         }
         u.cur[rid] = (u.cur[rid] || 0) + 1;
-        try { ge(); } catch (e1) {}
-        try { Ds(); } catch (e2) {}
+        try { be(); } catch (e1) {}
+        try { Gs(); } catch (e2) {}
         // 关闭旧 tooltip / 锁定面板，避免看起来符文还在
         try { var lock = document.getElementById("riftTipLock"); if (lock) lock.remove(); } catch (e3) {}
         try { var tip = document.getElementById("tip"); if (tip) tip.hidden = true; } catch (e4) {}
-        I("已取出符文: " + (z[rid] ? z[rid].n : rid));
+        P("已取出符文: " + (q[rid] ? q[rid].n : rid));
       } catch (err) {
-        I("取出失败");
+        P("取出失败");
       }
     }, true);
   } catch (e) {}
@@ -9733,16 +9733,16 @@ try {
   try {
     if (window.__vaalRandomHooked) return;
     window.__vaalRandomHooked = 1;
-    if (typeof lL !== "function") return;
-    var __baseTA = lL;
-    lL = function (item, pity) {
+    if (typeof l9 !== "function") return;
+    var __baseTA = l9;
+    l9 = function (item, pity) {
       var res = __baseTA.apply(this, arguments);
       try {
         if (item && item.kind === "item" && item.corrupted && !item.cimpl2 && Math.random() < 0.28) {
-          var pool = (typeof gu !== "undefined" && gu && gu.length) ? gu : null;
+          var pool = (typeof Xu !== "undefined" && Xu && Xu.length) ? Xu : null;
           if (pool) {
-            var pick = ae(pool);
-            item.cimpl2 = { k: pick[0], v: fe(pick[1][0], pick[1][1]) };
+            var pick = oe(pool);
+            item.cimpl2 = { k: pick[0], v: de(pick[1][0], pick[1][1]) };
             item.dc = true;
           }
         }
@@ -9797,7 +9797,7 @@ try {
         for (var i = 0; i < n.mons.length; i++) {
           var m = n.mons[i];
           if (!m || m.dead || !m.spr) continue;
-          if (typeof Jt === "undefined" || !Jt[m.spr] || !Jt[m.spr].img) {
+          if (typeof Xt === "undefined" || !Xt[m.spr] || !Xt[m.spr].img) {
             window.__riftMissingSprites = window.__riftMissingSprites || {};
             window.__riftMissingSprites[m.spr] = (window.__riftMissingSprites[m.spr] || 0) + 1;
             m.__fallbackSprite = m.spr;
@@ -9812,10 +9812,10 @@ try {
 /* 宝箱绘制后恢复画布状态，避免箱子高亮/光效把文字透明度带低 */
 (function () {
   try {
-    if (window.__boxDrawGuard || typeof n$ !== "function") return;
+    if (window.__boxDrawGuard || typeof _A !== "function") return;
     window.__boxDrawGuard = 1;
-    var __baseU3 = n$;
-    n$ = function () {
+    var __baseU3 = _A;
+    _A = function () {
       try {
         d.save();
         return __baseU3.apply(this, arguments);
@@ -9837,12 +9837,12 @@ try {
         if (!n || !n.mons || !n.pl || !n.Z) return;
         for (var i = 0; i < n.mons.length; i++) {
           var m = n.mons[i];
-          if (!m || m.dead || typeof xt !== "function" || !xt(m.x, m.y)) continue;
+          if (!m || m.dead || typeof At !== "function" || !At(m.x, m.y)) continue;
           var placed = false;
           for (var r = 8; r <= 120 && !placed; r += 8) {
             for (var a = 0; a < 16 && !placed; a++) {
               var nx = m.x + Math.cos(a * 0.3927) * r, ny = m.y + Math.sin(a * 0.3927) * r;
-              if (!xt(nx, ny)) { m.x = nx; m.y = ny; m.vx = m.vy = 0; m.stuck = 0; placed = true; }
+              if (!At(nx, ny)) { m.x = nx; m.y = ny; m.vx = m.vy = 0; m.stuck = 0; placed = true; }
             }
           }
         }
@@ -9899,7 +9899,7 @@ try {
           baseDpr = dpr;
           if (!warned) {
             warned = true;
-            I("检测到页面缩放变化 · 按 Ctrl+0 恢复 100% · 已尝试修复画面");
+            P("检测到页面缩放变化 · 按 Ctrl+0 恢复 100% · 已尝试修复画面");
             setTimeout(function () { warned = false; }, 5000);
           }
           resetSoon();
@@ -9916,7 +9916,7 @@ try {
   try {
     if (window.__jewelBeyondTune) return;
     window.__jewelBeyondTune = 1;
-    $("kill:loot", function (ev) {
+    A("kill:loot", function (ev) {
       try {
         if (!n || !n.Z || n.Z.type !== "map" || !ev || !ev.m) return;
         var m = ev.m;
@@ -9929,9 +9929,9 @@ try {
     });
     // 经验：y4 是基础发经验函数，按超越等级翻倍加成
     try {
-      if (typeof UM === "function") {
-        var __baseY4 = UM;
-        UM = function (amount) {
+      if (typeof E$ === "function") {
+        var __baseY4 = E$;
+        E$ = function (amount) {
           try {
             if (n && n.Z && n.Z.type === "map" && n.Z.beyond > 0) amount = amount * (1 + 0.5 * n.Z.beyond);
           } catch (e) {}
@@ -9960,7 +9960,7 @@ try {
     } catch (e) {}
     return "稀有怪物";
   };
-  $("kill", function (ev) {
+  A("kill", function (ev) {
     try {
       var m = ev && (ev.m || ev);
       if (!m || !m.rar || m.rar < 2 || !hasHH()) return;
@@ -9968,10 +9968,10 @@ try {
       if (!n.pl.__hhUntil || now > n.pl.__hhUntil) n.pl.__hhStacks = 0;
       n.pl.__hhStacks = Math.min(10, (n.pl.__hhStacks || 0) + 1);
       n.pl.__hhUntil = now + 60;
-      I("猎首 · 偷取 " + nameOf(m) + " 的词缀 (" + n.pl.__hhStacks + " 层, 60 秒)");
+      P("猎首 · 偷取 " + nameOf(m) + " 的词缀 (" + n.pl.__hhStacks + " 层, 60 秒)");
     } catch (e) {}
   });
-  $("hit:base", function (e) {
+  A("hit:base", function (e) {
     try {
       if (!e || !e.by) return;
       if (!hasHH()) return;
@@ -9981,7 +9981,7 @@ try {
       for (var k in e.by) if (e.by[k] > 0) e.by[k] *= mul;
     } catch (e) {}
   });
-  $("map:enter", function () {
+  A("map:enter", function () {
     try { n.pl.__hhStacks = 0; n.pl.__hhUntil = 0; } catch (e) {}
   });
 })();
@@ -9990,7 +9990,7 @@ try {
   if (window.__atuBloodHooked) return;
   window.__atuBloodHooked = 1;
   try {
-    $("hit:base", function (e) {
+    A("hit:base", function (e) {
       try {
         if (!e || !e.c) return;
         var sups = e.c.sup || e.c.supports || [];
@@ -10003,7 +10003,7 @@ try {
           last[key] = now;
           var baseCost = 6;
           try {
-            if (typeof te !== "undefined" && te[e.c.gid] && te[e.c.gid].cost) baseCost = te[e.c.gid].cost;
+            if (typeof se !== "undefined" && se[e.c.gid] && se[e.c.gid].cost) baseCost = se[e.c.gid].cost;
           } catch (err) {}
           var lifeCost = Math.max(1, Math.round(baseCost));
           if (n.pl.hp > lifeCost) n.pl.hp = Math.max(1, n.pl.hp - lifeCost);
@@ -10017,7 +10017,7 @@ try {
         });
       } catch (err) {}
     });
-    $("map:enter", function () {
+    A("map:enter", function () {
       try { n.pl.__atuLast = {}; n.pl.__atuBonus = {}; } catch (e) {}
     });
   } catch (e) {}
@@ -10029,7 +10029,7 @@ function __riftDownload(name, data, mime) {
     var url = URL.createObjectURL(blob), a = document.createElement("a");
     a.href = url; a.download = name; document.body.appendChild(a); a.click();
     setTimeout(function () { try { URL.revokeObjectURL(url); a.remove(); } catch (e) {} }, 1500);
-  } catch (e) { I("导出失败: " + e.message); }
+  } catch (e) { P("导出失败: " + e.message); }
 }
 function __riftShot() {
   try {
@@ -10039,8 +10039,8 @@ function __riftShot() {
     var a = document.createElement("a");
     a.href = url; a.download = "余烬裂隙-截图-" + Date.now() + ".png";
     document.body.appendChild(a); a.click(); a.remove();
-    I("截图已保存");
-  } catch (e) { I("截图失败: " + e.message); }
+    P("截图已保存");
+  } catch (e) { P("截图失败: " + e.message); }
 }
 function __riftStats() {
   var mons = {}, projs = {}, objs = {}, missing = {};
@@ -10051,7 +10051,7 @@ function __riftStats() {
       var sp = m.spr || (m.t && m.t.spr) || "";
       mons[tk] = mons[tk] || { type: tk, n: m.t && m.t.n, spr: sp, count: 0, hidden: !!m.hidden, dead: !!m.dead, hp: Math.round(m.hp || 0), maxhp: Math.round(m.maxhp || 0), rar: m.rar || 0, fallback: m.__fallbackSprite || null };
       mons[tk].count++;
-      if (sp && (!Jt[sp] || !Jt[sp].img || !Jt[sp].img.width)) { mons[tk].missing = true; missing[sp] = (missing[sp] || 0) + 1; }
+      if (sp && (!Xt[sp] || !Xt[sp].img || !Xt[sp].img.width)) { mons[tk].missing = true; missing[sp] = (missing[sp] || 0) + 1; }
     }
     for (var j = 0; j < (n.projs || []).length; j++) { var pj = n.projs[j]; if (pj) projs[pj.kind || "?"] = (projs[pj.kind || "?"] || 0) + 1; }
     for (var k = 0; k < (n.objs || []).length; k++) { var ob = n.objs[k]; if (ob) objs[ob.kind || "?"] = (objs[ob.kind || "?"] || 0) + 1; }
@@ -10073,29 +10073,29 @@ function __riftDiag() {
     try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(JSON.stringify(st, null, 1)); } catch (eClip) {}
     try { console.log("[诊断]", st); } catch (e) {}
     var miss = Object.keys(st.missingSprites || {});
-    I("诊断已保存" + (miss.length ? " · 缺失贴图: " + miss.join(", ") : " · 未发现缺失贴图"));
-  } catch (e) { I("诊断失败: " + e.message); }
+    P("诊断已保存" + (miss.length ? " · 缺失贴图: " + miss.join(", ") : " · 未发现缺失贴图"));
+  } catch (e) { P("诊断失败: " + e.message); }
 }
 function __riftSpriteDump() {
   try {
     var st = __riftStats(), miss = Object.keys(st.missingSprites || {});
-    if (!miss.length) { I("当前没有缺失贴图"); return; }
+    if (!miss.length) { P("当前没有缺失贴图"); return; }
     var lines = miss.map(function (k) { return k + " ×" + st.missingSprites[k]; }).join(" · ");
-    I("缺失贴图: " + lines);
+    P("缺失贴图: " + lines);
     try { console.log("[缺失贴图]", miss, st.monsters); } catch (e) {}
-  } catch (e) { I("检查失败: " + e.message); }
+  } catch (e) { P("检查失败: " + e.message); }
 }
 window.__riftDiag = __riftDiag;
 window.__riftShot = __riftShot;
 window.__riftStats = __riftStats;
-lM = function (_v2267) {
-  let _v2268 = n.Z && n.Z.type === "map" && n.state === "play", _v2269 = () => _v2268 ? !0 : (I("请先进入地图"), !1), _v2270 = _v2271 => He(n.pl.x + D(-_v2271, _v2271), n.pl.y + D(-_v2271, _v2271), 20);
+ZT = function (_v2267) {
+  let _v2268 = n.Z && n.Z.type === "map" && n.state === "play", _v2269 = () => _v2268 ? !0 : (P("请先进入地图"), !1), _v2270 = _v2271 => We(n.pl.x + B(-_v2271, _v2271), n.pl.y + B(-_v2271, _v2271), 20);
   switch (_v2267) {
     case "grant":
-      (_l(), I("已发放: 全部宝石 / 通货 / 点数"));
+      (pc(), P("已发放: 全部宝石 / 通货 / 点数"));
       break;
     case "perf":
-      lu();
+      _u();
       break;
     case "shot":
       __riftShot();
@@ -10111,61 +10111,61 @@ lM = function (_v2267) {
         if (!_v2269()) return;
         let _v2272 = n.Z.th.mon, _v2273 = Object.keys(_v2272);
         for (let _v2274 = 0; _v2274 < 150; _v2274++) {
-          let _v2275 = _v2270(220), _v2276 = et(lt(_v2273, _v2277 => _v2272[_v2277]), _v2275.x, _v2275.y, n.Z.lvl, 0);
+          let _v2275 = _v2270(220), _v2276 = nt(ht(_v2273, _v2277 => _v2272[_v2277]), _v2275.x, _v2275.y, n.Z.lvl, 0);
           (_v2276.aggro = !0, n.mons.push(_v2276));
         }
-        I("压力测试: +150 只怪物 (F8 看性能)");
+        P("压力测试: +150 只怪物 (F8 看性能)");
       }
       break;
     case "god":
-      (u.god = !u.god, I(u.god ? "无敌已开启" : "无敌已关闭"));
+      (u.god = !u.god, P(u.god ? "无敌已开启" : "无敌已关闭"));
       break;
     case "lv10":
     case "lv60":
       {
         let _v2278 = _v2267 === "lv60" ? 60 : Math.min(60, u.level + 10);
         for (; u.level < _v2278; ) u.level++;
-        (u.xp = 0, I("等级 " + u.level));
+        (u.xp = 0, P("等级 " + u.level));
         break;
       }
     case "sock":
       for (let _v2279 of [...u.skills, ...u.gems]) _v2279 && _v2279.kind === "gem" && (_v2279.lvl = 20, _v2279.sock = 5);
-      I("所有主动宝石已 20 级 5 孔");
+      P("所有主动宝石已 20 级 5 孔");
       break;
     case "cur999":
-      vt.forEach(_v2280 => u.cur[_v2280] = 999999);
+      Tt.forEach(_v2280 => u.cur[_v2280] = 999999);
       break;
     case "trial":
-      (u.trials = Ws.slice(), u.ascPts = 8, I("升华点 8"));
+      (u.trials = Us.slice(), u.ascPts = 8, P("升华点 8"));
       break;
     case "atlas":
-      (u.atlasPts = 28, I("图谱点 28"));
+      (u.atlasPts = 28, P("图谱点 28"));
       break;
     case "cdr":
-      (n.pl.cds = {}, n.pl.hp = n.S.maxLife, n.pl.mana = n.S.maxMana, n.pl.es = n.S.maxES, n.pl.ki = 10, n.pl.salvo = 6, u.flask.forEach(_v2281 => _v2281.ch = _v2281.max), I("冷却/资源已重置 · 刀意 10 · 冰箭 6"));
+      (n.pl.cds = {}, n.pl.hp = n.S.maxLife, n.pl.mana = n.S.maxMana, n.pl.es = n.S.maxES, n.pl.ki = 10, n.pl.salvo = 6, u.flask.forEach(_v2281 => _v2281.ch = _v2281.max), P("冷却/资源已重置 · 刀意 10 · 冰箭 6"));
       break;
     case "rares":
       for (let _v2282 = 0; _v2282 < 10; _v2282++) {
         let _v2283 = null;
         for (let _v2284 = 0; _v2284 < 30 && !_v2283; _v2284++) {
-          let _v2285 = ae(Ea.filter(_v2286 => _v2286.lv <= Math.max(u.level, 10)));
-          _v2283 = Et(_v2285, Math.max(u.level, 10), 2);
+          let _v2285 = oe(Pa.filter(_v2286 => _v2286.lv <= Math.max(u.level, 10)));
+          _v2283 = Ft(_v2285, Math.max(u.level, 10), 2);
         }
-        _v2283 && No(_v2283) && u.inv.push(_v2283);
+        _v2283 && Vo(_v2283) && u.inv.push(_v2283);
       }
-      I("已生成稀有装备");
+      P("已生成稀有装备");
       break;
     case "offs":
-      for (let _v2287 of Ea) (Nc(_v2287.slot) || _v2287.slot === "L") && Sa() < Ft && u.inv.push(Et(_v2287, Math.max(u.level, _v2287.lv), 2));
+      for (let _v2287 of Pa) (hf(_v2287.slot) || _v2287.slot === "L") && Ca() < Dt && u.inv.push(Ft(_v2287, Math.max(u.level, _v2287.lv), 2));
       break;
     case "uniqs":
-      for (let _v2288 of pt) {
-        let _v2289 = Ut(_v2288, Math.max(u.level, _v2288.lv));
-        (Zr(_v2289), No(_v2289) && u.inv.push(_v2289));
+      for (let _v2288 of yt) {
+        let _v2289 = Kt(_v2288, Math.max(u.level, _v2288.lv));
+        (si(_v2289), Vo(_v2289) && u.inv.push(_v2289));
       }
       break;
     case "charges":
-      (n.pl.pch = n.pl.fch = Zm(), n.pl.chT = 10, n.pl.rage = 40, n.pl.rageT = 5);
+      (n.pl.pch = n.pl.fch = z1(), n.pl.chT = 10, n.pl.rage = 40, n.pl.rageT = 5);
       break;
     case "metafull":
       u.buffs.forEach(_v2290 => {
@@ -10173,10 +10173,10 @@ lM = function (_v2267) {
       });
       break;
     case "sigils":
-      Ts.forEach(_v2291 => u.cur[_v2291] = (u.cur[_v2291] || 0) + 1);
+      js.forEach(_v2291 => u.cur[_v2291] = (u.cur[_v2291] || 0) + 1);
       break;
     case "pinlv":
-      (u.pinLv = Math.min(10, u.pinLv + 1), I("裂隙之心 Lv" + u.pinLv));
+      (u.pinLv = Math.min(10, u.pinLv + 1), P("裂隙之心 Lv" + u.pinLv));
       break;
     case "enc":
       {
@@ -10189,9 +10189,9 @@ lM = function (_v2267) {
           st: "idle",
           t: 0
         };
-        if (!ft[_v2293.type]) return;
+        if (!gt[_v2293.type]) return;
         if ((n.objs.push(_v2293), _v2293.type === "ice")) {
-          let _v2294 = et("icechest", _v2292.x, _v2292.y, n.Z.lvl, 0);
+          let _v2294 = nt("icechest", _v2292.x, _v2292.y, n.Z.lvl, 0);
           (_v2294.prop = !0, _v2294.encObj = _v2293, _v2294.res = {
             phys: 90,
             fire: -200,
@@ -10205,7 +10205,7 @@ lM = function (_v2267) {
       {
         if (!_v2269()) return;
         for (let _v2295 = 0; _v2295 < 3; _v2295++) {
-          let _v2296 = _v2270(60), _v2297 = et("crystal", _v2296.x, _v2296.y, n.Z.lvl, 0);
+          let _v2296 = _v2270(60), _v2297 = nt("crystal", _v2296.x, _v2296.y, n.Z.lvl, 0);
           (_v2297.prop = !0, n.mons.push(_v2297));
         }
         break;
@@ -10215,43 +10215,43 @@ lM = function (_v2267) {
     case "go_ice":
     case "go_swamp":
       {
-        let _v2298 = _v2267.slice(3), _v2299 = Ht(10);
-        (_v2299.theme = _v2298, _v2299.base = _v2299.name = na[_v2298].names[0], Lt(), Di(_v2299));
+        let _v2298 = _v2267.slice(3), _v2299 = Zt(10);
+        (_v2299.theme = _v2298, _v2299.base = _v2299.name = la[_v2298].names[0], Ot(), Xi(_v2299));
         let _v2300 = n.Z.boss;
         if (_v2300) {
-          let _v2301 = He(_v2300.x, _v2300.y + 60, 30);
-          (n.pl.x = _v2301.x, n.pl.y = _v2301.y, Va.x = n.pl.x - so / 2, Va.y = n.pl.y - oo / 2);
+          let _v2301 = We(_v2300.x, _v2300.y + 60, 30);
+          (n.pl.x = _v2301.x, n.pl.y = _v2301.y, es.x = n.pl.x - lo / 2, es.y = n.pl.y - co / 2);
         }
         return;
       }
     case "go_pin":
-      (Ts.forEach(_v2302 => u.cur[_v2302] = Math.max(1, u.cur[_v2302] || 0)), _m());
+      (js.forEach(_v2302 => u.cur[_v2302] = Math.max(1, u.cur[_v2302] || 0)), D1());
       return;
     case "maps":
-      for (let _v2303 = 1; _v2303 <= 17; _v2303++) uo() < ga && u.inv.push(Ht(_v2303));
+      for (let _v2303 = 1; _v2303 <= 17; _v2303++) yo() < xa && u.inv.push(Zt(_v2303));
       break;
     case "mapsR":
       for (let _v2304 = 0; _v2304 < 5; _v2304++) {
-        let _v2305 = Ht(16);
-        (Vs("alch", _v2305), No(_v2305) && u.inv.push(_v2305));
+        let _v2305 = Zt(16);
+        (eo("alch", _v2305), Vo(_v2305) && u.inv.push(_v2305));
       }
       break;
     case "ess":
-      vt.forEach(_v2306 => {
-        (z[_v2306].grp === "ess" || z[_v2306].grp === "rune" || z[_v2306].grp === "sock") && (u.cur[_v2306] = (u.cur[_v2306] || 0) + 20);
+      Tt.forEach(_v2306 => {
+        (q[_v2306].grp === "ess" || q[_v2306].grp === "rune" || q[_v2306].grp === "sock") && (u.cur[_v2306] = (u.cur[_v2306] || 0) + 20);
       });
       break;
     case "clear":
       if (!_v2269()) return;
-      for (let _v2307 of n.mons) !_v2307.dead && !_v2307.dummy && _v2307.rar < 3 && Qr(_v2307, null, {
+      for (let _v2307 of n.mons) !_v2307.dead && !_v2307.dummy && _v2307.rar < 3 && di(_v2307, null, {
         weight: "heavy"
       });
       break;
     case "boss":
       {
         if (!_v2269()) return;
-        let _v2308 = _v2270(60), _v2309 = et((ft[n.Z.th.key] || ({})).boss || "boss", _v2308.x, _v2308.y, n.Z.lvl + 2, 3);
-        (_v2309.aggro = !0, n.mons.push(_v2309), n.Z.boss = _v2309, n.Z.done = !1, I("首领出现"));
+        let _v2308 = _v2270(60), _v2309 = nt((gt[n.Z.th.key] || ({})).boss || "boss", _v2308.x, _v2308.y, n.Z.lvl + 2, 3);
+        (_v2309.aggro = !0, n.mons.push(_v2309), n.Z.boss = _v2309, n.Z.done = !1, P("首领出现"));
         break;
       }
     case "rift":
@@ -10267,14 +10267,14 @@ lM = function (_v2267) {
           t: 0,
           R: 0,
           spT: 0
-        }), I("裂隙已生成 · 走进去开启"));
+        }), P("裂隙已生成 · 走进去开启"));
         break;
       }
     case "abyss":
       {
         if (!_v2269()) return;
         let _v2311 = _v2270(60);
-        (n.objs.push(AbyssMake(_v2311.x, _v2311.y)), I("深渊裂缝已生成 · 靠近开启"));
+        (n.objs.push(AbyssMake(_v2311.x, _v2311.y)), P("深渊裂缝已生成 · 靠近开启"));
         break;
       }
     case "shrine":
@@ -10285,7 +10285,7 @@ lM = function (_v2267) {
           kind: "shrine",
           x: _v2312.x,
           y: _v2312.y,
-          type: ae(as).k,
+          type: oe(is).k,
           used: !1
         });
         break;
@@ -10300,7 +10300,7 @@ lM = function (_v2267) {
           y: _v2313.y,
           r: 6,
           open: !1,
-          ornate: ne("box3") && E() < 0.25
+          ornate: re("box3") && I() < 0.25
         });
         break;
       }
@@ -10309,72 +10309,72 @@ lM = function (_v2267) {
         if (!_v2269()) return;
         let _v2314 = n.Z.th.mon, _v2315 = Object.keys(_v2314);
         for (let _v2316 = 0; _v2316 < 8; _v2316++) {
-          let _v2317 = _v2270(70), _v2318 = et(lt(_v2315, _v2319 => _v2314[_v2319]), _v2317.x, _v2317.y, n.Z.lvl, _v2316 < 2 ? 2 : 1);
+          let _v2317 = _v2270(70), _v2318 = nt(ht(_v2315, _v2319 => _v2314[_v2319]), _v2317.x, _v2317.y, n.Z.lvl, _v2316 < 2 ? 2 : 1);
           (_v2318.aggro = !0, n.mons.push(_v2318));
         }
         break;
       }
     case "rain":
       if (!_v2269()) return;
-      for (let _v2320 = 0; _v2320 < 40; _v2320++) de(n.pl.x, n.pl.y, {
+      for (let _v2320 = 0; _v2320 < 40; _v2320++) ue(n.pl.x, n.pl.y, {
         kind: "cur",
-        cur: Xl()
+        cur: yc()
       });
       break;
     case "ape":
       {
         if (!_v2269()) return;
-        let _v2321 = _v2270(90), _v2322 = gf(_v2321.x, _v2321.y, n.Z.lvl + 1);
+        let _v2321 = _v2270(90), _v2322 = Wf(_v2321.x, _v2321.y, n.Z.lvl + 1);
         _v2322.aggro = !0;
         break;
       }
     case "pet":
-      (u.pets = [...new Set([...u.pets || [], "dragon"])], u.pet = "dragon", u.showPet = !0, I("千烬游龙 跟上了你"));
+      (u.pets = [...new Set([...u.pets || [], "dragon"])], u.pet = "dragon", u.showPet = !0, P("千烬游龙 跟上了你"));
       break;
     case "souls":
-      for (let _v2323 of Wd) if (Sa() < Ft) {
-        let _v2324 = gf(_v2323, Math.max(60, u.level));
+      for (let _v2323 of b0) if (Ca() < Dt) {
+        let _v2324 = Wf(_v2323, Math.max(60, u.level));
         for (; _v2324.rarity < 2; ) {
           (_v2324.rarity = 2, _v2324.mods = []);
-          for (let _v2325 = 0; _v2325 < 4; _v2325++) ht(_v2324);
-          aa(_v2324);
+          for (let _v2325 = 0; _v2325 < 4; _v2325++) wt(_v2324);
+          na(_v2324);
         }
         u.inv.push(_v2324);
       }
-      I("已发放全部兽魂");
+      P("已发放全部兽魂");
       break;
     case "omens":
-      for (let _v2326 of vt) z[_v2326].grp === "omen" && (u.cur[_v2326] = (u.cur[_v2326] || 0) + 5);
-      (I("已发放全部预兆 ×5"), Ds());
+      for (let _v2326 of Tt) q[_v2326].grp === "omen" && (u.cur[_v2326] = (u.cur[_v2326] || 0) + 5);
+      (P("已发放全部预兆 ×5"), Gs());
       break;
     case "divine":
       if (!_v2269()) return;
-      de(n.pl.x, n.pl.y, {
+      ue(n.pl.x, n.pl.y, {
         kind: "cur",
         cur: "divine"
       });
       break;
   }
-  (ge(), n.pl && (n.pl.hp = Math.min(n.pl.hp, n.S.maxLife)));
+  (be(), n.pl && (n.pl.hp = Math.min(n.pl.hp, n.S.maxLife)));
 };
-G7 = function () {
+WL = function () {
   (C("#panel").addEventListener("click", _v2327 => {
     let _v2328 = n.held && !_v2327.target.closest('[data-act="cur"]') && _v2327.target.closest("[data-craft]");
     if (_v2328) {
-      let _v2329 = Kt(_v2328.dataset.craft);
+      let _v2329 = Qt(_v2328.dataset.craft);
       if (_v2329) {
-        let _v2330 = _v2329.it, _v2331 = _v2330.mods ? ql(_v2330) : null;
-        _a.last = null;
-        let _v2332 = Vs(n.held, _v2330);
+        let _v2330 = _v2329.it, _v2331 = _v2330.mods ? nc(_v2330) : null;
+        Ya.last = null;
+        let _v2332 = eo(n.held, _v2330);
         if (_v2332) {
-          I(_v2332);
+          P(_v2332);
           return;
         }
-        (u.cur[n.held]--, (_v2330.kind === "item" || _v2330.kind === "soul") && L0(n.held, _v2330, Ci(n.held, _v2330, _v2331)), _v2330.kind === "map" && (_v2330.invest = (_v2330.invest || 0) + z[n.held].v), T("craft"), (n.held === "divine" || n.held === "exalt") && T(n.held === "divine" ? "chaos" : "exalt", 0.6), (_v2329.loc === "eq" || _v2329.loc === "skill" || _v2329.loc === "gems" || _v2329.loc === "minner" || _v2329.loc === "beast") && ge());
+        (u.cur[n.held]--, (_v2330.kind === "item" || _v2330.kind === "soul") && lp(n.held, _v2330, Hi(n.held, _v2330, _v2331)), _v2330.kind === "map" && (_v2330.invest = (_v2330.invest || 0) + q[n.held].v), $("craft"), (n.held === "divine" || n.held === "exalt") && $(n.held === "divine" ? "chaos" : "exalt", 0.6), (_v2329.loc === "eq" || _v2329.loc === "skill" || _v2329.loc === "gems" || _v2329.loc === "minner" || _v2329.loc === "beast") && be());
         let _v2333 = n.held;
-        ((!_v2327.shiftKey || !u.cur[_v2333]) && ks(null), Ds());
+        ((!_v2327.shiftKey || !u.cur[_v2333]) && Ts(null), Gs());
         let _v2334 = document.querySelector(`[data-craft="${_v2330.uid}"]`);
-        (_v2334 && _v2334.classList.add("pop"), n.tipKey = null, gp(Yf("it:" + _v2330.uid), _v2327.clientX, _v2327.clientY), n.held && ks(n.held));
+        (_v2334 && _v2334.classList.add("pop"), n.tipKey = null, Xp(Sd("it:" + _v2330.uid), _v2327.clientX, _v2327.clientY), n.held && Ts(n.held));
         return;
       }
     }
@@ -10386,46 +10386,46 @@ G7 = function () {
       case "omen":
         {
           let _v2337 = _v2335.dataset.k;
-          if (!_v2337 || !z[_v2337]) return;
-          (OmToggle(_v2337), Ds());
+          if (!_v2337 || !q[_v2337]) return;
+          (OmToggle(_v2337), Gs());
           return;
         }
       case "cur":
         {
           let _v2338 = _v2335.dataset.k;
           if (!u.cur[_v2338]) {
-            I("没有" + z[_v2338].n);
+            P("没有" + q[_v2338].n);
             return;
           }
-          ks(n.held === _v2338 ? null : _v2338);
+          Ts(n.held === _v2338 ? null : _v2338);
           return;
         }
       case "inv":
         {
-          let _v2339 = Kt(_v2335.dataset.uid);
+          let _v2339 = Qt(_v2335.dataset.uid);
           if (!_v2339) return;
-          _v2339.it.kind === "map" ? (u.device && u.inv.push(u.device), u.device = _v2339.it, u.inv.splice(u.inv.indexOf(_v2339.it), 1), T("pick")) : _v2339.it.kind === "soul" ? d2(_v2339.it) : Of(_v2339.it, _v2327.shiftKey);
+          _v2339.it.kind === "map" ? (u.device && u.inv.push(u.device), u.device = _v2339.it, u.inv.splice(u.inv.indexOf(_v2339.it), 1), $("pick")) : _v2339.it.kind === "soul" ? Sv(_v2339.it) : rd(_v2339.it, _v2327.shiftKey);
           break;
         }
       case "beast":
-        p2(+_v2335.dataset.i, Ft);
+        Mv(+_v2335.dataset.i, Dt);
         break;
       case "mapin":
         {
-          let _v2340 = Kt(_v2335.dataset.uid);
+          let _v2340 = Qt(_v2335.dataset.uid);
           if (!_v2340) return;
-          (u.device && u.inv.push(u.device), u.device = _v2340.it, u.inv.splice(u.inv.indexOf(_v2340.it), 1), T("pick"));
+          (u.device && u.inv.push(u.device), u.device = _v2340.it, u.inv.splice(u.inv.indexOf(_v2340.it), 1), $("pick"));
           break;
         }
       case "eq":
         {
           let _v2341 = _v2335.dataset.slot;
           if (!_v2341 || !u.equip[_v2341]) return;
-          if (Sa() >= Ft) {
-            I("背包已满");
+          if (Ca() >= Dt) {
+            P("背包已满");
             return;
           }
-          (u.inv.push(u.equip[_v2341]), u.equip[_v2341] = null, ge());
+          (u.inv.push(u.equip[_v2341]), u.equip[_v2341] = null, be());
           break;
         }
       case "dev":
@@ -10437,7 +10437,7 @@ G7 = function () {
       case "open":
         n.endlessMode = !1;
         n.endlessLiteMode = !1;
-        Tx();
+        Kw();
         return;
       case "endless-lite":
         {
@@ -10448,9 +10448,9 @@ G7 = function () {
           n.endlessSpawnT = 0;
           n.endlessSpawnIndex = 0;
           n.endlessBossSpawnT = 0;
-          Lt();
+          Ot();
           let _v2342 = {
-            ...Ht(17),
+            ...Zt(17),
             tier: 17,
             ilvl: 17,
             name: "低卡无尽试炼",
@@ -10458,7 +10458,7 @@ G7 = function () {
             mods: [],
             invest: 0
           };
-          Di(_v2342);
+          Xi(_v2342);
           ke("低卡无尽模式开启", "无掉落 · 无怪物尸体与击杀特效 · 不触发击杀效果 · 每 5 秒强度 +1 · 按 T 返回藏身处结束");
           return;
         }
@@ -10471,9 +10471,9 @@ G7 = function () {
           n.endlessSpawnT = 0;
           n.endlessSpawnIndex = 0;
           n.endlessBossSpawnT = 0;
-          Lt();
+          Ot();
           let _v2343 = {
-            ...Ht(17),
+            ...Zt(17),
             tier: 17,
             ilvl: 17,
             name: "无尽试炼",
@@ -10481,49 +10481,49 @@ G7 = function () {
             mods: [],
             invest: 0
           };
-          Di(_v2343);
+          Xi(_v2343);
           ke("无尽模式开启", "怪物受击击退为 0 · 全地图怪物、传奇怪物、稀有怪与首领持续刷新 · 每 5 秒强度 +1 · 按 T 返回藏身处结束");
           return;
         }
       case "free":
-        u.device = Ht(1);
+        u.device = Zt(1);
         break;
       case "sellN":
       case "sellM":
         {
           let _v2344 = _v2336 === "sellN" ? 0 : 1, _v2345 = u.inv.filter(_v2346 => _v2346.kind === "item" && _v2346.rarity === _v2344);
           if (!_v2345.length) {
-            I("没有可出售的物品");
+            P("没有可出售的物品");
             return;
           }
-          _v2345.forEach(_v2347 => Un(_v2347));
+          _v2345.forEach(_v2347 => er(_v2347));
           break;
         }
       case "sellLowMaps":
         {
-          let _v2348 = Wo();
+          let _v2348 = Ko();
           if (!_v2348.length) {
-            I("没有可出售的低阶地图 (只卖普通/魔法地图)");
+            P("没有可出售的低阶地图 (只卖普通/魔法地图)");
             return;
           }
-          _v2348.forEach(_v2349 => Un(_v2349));
+          _v2348.forEach(_v2349 => er(_v2349));
           break;
         }
       case "mapUp":
         {
-          let _v2350 = t2(+_v2335.dataset.t);
+          let _v2350 = uv(+_v2335.dataset.t);
           if (_v2350) {
-            I(_v2350);
+            P(_v2350);
             return;
           }
-          (I("换到 1 张 T" + (+_v2335.dataset.t + 1) + " 地图"), T("craft"));
+          (P("换到 1 张 T" + (+_v2335.dataset.t + 1) + " 地图"), $("craft"));
           break;
         }
       case "filter":
-        dp();
+        Wp();
         return;
       case "reset":
-        td(!1);
+        Rd(!1);
         return;
       case "gslot":
         (n.selSlot = +_v2335.dataset.i, n.selMeta = null);
@@ -10537,7 +10537,7 @@ G7 = function () {
       case "mout":
         {
           let _v2351 = u.buffs[+_v2335.dataset.i], _v2352 = +_v2335.dataset.j;
-          _v2351 && _v2351.inner[_v2352] && (u.gems.push(_v2351.inner[_v2352]), _v2351.inner[_v2352] = null, ge());
+          _v2351 && _v2351.inner[_v2352] && (u.gems.push(_v2351.inner[_v2352]), _v2351.inner[_v2352] = null, be());
           break;
         }
       case "munsock":
@@ -10545,214 +10545,214 @@ G7 = function () {
           let _v2353 = u.buffs[+_v2335.dataset.i], _v2354 = _v2353 && _v2353.inner[+_v2335.dataset.m];
           if (!_v2354) return;
           let _v2355 = _v2354.sup.splice(+_v2335.dataset.j, 1)[0];
-          (_v2355 && u.gems.push(_v2355), ge());
+          (_v2355 && u.gems.push(_v2355), be());
           break;
         }
       case "pin":
-        _m();
+        D1();
         return;
       case "favor":
         u.favor = _v2335.dataset.t || null;
         break;
       case "buildApply":
         {
-          let _v2356 = As.find(_v2357 => _v2357.n === _v2335.dataset.n && _v2357.cls === u.cls);
-          _v2356 && q0(_v2356);
+          let _v2356 = Ls.find(_v2357 => _v2357.n === _v2335.dataset.n && _v2357.cls === u.cls);
+          _v2356 && gp(_v2356);
           break;
         }
       case "gunslot":
         {
           let _v2358 = +_v2335.dataset.i, _v2359 = u.skills[_v2358];
           if (!_v2359) return;
-          (u.skills[_v2358] = null, u.gems.push(_v2359), ge());
+          (u.skills[_v2358] = null, u.gems.push(_v2359), be());
           break;
         }
       case "gact":
         {
-          let _v2360 = Kt(_v2335.dataset.uid);
+          let _v2360 = Qt(_v2335.dataset.uid);
           if (!_v2360) return;
           if (n.selMeta) {
             let _v2361 = u.buffs[n.selMeta.i];
             if (!_v2361 || _v2361.kind !== "meta") return;
-            if (!Ui(_v2360.it.gid)) {
-              I("元技能只能插入定点或投射类法术");
+            if (!il(_v2360.it.gid)) {
+              P("元技能只能插入定点或投射类法术");
               return;
             }
-            (u.gems.splice(u.gems.indexOf(_v2360.it), 1), _v2361.inner[n.selMeta.j] && u.gems.push(_v2361.inner[n.selMeta.j]), _v2361.inner[n.selMeta.j] = _v2360.it, ge(), T("craft"));
+            (u.gems.splice(u.gems.indexOf(_v2360.it), 1), _v2361.inner[n.selMeta.j] && u.gems.push(_v2361.inner[n.selMeta.j]), _v2361.inner[n.selMeta.j] = _v2360.it, be(), $("craft"));
             break;
           }
           let _v2362 = u.skills[n.selSlot];
           (u.gems.splice(u.gems.indexOf(_v2360.it), 1), u.skills[n.selSlot] = _v2360.it, _v2362 && (_v2362.sup.forEach(_v2363 => {
             _v2360.it.sup.length < _v2360.it.sock ? _v2360.it.sup.push(_v2363) : u.gems.push(_v2363);
-          }), _v2362.sup = [], u.gems.push(_v2362)), ge(), T("pick"));
+          }), _v2362.sup = [], u.gems.push(_v2362)), be(), $("pick"));
           break;
         }
       case "gsup":
         {
-          let _v2364 = Kt(_v2335.dataset.uid), _v2365 = Hf();
+          let _v2364 = Qt(_v2335.dataset.uid), _v2365 = md();
           if (!_v2364 || !_v2365) {
-            I("先选中一个有主动宝石的技能槽");
+            P("先选中一个有主动宝石的技能槽");
             return;
           }
           if (_v2365.sup.length >= _v2365.sock) {
-            I("没有空插槽 · 用珠宝匠石增加插槽");
+            P("没有空插槽 · 用珠宝匠石增加插槽");
             return;
           }
           if (_v2365.sup.some(_v2366 => _v2366.gid === _v2364.it.gid)) {
-            I("同一辅助不能重复插入");
+            P("同一辅助不能重复插入");
             return;
           }
-          (Pn(oe[_v2364.it.gid], te[_v2365.gid]) || I("标签不匹配: 该辅助不会生效"), u.gems.splice(u.gems.indexOf(_v2364.it), 1), _v2365.sup.push(_v2364.it), ge(), T("craft"));
+          (Dn(ne[_v2364.it.gid], se[_v2365.gid]) || P("标签不匹配: 该辅助不会生效"), u.gems.splice(u.gems.indexOf(_v2364.it), 1), _v2365.sup.push(_v2364.it), be(), $("craft"));
           break;
         }
       case "unsock":
         {
           let _v2367 = u.skills[+_v2335.dataset.i].sup.splice(+_v2335.dataset.j, 1)[0];
-          (_v2367 && u.gems.push(_v2367), ge());
+          (_v2367 && u.gems.push(_v2367), be());
           break;
         }
       case "treeReset":
-        (u.tree = [kr(u.cls)], ge());
+        (u.tree = [Er(u.cls)], be());
         break;
       case "tzoom":
         {
           let _v2368 = +_v2335.dataset.z;
-          (K.ox = K.size / 2 + (K.ox - K.size / 2) * _v2368, K.oy = K.size / 2 + (K.oy - K.size / 2) * _v2368, K.s = Se(K.s * _v2368, 0.25, 3), $a());
+          (Q.ox = Q.size / 2 + (Q.ox - Q.size / 2) * _v2368, Q.oy = Q.size / 2 + (Q.oy - Q.size / 2) * _v2368, Q.s = $e(Q.s * _v2368, 0.25, 3), Ea());
           return;
         }
       case "tfit":
-        (Km(!0), $a());
+        (q1(!0), Ea());
         return;
       case "ascPick":
         {
-          (u.asc = _v2335.dataset.a, u.ascNodes = [], T("level"), ke("升华 · " + Me[u.asc].n, Me[u.asc].d), ge());
+          (u.asc = _v2335.dataset.a, u.ascNodes = [], $("level"), ke("升华 · " + Ce[u.asc].n, Ce[u.asc].d), be());
           break;
         }
       case "ascNode":
         {
-          let _v2369 = bu[_v2335.dataset.k];
+          let _v2369 = eh[_v2335.dataset.k];
           if (!_v2369 || u.ascNodes.includes(_v2369.k)) return;
-          let _v2370 = Me[u.asc];
+          let _v2370 = Ce[u.asc];
           if (!(_v2369.tier === 0 || _v2370.nodes.some(_v2371 => _v2371.tier === _v2369.tier - 1 && u.ascNodes.includes(_v2371.k)))) {
-            I("需先点亮上一层的任意节点");
+            P("需先点亮上一层的任意节点");
             return;
           }
           if (u.ascPts - u.ascNodes.length * 2 < 2) {
-            I("升华点不足 · 完成更高阶地图的首领试炼");
+            P("升华点不足 · 完成更高阶地图的首领试炼");
             return;
           }
-          (u.ascNodes.push(_v2369.k), T("unique"), ge());
+          (u.ascNodes.push(_v2369.k), $("unique"), be());
           break;
         }
       case "ascReset":
-        (u.ascNodes = [], ge());
+        (u.ascNodes = [], be());
         break;
       case "bact":
         {
-          let _v2372 = Kt(_v2335.dataset.uid);
+          let _v2372 = Qt(_v2335.dataset.uid);
           if (!_v2372) return;
           if (u.buffs.some(_v2373 => _v2373 && _v2373.gid === _v2372.it.gid)) {
-            I("同名增益只能放一个");
+            P("同名增益只能放一个");
             return;
           }
           let _v2374 = u.buffs.findIndex(_v2375 => !_v2375);
           if (_v2374 < 0) {
-            I("精魂槽已满 · 点击已装备的卸下");
+            P("精魂槽已满 · 点击已装备的卸下");
             return;
           }
           (u.gems.splice(u.gems.indexOf(_v2372.it), 1), u.buffs[_v2374] = _v2372.it, _v2372.it.kind === "meta" && (n.selMeta = {
             i: _v2374,
             j: 0
-          }), ge(), n.S.buffs.has(_v2372.it.gid) || I("精魂不足: " + (ze[_v2372.it.gid] || We[_v2372.it.gid]).n + " 未生效"), T("craft"));
+          }), be(), n.S.buffs.has(_v2372.it.gid) || P("精魂不足: " + (He[_v2372.it.gid] || Ze[_v2372.it.gid]).n + " 未生效"), $("craft"));
           break;
         }
       case "bunslot":
         {
           let _v2376 = +_v2335.dataset.i, _v2377 = u.buffs[_v2376];
           if (!_v2377) return;
-          (u.buffs[_v2376] = null, _v2377.kind === "meta" && _v2377.inner && (_v2377.inner.forEach(_v2378 => _v2378 && u.gems.push(_v2378)), _v2377.inner = [null, null]), u.gems.push(_v2377), n.selMeta && n.selMeta.i === _v2376 && (n.selMeta = null), ge());
+          (u.buffs[_v2376] = null, _v2377.kind === "meta" && _v2377.inner && (_v2377.inner.forEach(_v2378 => _v2378 && u.gems.push(_v2378)), _v2377.inner = [null, null]), u.gems.push(_v2377), n.selMeta && n.selMeta.i === _v2376 && (n.selMeta = null), be());
           break;
         }
       case "atlasNode":
         {
           let _v2379 = _v2335.dataset.k;
           if (u.atlas.includes(_v2379)) {
-            let _v2380 = va[_v2379];
+            let _v2380 = Ma[_v2379];
             if (_v2380 && _v2380.b) {
-              let _v2381 = Hs.find(_v2382 => _v2382.key === _v2380.b);
+              let _v2381 = Ks.find(_v2382 => _v2382.key === _v2380.b);
               if (_v2381 && _v2381.nodes && _v2381.nodes.slice(_v2380.i + 1).some(_v2383 => u.atlas.includes(_v2383.k))) {
-                I("需先退还更深层的节点");
+                P("需先退还更深层的节点");
                 return;
               }
             }
             if (false) {
-              I("需先退还更深层的节点");
+              P("需先退还更深层的节点");
               return;
             }
-            (u.atlas = u.atlas.filter(_v2384 => _v2384 !== _v2379), T("craft"));
+            (u.atlas = u.atlas.filter(_v2384 => _v2384 !== _v2379), $("craft"));
             break;
           }
-          if (!rL(_v2379)) {
-            I(u.atlasPts - u.atlas.length < 1 ? "图谱点不足 · 击败地图首领获得" : "需先点亮上一层");
+          if (!r9(_v2379)) {
+            P(u.atlasPts - u.atlas.length < 1 ? "图谱点不足 · 击败地图首领获得" : "需先点亮上一层");
             return;
           }
-          (u.atlas.push(_v2379), T("unique"));
+          (u.atlas.push(_v2379), $("unique"));
           break;
         }
       case "atlasReset":
-        (u.atlas = [], T("craft"));
+        (u.atlas = [], $("craft"));
         break;
       case "dbg":
-        lM(_v2335.dataset.k);
+        ZT(_v2335.dataset.k);
         break;
       case "dbgView":
         (n.dbgView = _v2335.dataset.v, C("#pbody").scrollTop = 0);
         break;
       case "dcls":
-        Lm(_v2335.dataset.dcls);
+        M1(_v2335.dataset.dcls);
         return;
       case "lab":
-        Uv(_v2335.dataset.t);
+        sx(_v2335.dataset.t);
         return;
       case "dbgReset":
-        ym();
+        l1();
         return;
       case "toTitle":
-        td(!1);
+        Rd(!1);
         return;
       case "fsel":
-        (n.forgeSel = +_v2335.dataset.uid, $e.delArm = 0);
+        (n.forgeSel = +_v2335.dataset.uid, Re.delArm = 0);
         break;
       case "fg":
-        Bv(_v2335);
+        Jk(_v2335);
         break;
       case "mw":
-        if (!Nv(_v2335)) return;
+        if (!tx(_v2335)) return;
         break;
     }
-    (Ds(), n.tipKey = null);
+    (Gs(), n.tipKey = null);
   }), C("#panel").addEventListener("contextmenu", _v2385 => {
     if ((_v2385.preventDefault(), n.touchMode && n.lastPtr !== "mouse")) {
-      I('触屏上长按不会出售 · 请在商人处的"出售"页卖东西');
+      P('触屏上长按不会出售 · 请在商人处的"出售"页卖东西');
       return;
     }
     if (n.held) {
-      ks(null);
+      Ts(null);
       return;
     }
     let _v2386 = _v2385.target.closest('[data-act="gact"],[data-act="gsup"],[data-act="bact"]');
     if (_v2386) {
-      let _v2387 = Kt(_v2386.dataset.uid);
+      let _v2387 = Qt(_v2386.dataset.uid);
       if (_v2387 && _v2387.loc === "gems") {
-        let _v2388 = xn(_v2387.it);
-        (Si(_v2387.it), I("出售获得 " + Object.entries(_v2388).map(([_v2389, _v2390]) => z[_v2389].n + (_v2390 > 1 ? "×" + _v2390 : "")).join(" ") + " · 可在商人处回购"), vs(), Ds());
+        let _v2388 = $n(_v2387.it);
+        (Di(_v2387.it), P("出售获得 " + Object.entries(_v2388).map(([_v2389, _v2390]) => q[_v2389].n + (_v2390 > 1 ? "×" + _v2390 : "")).join(" ") + " · 可在商人处回购"), Ms(), Gs());
       }
       return;
     }
     let _v2391 = _v2385.target.closest('[data-act="inv"],[data-act="mapin"]');
     if (!_v2391) return;
-    let _v2392 = Kt(_v2391.dataset.uid);
-    _v2392 && _v2392.loc === "inv" && (Un(_v2392.it), vs(), Ds());
+    let _v2392 = Qt(_v2391.dataset.uid);
+    _v2392 && _v2392.loc === "inv" && (er(_v2392.it), Ms(), Gs());
   }), C("#panel").addEventListener("change", _v2393 => {
     if (_v2393.target.dataset.mapIntensity !== undefined) {
       n.mapIntensity = Math.max(1, Math.min(100, Math.round(Number(_v2393.target.value) || 1)));
@@ -10760,7 +10760,7 @@ G7 = function () {
     }
     let _v2394 = _v2393.target.dataset.fg;
     if (_v2394) {
-      (_v2394.startsWith("mw") ? Hv(_v2393.target) : zv(_v2393.target)) && (Ds(), n.tipKey = null);
+      (_v2394.startsWith("mw") ? ax(_v2393.target) : Qk(_v2393.target)) && (Gs(), n.tipKey = null);
       return;
     }
     (_v2393.target.dataset.f && (u.filter[_v2393.target.dataset.f] = _v2393.target.checked), _v2393.target.dataset.pk && (u.petPick = {
@@ -10768,14 +10768,14 @@ G7 = function () {
       [_v2393.target.dataset.pk]: _v2393.target.checked
     }));
   }), C("#panel").addEventListener("input", _v2395 => {
-    _v2395.target.id === "tsearch" && (K.q = _v2395.target.value, $a());
+    _v2395.target.id === "tsearch" && (Q.q = _v2395.target.value, Ea());
   }), C("#panel").addEventListener("pointerdown", _v2396 => {
     if (_v2396.target.id === "treecv") {
-      K.drag = {
+      Q.drag = {
         x: _v2396.clientX,
         y: _v2396.clientY,
-        ox: K.ox,
-        oy: K.oy,
+        ox: Q.ox,
+        oy: Q.oy,
         moved: !1
       };
       try {
@@ -10783,70 +10783,70 @@ G7 = function () {
       } catch {}
     }
   }), C("#panel").addEventListener("pointerup", _v2397 => {
-    if (_v2397.target.id !== "treecv" || !K.drag) return;
-    let _v2398 = K.drag;
-    (K.drag = null, _v2398.moved || uc(Eh(_v2397)));
+    if (_v2397.target.id !== "treecv" || !Q.drag) return;
+    let _v2398 = Q.drag;
+    (Q.drag = null, _v2398.moved || Lc(xm(_v2397)));
   }), C("#panel").addEventListener("wheel", _v2399 => {
     if (_v2399.target.id !== "treecv") return;
     _v2399.preventDefault();
-    let _v2400 = _v2399.target.getBoundingClientRect(), _v2401 = (_v2399.clientX - _v2400.left) / re.uiZ, _v2402 = (_v2399.clientY - _v2400.top) / re.uiZ, _v2403 = _v2399.deltaY < 0 ? 1.15 : 1 / 1.15, _v2404 = Se(K.s * _v2403, 0.25, 3), _v2405 = _v2404 / K.s;
-    (K.ox = _v2401 - (_v2401 - K.ox) * _v2405, K.oy = _v2402 - (_v2402 - K.oy) * _v2405, K.s = _v2404, $a());
+    let _v2400 = _v2399.target.getBoundingClientRect(), _v2401 = (_v2399.clientX - _v2400.left) / ie.uiZ, _v2402 = (_v2399.clientY - _v2400.top) / ie.uiZ, _v2403 = _v2399.deltaY < 0 ? 1.15 : 1 / 1.15, _v2404 = $e(Q.s * _v2403, 0.25, 3), _v2405 = _v2404 / Q.s;
+    (Q.ox = _v2401 - (_v2401 - Q.ox) * _v2405, Q.oy = _v2402 - (_v2402 - Q.oy) * _v2405, Q.s = _v2404, Ea());
   }, {
     passive: !1
-  }), C("#pclose").onclick = Lt, C("#btnPortal").onclick = Um, C("#btnMenu").onclick = () => {
-    n.menu ? Ki() : Bs();
+  }), C("#pclose").onclick = Ot, C("#btnPortal").onclick = B1, C("#btnMenu").onclick = () => {
+    n.menu ? fl() : Ss();
   });
   let _v2406 = () => {
-    C("#btnGfx").textContent = "画质 " + (Zt.q === "high" ? "高" : "低");
+    C("#btnGfx").textContent = "画质 " + (Vt.q === "high" ? "高" : "低");
   };
-  (_v2406(), rt.onAuto = () => {
-    try { rt.on = !0; rt.auto = !0; } catch (e) {}
-  }, Zt.onAuto = () => {
-    try { Zt.q = "high"; Zt.auto = !0; V2("high"); _v2406(); } catch (e) {}
+  (_v2406(), ut.onAuto = () => {
+    try { ut.on = !0; ut.auto = !0; } catch (e) {}
+  }, Vt.onAuto = () => {
+    try { Vt.q = "high"; Vt.auto = !0; ik("high"); _v2406(); } catch (e) {}
   }, C("#btnGfx").onclick = () => {
-    (V2(Zt.q === "high" ? "low" : "high"), Zt.auto = !0, _v2406(), I(Zt.q === "high" ? "高画质: 泛光与调色已开启" : "低画质: 已关闭泛光"));
+    (ik(Vt.q === "high" ? "low" : "high"), Vt.auto = !0, _v2406(), P(Vt.q === "high" ? "高画质: 泛光与调色已开启" : "低画质: 已关闭泛光"));
   }, C("#btnMute").onclick = () => {
     (n.muted = !n.muted, C("#btnMute").textContent = n.muted ? "静音中" : "声音", __syncUploadedSfxVolume());
   }, C("#hrow").addEventListener("click", _v2407 => {
     let _v2408 = _v2407.target.closest("[data-hud]");
-    _v2408 && (n.selSlot = +_v2408.dataset.hud, Ta("gem"));
+    _v2408 && (n.selSlot = +_v2408.dataset.hud, ja("gem"));
   }), document.addEventListener("pointermove", _v2409 => {
     if (n.held) {
       let _v2410 = C("#held");
       (_v2410.style.left = _v2409.clientX + "px", _v2410.style.top = _v2409.clientY + "px");
     }
     if (_v2409.target.id === "treecv") {
-      if (K.drag) {
-        let _v2411 = (_v2409.clientX - K.drag.x) / re.uiZ, _v2412 = (_v2409.clientY - K.drag.y) / re.uiZ;
-        if ((Math.abs(_v2411) + Math.abs(_v2412) > 4 && (K.drag.moved = !0), K.drag.moved)) {
-          (K.ox = K.drag.ox + _v2411, K.oy = K.drag.oy + _v2412, $a(), vs());
+      if (Q.drag) {
+        let _v2411 = (_v2409.clientX - Q.drag.x) / ie.uiZ, _v2412 = (_v2409.clientY - Q.drag.y) / ie.uiZ;
+        if ((Math.abs(_v2411) + Math.abs(_v2412) > 4 && (Q.drag.moved = !0), Q.drag.moved)) {
+          (Q.ox = Q.drag.ox + _v2411, Q.oy = Q.drag.oy + _v2412, Ea(), Ms());
           return;
         }
       }
-      let _v2413 = Eh(_v2409);
-      (_v2413 !== n.treeHover && (n.treeHover = _v2413, n.treePath = _v2413 >= 0 && !u.tree.includes(_v2413) ? Ls(_v2413) || [] : [], $a()), _v2413 >= 0 ? gp(pp(be.nodes[_v2413]), _v2409.clientX, _v2409.clientY) : vs());
+      let _v2413 = xm(_v2409);
+      (_v2413 !== n.treeHover && (n.treeHover = _v2413, n.treePath = _v2413 >= 0 && !u.tree.includes(_v2413) ? Bs(_v2413) || [] : [], Ea()), _v2413 >= 0 ? Xp(Gp(xe.nodes[_v2413]), _v2409.clientX, _v2409.clientY) : Ms());
       return;
     }
     let _v2414 = null; // 物品 tooltip 交给基础 18.0.3，旧移植处理器与基础共用 o.tipKey 会导致 A/B 装备属性串
     if (false) {
       let _v2415 = _v2414.dataset.tt;
-      _v2415 !== n.tipKey || !!Fe.shift !== n.tipShift ? (n.tipKey = _v2415, n.tipShift = !!Fe.shift, gp(Yf(_v2415), _v2409.clientX, _v2409.clientY)) : Vm(_v2409.clientX, _v2409.clientY);
+      _v2415 !== n.tipKey || !!De.shift !== n.tipShift ? (n.tipKey = _v2415, n.tipShift = !!De.shift, Xp(Sd(_v2415), _v2409.clientX, _v2409.clientY)) : W1(_v2409.clientX, _v2409.clientY);
     } else { /* base handles tooltip hide */ }
-  }), ot.addEventListener("pointermove", bp), ot.addEventListener("pointerdown", _v2416 => {
-    if ((bp(_v2416), Xa(), n.state === "play")) {
+  }), ft.addEventListener("pointermove", eu), ft.addEventListener("pointerdown", _v2416 => {
+    if ((eu(_v2416), os(), n.state === "play")) {
       if (n.held) {
-        ks(null);
+        Ts(null);
         return;
       }
-      if ((Ym(), _v2416.button === 0)) {
+      if ((H1(), _v2416.button === 0)) {
         for (let _v2417 = n.labelRects.length - 1; _v2417 >= 0; _v2417--) {
           let _v2418 = n.labelRects[_v2417];
-          if (Ue.sx >= _v2418.x && Ue.sx <= _v2418.x + _v2418.w && Ue.sy >= _v2418.y && Ue.sy <= _v2418.y + _v2418.h) {
+          if (Je.sx >= _v2418.x && Je.sx <= _v2418.x + _v2418.w && Je.sy >= _v2418.y && Je.sy <= _v2418.y + _v2418.h) {
             if (Math.hypot(_v2418.l.x - n.pl.x, _v2418.l.y - n.pl.y) > 150) {
-              I("距离太远");
+              P("距离太远");
               return;
             }
-            if (Zs(_v2418.l)) {
+            if (Js(_v2418.l)) {
               let _v2419 = n.loots.indexOf(_v2418.l);
               _v2419 >= 0 && n.loots.splice(_v2419, 1);
             }
@@ -10854,21 +10854,21 @@ G7 = function () {
           }
         }
         for (let _v2420 of n.objs) {
-          if (Math.hypot(_v2420.x - Ue.wx, _v2420.y - Ue.wy) < 18) {
+          if (Math.hypot(_v2420.x - Je.wx, _v2420.y - Je.wy) < 18) {
             if (_v2420.kind === "device") {
-              Ta("map");
+              ja("map");
               return;
             }
             if (_v2420.kind === "vendor" && Math.hypot(_v2420.x - n.pl.x, _v2420.y - n.pl.y) < 60) {
-              C0();
+              op();
               return;
             }
             if (_v2420.kind === "stash" && Math.hypot(_v2420.x - n.pl.x, _v2420.y - n.pl.y) < 60) {
-              wp();
+              nu();
               return;
             }
             if ((_v2420.kind === "bench" || _v2420.kind === "altar") && Math.hypot(_v2420.x - n.pl.x, _v2420.y - n.pl.y) < 60) {
-              Hl(_v2420.kind === "altar" ? "altar" : "craft");
+              cc(_v2420.kind === "altar" ? "altar" : "craft");
               return;
             }
             if (_v2420.kind === "well" && Math.hypot(_v2420.x - n.pl.x, _v2420.y - n.pl.y) < 60) {
@@ -10884,125 +10884,125 @@ G7 = function () {
               return;
             }
             if (_v2420.kind === "box" && !_v2420.open && Math.hypot(_v2420.x - n.pl.x, _v2420.y - n.pl.y) < 40) {
-              xp(_v2420);
+              ou(_v2420);
               return;
             }
           }
-          if ((_v2420.kind === "monument" || _v2420.kind === "dog") && Math.abs(_v2420.x - Ue.wx) < 11 && Ue.wy < _v2420.y + 5 && Ue.wy > _v2420.y - (_v2420.kind === "monument" ? 48 : 20) && Math.hypot(_v2420.x - n.pl.x, _v2420.y - n.pl.y) < 60) {
-            _v2420.kind === "monument" ? kp() : vp();
+          if ((_v2420.kind === "monument" || _v2420.kind === "dog") && Math.abs(_v2420.x - Je.wx) < 11 && Je.wy < _v2420.y + 5 && Je.wy > _v2420.y - (_v2420.kind === "monument" ? 48 : 20) && Math.hypot(_v2420.x - n.pl.x, _v2420.y - n.pl.y) < 60) {
+            _v2420.kind === "monument" ? su() : au();
             return;
           }
         }
         if (_v2416.pointerType === "touch" && n.touchMode) return;
-        (Ue.l = !0, Jo(0));
+        (Je.l = !0, an(0));
       }
-      _v2416.button === 2 && (Ue.r = !0, Jo(1));
+      _v2416.button === 2 && (Je.r = !0, an(1));
       try {
-        ot.setPointerCapture(_v2416.pointerId);
+        ft.setPointerCapture(_v2416.pointerId);
       } catch {}
     }
-  }), ot.addEventListener("pointerup", _v2421 => {
-    (_v2421.button === 0 && (Ue.l = !1), _v2421.button === 2 && (Ue.r = !1));
-  }), ot.addEventListener("pointercancel", () => {
-    Ue.l = Ue.r = !1;
-  }), ot.addEventListener("contextmenu", _v2422 => _v2422.preventDefault()), addEventListener("pointerdown", _v2423 => {
+  }), ft.addEventListener("pointerup", _v2421 => {
+    (_v2421.button === 0 && (Je.l = !1), _v2421.button === 2 && (Je.r = !1));
+  }), ft.addEventListener("pointercancel", () => {
+    Je.l = Je.r = !1;
+  }), ft.addEventListener("contextmenu", _v2422 => _v2422.preventDefault()), addEventListener("pointerdown", _v2423 => {
     n.lastPtr = _v2423.pointerType || "mouse";
   }, !0), C("#overlay").addEventListener("contextmenu", _v2424 => {
-    (_v2424.preventDefault(), !(n.touchMode && n.lastPtr !== "mouse") && $x(_v2424));
+    (_v2424.preventDefault(), !(n.touchMode && n.lastPtr !== "mouse") && Vw(_v2424));
   }), addEventListener("blur", () => {
-    for (let _v2425 in Fe) Fe[_v2425] = !1;
-    Ue.l = Ue.r = !1;
+    for (let _v2425 in De) De[_v2425] = !1;
+    Je.l = Je.r = !1;
   }));
   let _v2426 = () => n.state === "play" && n.Z && n.Z.type !== "hideout" && u && !n.pl?.dead;
   (addEventListener("visibilitychange", () => {
     document.visibilityState === "hidden" && Xe();
   }), addEventListener("pagehide", () => Xe()), addEventListener("beforeunload", _v2427 => {
-    (Xe(), (_v2426() || re.leaveAsk && n.state === "play" && u) && (_v2427.preventDefault(), _v2427.returnValue = ""));
+    (Xe(), (_v2426() || ie.leaveAsk && n.state === "play" && u) && (_v2427.preventDefault(), _v2427.returnValue = ""));
   }));
   function _v2428() {
-    if (!(od.armed || !re.leaveAsk || n.state !== "play")) try {
+    if (!(Ld.armed || !ie.leaveAsk || n.state !== "play")) try {
       (history.pushState({
         rift: 1
-      }, ""), od.armed = !0);
+      }, ""), Ld.armed = !0);
     } catch {}
   }
   (addEventListener("pointerdown", _v2428, !0), addEventListener("keydown", _v2428, !0), addEventListener("popstate", () => {
-    od.armed && (od.armed = !1, od.caught++, n.state === "play" && I('已拦截浏览器"后退"(鼠标手势) · 可在 Esc 设置里关闭这项保护'));
-  }), addEventListener("dragstart", _v2429 => _v2429.preventDefault()), ot.addEventListener("selectstart", _v2430 => _v2430.preventDefault()));
+    Ld.armed && (Ld.armed = !1, Ld.caught++, n.state === "play" && P('已拦截浏览器"后退"(鼠标手势) · 可在 Esc 设置里关闭这项保护'));
+  }), addEventListener("dragstart", _v2429 => _v2429.preventDefault()), ft.addEventListener("selectstart", _v2430 => _v2430.preventDefault()));
   let _v2431 = () => {
-    (Xa(), removeEventListener("pointerdown", _v2431, !0), removeEventListener("keydown", _v2431, !0));
+    (os(), removeEventListener("pointerdown", _v2431, !0), removeEventListener("keydown", _v2431, !0));
   };
-  (addEventListener("pointerdown", _v2431, !0), addEventListener("keydown", _v2431, !0), Qm(), matchMedia("(pointer: coarse)").matches && Lk(), hc("witch"), ge(), is(), oM(), requestAnimationFrame(vx), setInterval(() => {
+  (addEventListener("pointerdown", _v2431, !0), addEventListener("keydown", _v2431, !0), N1(), matchMedia("(pointer: coarse)").matches && Hx(), zc("witch"), be(), ps(), NT(), requestAnimationFrame(Gw), setInterval(() => {
     n.state === "play" && n.Z && n.Z.type === "hideout" && Xe();
   }, 2e4));
 };
-Sh = function (_v2432, _v2433) {
+um = function (_v2432, _v2433) {
   let _v2434, _v2435;
   if (_v2432 === "gem") {
-    if (!Nt[u.cls].pool.includes(_v2433)) return !1;
-    (_v2434 = Pl(), _v2435 = () => u.gems.push(ho(_v2433, 1, 2)));
+    if (!Ut[u.cls].pool.includes(_v2433)) return !1;
+    (_v2434 = Xl(), _v2435 = () => u.gems.push(vo(_v2433, 1, 2)));
   } else if (_v2432 === "sup") {
-    if (!oe[_v2433]) return !1;
-    (_v2434 = Ol(_v2433), _v2435 = () => u.gems.push(_s(_v2433)));
+    if (!ne[_v2433]) return !1;
+    (_v2434 = ec(_v2433), _v2435 = () => u.gems.push(Ys(_v2433)));
   } else if (_v2432 === "map") {
     let _v2436 = +_v2433;
-    if (!(_v2436 >= 1 && _v2436 <= M0())) return !1;
-    if (uo() >= ga) return (I("地图袋已满"), !1);
-    (_v2434 = Fl(_v2436), _v2435 = () => u.inv.push(Ht(_v2436)));
+    if (!(_v2436 >= 1 && _v2436 <= ep())) return !1;
+    if (yo() >= xa) return (P("地图袋已满"), !1);
+    (_v2434 = tc(_v2436), _v2435 = () => u.inv.push(Zt(_v2436)));
   } else return !1;
-  if (OmHas("omen_gamble") && E() < 0.5) {
-    (ShopHeatBump(ShopHeatKey(_v2432, _v2433)), _v2435(), T("unique"), I("强运预兆 · 这次购买免费"));
+  if (OmHas("omen_gamble") && I() < 0.5) {
+    (ShopHeatBump(ShopHeatKey(_v2432, _v2433)), _v2435(), $("unique"), P("强运预兆 · 这次购买免费"));
     return !0;
   }
   let _v2434h = ShopHeatPriceMap(ShopHeatKey(_v2432, _v2433), _v2434);
-  let _v2437 = po(_v2434h);
-  return _v2437 ? (OmHas("omen_gamble") && OmTake("omen_gamble"), WS(_v2434h), ShopHeatBump(ShopHeatKey(_v2432, _v2433)), _v2435(), T("pick"), !0) : (I("通货不足"), !1);
+  let _v2437 = bo(_v2434h);
+  return _v2437 ? (OmHas("omen_gamble") && OmTake("omen_gamble"), g6(_v2434h), ShopHeatBump(ShopHeatKey(_v2432, _v2433)), _v2435(), $("pick"), !0) : (P("通货不足"), !1);
 };
-qo = function () {
-  let _v2438 = Za.tab, _v2439 = [["gem", "技能宝石"], ["sup", "辅助宝石"], ["map", "地图"], ["ex", "通货兑换"], ["sell", "出售"], ["back", "回购"]], _v2440 = ["trans", "alch", "chaos"].map(_v2441 => `<span style="color:${z[_v2441].col}">${z[_v2441].n} <b>${u.cur[_v2441] || 0}</b></span>`).join(""), _v2442 = "";
-  if (_v2438 === "gem") _v2442 = '<p class="dim">本职业的主动技能宝石, 1 级 · 2 孔。</p><div class="shopgrid">' + Nt[u.cls].pool.filter(_v2443 => te[_v2443]).map(_v2444 => {
-    let _v2445 = Pl(), _v2445h = ShopHeatPriceMap(ShopHeatKey("gem", _v2444), _v2445);
-    return `<button class="shopit${po(_v2445h) ? "" : " no"}" data-buy="gem" data-id="${_v2444}"><b>${te[_v2444].n}</b>${Fr(_v2445h)}${ShopHeatLabel(ShopHeatKey("gem", _v2444))}</button>`;
-  }).join("") + "</div>"; else if (_v2438 === "sup") _v2442 = '<p class="dim">金色为机制辅助 (改变技能的行为)。</p><div class="shopgrid">' + Object.keys(oe).sort((_v2446, _v2447) => (oe[_v2447].mech ? 1 : 0) - (oe[_v2446].mech ? 1 : 0)).map(_v2448 => {
-    let _v2449 = Ol(_v2448), _v2449h = ShopHeatPriceMap(ShopHeatKey("sup", _v2448), _v2449);
-    return `<button class="shopit${oe[_v2448].mech ? " mech" : ""}${po(_v2449h) ? "" : " no"}" data-buy="sup" data-id="${_v2448}" title="${oe[_v2448].d}"><b>${oe[_v2448].n}</b>${Fr(_v2449h)}${ShopHeatLabel(ShopHeatKey("sup", _v2448))}</button>`;
+Uo = function () {
+  let _v2438 = Qa.tab, _v2439 = [["gem", "技能宝石"], ["sup", "辅助宝石"], ["map", "地图"], ["ex", "通货兑换"], ["sell", "出售"], ["back", "回购"]], _v2440 = ["trans", "alch", "chaos"].map(_v2441 => `<span style="color:${q[_v2441].col}">${q[_v2441].n} <b>${u.cur[_v2441] || 0}</b></span>`).join(""), _v2442 = "";
+  if (_v2438 === "gem") _v2442 = '<p class="dim">本职业的主动技能宝石, 1 级 · 2 孔。</p><div class="shopgrid">' + Ut[u.cls].pool.filter(_v2443 => se[_v2443]).map(_v2444 => {
+    let _v2445 = Xl(), _v2445h = ShopHeatPriceMap(ShopHeatKey("gem", _v2444), _v2445);
+    return `<button class="shopit${bo(_v2445h) ? "" : " no"}" data-buy="gem" data-id="${_v2444}"><b>${se[_v2444].n}</b>${Zr(_v2445h)}${ShopHeatLabel(ShopHeatKey("gem", _v2444))}</button>`;
+  }).join("") + "</div>"; else if (_v2438 === "sup") _v2442 = '<p class="dim">金色为机制辅助 (改变技能的行为)。</p><div class="shopgrid">' + Object.keys(ne).sort((_v2446, _v2447) => (ne[_v2447].mech ? 1 : 0) - (ne[_v2446].mech ? 1 : 0)).map(_v2448 => {
+    let _v2449 = ec(_v2448), _v2449h = ShopHeatPriceMap(ShopHeatKey("sup", _v2448), _v2449);
+    return `<button class="shopit${ne[_v2448].mech ? " mech" : ""}${bo(_v2449h) ? "" : " no"}" data-buy="sup" data-id="${_v2448}" title="${ne[_v2448].d}"><b>${ne[_v2448].n}</b>${Zr(_v2449h)}${ShopHeatLabel(ShopHeatKey("sup", _v2448))}</button>`;
   }).join("") + "</div>"; else if (_v2438 === "map") {
-    let _v2450 = M0();
+    let _v2450 = ep();
     _v2442 = `<p class="dim">可购买 T1 – T${_v2450} 的地图 (上限为你击败过首领的最高阶级), 主题随机。用来补齐低阶首领的图谱完成度。</p><div class="shopgrid maps">` + Array.from({
       length: _v2450
     }, (_v2451, _v2452) => _v2452 + 1).map(_v2453 => {
-      let _v2454 = Fl(_v2453), _v2454h = ShopHeatPriceMap(ShopHeatKey("map", _v2453), _v2454);
-      return `<button class="shopit${po(_v2454h) ? "" : " no"}" data-buy="map" data-id="${_v2453}"><b>T${_v2453} 地图</b>${Fr(_v2454h)}${ShopHeatLabel(ShopHeatKey("map", _v2453))}</button>`;
+      let _v2454 = tc(_v2453), _v2454h = ShopHeatPriceMap(ShopHeatKey("map", _v2453), _v2454);
+      return `<button class="shopit${bo(_v2454h) ? "" : " no"}" data-buy="map" data-id="${_v2453}"><b>T${_v2453} 地图</b>${Zr(_v2454h)}${ShopHeatLabel(ShopHeatKey("map", _v2453))}</button>`;
     }).join("") + "</div>";
   } else if (_v2438 === "ex") _v2442 = ExBody(); else if (_v2438 === "sell") {
-    let _v2455 = u.inv.filter(_v2456 => _v2456.kind === "item" && _v2456.rarity === 0).length, _v2457 = u.inv.filter(_v2458 => _v2458.kind === "item" && _v2458.rarity === 1).length, _v2459 = Dr(), _v2460 = Wo().length, _v2461 = _v2462 => _v2462.kind === "gem" ? te[_v2462.gid].n + " Lv" + _v2462.lvl : _v2462.kind === "sup" ? oe[_v2462.gid].n : (We[_v2462.gid] || ze[_v2462.gid] || ({})).n || _v2462.gid, _v2463 = u.gems.map((_v2464, _v2465) => `<button class="shopit${_v2464.kind === "sup" && oe[_v2464.gid].mech ? " mech" : ""}" data-sg="${_v2465}" data-tt="it:${_v2464.uid}"><b>${_v2461(_v2464)}</b>${Fr(xn(_v2464))}</button>`).join("");
-    _v2442 = `<p class="dim">装备: 也可以在背包里右键单件出售。</p><div class="ovbtns"><button class="btn" data-sell="0">出售全部白装 (${_v2455})</button><button class="btn" data-sell="1">出售全部蓝装 (${_v2457})</button><button class="btn" data-sell="rare">出售全部稀有装备 (${u.inv.filter(function (i) { return i && i.kind === "item" && i.rarity === 2; }).length})</button><button class="btn" data-sell="irrelevant">出售全部无关主手武器 (${u.inv.filter(function (i) { if (!i || i.kind !== "item" || i.rarity >= 3) return false; var b = pe[i.base]; return !!(b && b.slot === "W" && b.wt && !Nt[u.cls].wts.includes(b.wt)); }).length})</button><button class="btn" data-sell="jewel">出售全部珠宝 (${u.inv.filter(function (i) { return i && i.kind === "jewel"; }).length})</button><button class="btn" data-sell="map">出售 T${_v2459} 及以下地图 (${_v2460})</button></div>
+    let _v2455 = u.inv.filter(_v2456 => _v2456.kind === "item" && _v2456.rarity === 0).length, _v2457 = u.inv.filter(_v2458 => _v2458.kind === "item" && _v2458.rarity === 1).length, _v2459 = Kr(), _v2460 = Ko().length, _v2461 = _v2462 => _v2462.kind === "gem" ? se[_v2462.gid].n + " Lv" + _v2462.lvl : _v2462.kind === "sup" ? ne[_v2462.gid].n : (Ze[_v2462.gid] || He[_v2462.gid] || ({})).n || _v2462.gid, _v2463 = u.gems.map((_v2464, _v2465) => `<button class="shopit${_v2464.kind === "sup" && ne[_v2464.gid].mech ? " mech" : ""}" data-sg="${_v2465}" data-tt="it:${_v2464.uid}"><b>${_v2461(_v2464)}</b>${Zr($n(_v2464))}</button>`).join("");
+    _v2442 = `<p class="dim">装备: 也可以在背包里右键单件出售。</p><div class="ovbtns"><button class="btn" data-sell="0">出售全部白装 (${_v2455})</button><button class="btn" data-sell="1">出售全部蓝装 (${_v2457})</button><button class="btn" data-sell="rare">出售全部稀有装备 (${u.inv.filter(function (i) { return i && i.kind === "item" && i.rarity === 2; }).length})</button><button class="btn" data-sell="irrelevant">出售全部无关主手武器 (${u.inv.filter(function (i) { if (!i || i.kind !== "item" || i.rarity >= 3) return false; var b = pe[i.base]; return !!(b && b.slot === "W" && b.wt && !Ut[u.cls].wts.includes(b.wt)); }).length})</button><button class="btn" data-sell="jewel">出售全部珠宝 (${u.inv.filter(function (i) { return i && i.kind === "jewel"; }).length})</button><button class="btn" data-sell="map">出售 T${_v2459} 及以下地图 (${_v2460})</button></div>
 		 <p class="dim">未镶嵌的宝石 (点击出售, 卖错了可以在"回购"买回):</p><div class="shopgrid">${_v2463 || '<p class="dim">没有未镶嵌的宝石</p>'}</div>`;
-  } else _v2442 = '<p class="dim">本次游戏中卖掉的最近 16 件, 按卖出价买回。</p><div class="shopgrid">' + (Go.map((_v2466, _v2467) => `<button class="shopit${po(_v2466.got) ? "" : " no"}" data-bb="${_v2467}"><b>${_v2466.it.kind === "gem" ? te[_v2466.it.gid].n : _v2466.it.kind === "sup" ? oe[_v2466.it.gid].n : _v2466.it.name || (We[_v2466.it.gid] || ze[_v2466.it.gid] || ({})).n}</b>${Fr(_v2466.got) || '<span class="pc">免费</span>'}</button>`).join("") || '<p class="dim">还没有卖过东西</p>') + "</div>";
-  (Ke(`<div class="ovbox shop"><h2>商人</h2><div class="wallet">${_v2440}</div>
+  } else _v2442 = '<p class="dim">本次游戏中卖掉的最近 16 件, 按卖出价买回。</p><div class="shopgrid">' + (Zo.map((_v2466, _v2467) => `<button class="shopit${bo(_v2466.got) ? "" : " no"}" data-bb="${_v2467}"><b>${_v2466.it.kind === "gem" ? se[_v2466.it.gid].n : _v2466.it.kind === "sup" ? ne[_v2466.it.gid].n : _v2466.it.name || (Ze[_v2466.it.gid] || He[_v2466.it.gid] || ({})).n}</b>${Zr(_v2466.got) || '<span class="pc">免费</span>'}</button>`).join("") || '<p class="dim">还没有卖过东西</p>') + "</div>";
+  (Ve(`<div class="ovbox shop"><h2>商人</h2><div class="wallet">${_v2440}</div>
 		 <div class="shoptabs">${_v2439.map(([_v2468, _v2469]) => `<button class="${_v2468 === _v2438 ? "on" : ""}" data-stab="${_v2468}">${_v2469}</button>`).join("")}</div>
 		 <div class="shopbody">${_v2442}</div>
-		 <div class="ovbtns"><button class="btn" id="shopClose">离开 <kbd>Esc</kbd></button></div></div>`), C("#shopClose").onclick = $h, document.querySelectorAll("#overlay [data-stab]").forEach(_v2470 => _v2470.onclick = () => {
-    (Za.tab = _v2470.dataset.stab, qo());
+		 <div class="ovbtns"><button class="btn" id="shopClose">离开 <kbd>Esc</kbd></button></div></div>`), C("#shopClose").onclick = gm, document.querySelectorAll("#overlay [data-stab]").forEach(_v2470 => _v2470.onclick = () => {
+    (Qa.tab = _v2470.dataset.stab, Uo());
   }), document.querySelectorAll("#overlay [data-buy]").forEach(_v2471 => _v2471.onclick = () => {
-    (Sh(_v2471.dataset.buy, _v2471.dataset.id) && I("已购买 " + _v2471.querySelector("b").textContent), qo());
+    (um(_v2471.dataset.buy, _v2471.dataset.id) && P("已购买 " + _v2471.querySelector("b").textContent), Uo());
   }), document.querySelectorAll("#overlay [data-sg]").forEach(_v2472 => _v2472.onclick = () => {
     let _v2473 = u.gems[+_v2472.dataset.sg];
-    (_v2473 && Si(_v2473) && I("已出售 " + _v2472.querySelector("b").textContent), qo());
+    (_v2473 && Di(_v2473) && P("已出售 " + _v2472.querySelector("b").textContent), Uo());
   }), document.querySelectorAll("#overlay [data-bb]").forEach(_v2474 => _v2474.onclick = () => {
-    (wh(+_v2474.dataset.bb) && I("已买回"), qo());
+    (pm(+_v2474.dataset.bb) && P("已买回"), Uo());
   }), document.querySelectorAll("#overlay [data-sell]").forEach(_v2475 => _v2475.onclick = () => {
-    let _v2476 = _v2475.dataset.sell, _v2477 = _v2476 === "map" ? Wo() : _v2476 === "jewel" ? u.inv.filter(_v2478 => _v2478 && _v2478.kind === "jewel") : _v2476 === "irrelevant" ? u.inv.filter(_v2478 => { if (!_v2478 || _v2478.kind !== "item" || _v2478.rarity >= 3) return false; var __wb = pe[_v2478.base]; return !!(__wb && __wb.slot === "W" && __wb.wt && !Nt[u.cls].wts.includes(__wb.wt)); }) : u.inv.filter(_v2478 => _v2478.kind === "item" && _v2478.rarity === (_v2476 === "rare" ? 2 : +_v2476));
-    (_v2477.length ? _v2477.forEach(_v2479 => Un(_v2479)) : I("没有可出售的物品"), qo());
+    let _v2476 = _v2475.dataset.sell, _v2477 = _v2476 === "map" ? Ko() : _v2476 === "jewel" ? u.inv.filter(_v2478 => _v2478 && _v2478.kind === "jewel") : _v2476 === "irrelevant" ? u.inv.filter(_v2478 => { if (!_v2478 || _v2478.kind !== "item" || _v2478.rarity >= 3) return false; var __wb = pe[_v2478.base]; return !!(__wb && __wb.slot === "W" && __wb.wt && !Ut[u.cls].wts.includes(__wb.wt)); }) : u.inv.filter(_v2478 => _v2478.kind === "item" && _v2478.rarity === (_v2476 === "rare" ? 2 : +_v2476));
+    (_v2477.length ? _v2477.forEach(_v2479 => er(_v2479)) : P("没有可出售的物品"), Uo());
   }), document.querySelectorAll("#overlay [data-exfrom]").forEach(_v2480 => _v2480.onclick = () => {
-    (Za.ex.from = _v2480.dataset.exfrom, Za.ex.from === Za.ex.to && (Za.ex.to = ExAll().find(_v2481 => _v2481 !== Za.ex.from) || Za.ex.from), ExSelectionRefresh());
+    (Qa.ex.from = _v2480.dataset.exfrom, Qa.ex.from === Qa.ex.to && (Qa.ex.to = ExAll().find(_v2481 => _v2481 !== Qa.ex.from) || Qa.ex.from), ExSelectionRefresh());
   }), document.querySelectorAll("#overlay [data-exto]").forEach(_v2482 => _v2482.onclick = () => {
-    (Za.ex.to = _v2482.dataset.exto, Za.ex.to === Za.ex.from && (Za.ex.to = ExAll().find(_v2483 => _v2483 !== Za.ex.from) || Za.ex.to), ExSelectionRefresh());
+    (Qa.ex.to = _v2482.dataset.exto, Qa.ex.to === Qa.ex.from && (Qa.ex.to = ExAll().find(_v2483 => _v2483 !== Qa.ex.from) || Qa.ex.to), ExSelectionRefresh());
   }), document.querySelectorAll("#overlay [data-examt]").forEach(_v2484 => _v2484.onclick = () => {
     let _v2485 = _v2484.dataset.examt;
-    (Za.ex.amt = _v2485 === "max" ? u.cur[Za.ex.from] || 0 : Math.max(1, (Za.ex.amt | 0) + +_v2485), C("#exAmt").value = Za.ex.amt, ExPrev());
+    (Qa.ex.amt = _v2485 === "max" ? u.cur[Qa.ex.from] || 0 : Math.max(1, (Qa.ex.amt | 0) + +_v2485), C("#exAmt").value = Qa.ex.amt, ExPrev());
   }), C("#exAmt") && (C("#exAmt").oninput = _v2486 => {
-    (Za.ex.amt = Math.max(0, Math.floor(+_v2486.target.value || 0)), ExPrev());
+    (Qa.ex.amt = Math.max(0, Math.floor(+_v2486.target.value || 0)), ExPrev());
   }, C("#exAmt").onkeydown = _v2487 => _v2487.stopPropagation()), document.querySelectorAll("#overlay [data-exwant]").forEach(_v2488 => _v2488.onclick = () => ExWantApply()), C("#exWant") && (C("#exWant").onkeydown = _v2489 => {
     _v2489.stopPropagation();
     if (_v2489.key === "Enter") ExWantApply();
@@ -11020,10 +11020,10 @@ qo = function () {
   }), _v2438 === "ex" && ExPrev());
 };
 window.__portVb = function () {
-  if ((d.setTransform(1, 0, 0, 1, 0, 0), d.globalCompositeOperation = "source-over", d.globalAlpha = 1, d.fillStyle = "#000", d.fillRect(0, 0, ot.width, ot.height), !n.Z || !n.pl)) return;
-  let _v2488 = 1 + n.zoomP, _v2489 = n.trauma * n.trauma * re.shake, _v2490 = (E() * 2 - 1) * _v2489 * 7 + tr.x * re.shake, _v2491 = (E() * 2 - 1) * _v2489 * 7 + tr.y * re.shake, _v2492 = so / _v2488, _v2493 = oo / _v2488, _v2494 = Va.x + so / 2 + _v2490, _v2495 = Va.y + oo / 2 + _v2491, _v2496 = Yp * _v2488;
-  (bt.l = _v2494 - _v2492 / 2, bt.t = _v2495 - _v2493 / 2, bt.w = _v2492, bt.h = _v2493, bt.s = _v2496);
-  let _v2497 = _v2496 * ai, _v2498 = Math.round(bt.l * _v2497) / _v2497, _v2499 = Math.round(bt.t * _v2497) / _v2497, _v2500 = () => d.setTransform(_v2497, 0, 0, _v2497, -_v2498 * _v2497, -_v2499 * _v2497), _v2501 = rt.on && Rf();
+  if ((d.setTransform(1, 0, 0, 1, 0, 0), d.globalCompositeOperation = "source-over", d.globalAlpha = 1, d.fillStyle = "#000", d.fillRect(0, 0, ft.width, ft.height), !n.Z || !n.pl)) return;
+  let _v2488 = 1 + n.zoomP, _v2489 = n.trauma * n.trauma * ie.shake, _v2490 = (I() * 2 - 1) * _v2489 * 7 + pr.x * ie.shake, _v2491 = (I() * 2 - 1) * _v2489 * 7 + pr.y * ie.shake, _v2492 = lo / _v2488, _v2493 = co / _v2488, _v2494 = es.x + lo / 2 + _v2490, _v2495 = es.y + co / 2 + _v2491, _v2496 = Fu * _v2488;
+  (St.l = _v2494 - _v2492 / 2, St.t = _v2495 - _v2493 / 2, St.w = _v2492, St.h = _v2493, St.s = _v2496);
+  let _v2497 = _v2496 * gi, _v2498 = Math.round(St.l * _v2497) / _v2497, _v2499 = Math.round(St.t * _v2497) / _v2497, _v2500 = () => d.setTransform(_v2497, 0, 0, _v2497, -_v2498 * _v2497, -_v2499 * _v2497), _v2501 = ut.on && ed();
   (_v2500(), d.imageSmoothingEnabled = !1);
   let _v2502 = Math.max(0, Math.floor(_v2498)), _v2503 = Math.max(0, Math.floor(_v2499)), _v2504 = Math.min(n.Z.img.width - _v2502, Math.ceil(_v2492) + 2), _v2505 = Math.min(n.Z.img.height - _v2503, Math.ceil(_v2493) + 2);
   _v2504 > 0 && _v2505 > 0 && d.drawImage(n.Z.img, _v2502, _v2503, _v2504, _v2505, _v2502, _v2503, _v2504, _v2505);
@@ -11031,12 +11031,12 @@ window.__portVb = function () {
   for (let _v2510 of n.decals) {
     if (!_v2506(_v2510.x, _v2510.y, 20)) continue;
     let _v2511 = _v2510.t > _v2510.max * 0.7 ? 1 - (_v2510.t - _v2510.max * 0.7) / (_v2510.max * 0.3) : 1;
-    (d.globalAlpha = _v2511 * 0.85, d.fillStyle = sL[_v2510.kind] || "#4a0c10", _v2510.kind === "frost" && (d.globalAlpha = _v2511 * 0.5));
+    (d.globalAlpha = _v2511 * 0.85, d.fillStyle = s9[_v2510.kind] || "#4a0c10", _v2510.kind === "frost" && (d.globalAlpha = _v2511 * 0.5));
     for (let [_v2512, _v2513, _v2514] of _v2510.pts) d.fillRect(Math.round(_v2510.x + _v2512), Math.round(_v2510.y + _v2513), _v2514, _v2514);
   }
   d.globalAlpha = 1;
   for (let _v2515 of n.grounds) _v2506(_v2515.x, _v2515.y, 20) && (d.globalAlpha = Math.min(1, _v2515.t) * 0.5, d.fillStyle = "#ff5a1a", d.fillRect(_v2515.x - _v2515.r * 0.6, _v2515.y - 1, _v2515.r * 1.2, 2), d.fillRect(_v2515.x - _v2515.r * 0.3, _v2515.y - 2, _v2515.r * 0.6, 4));
-  (d.globalAlpha = 1, XT(_v2506), Y2(_v2506), v2(d));
+  (d.globalAlpha = 1, DA(_v2506), fk(_v2506), Ev(d));
   for (let _v2516 of n.fx) if (_v2516.k === "tele") {
     let _v2517 = _v2516.t / _v2516.max;
     (d.globalAlpha = 0.55, d.strokeStyle = _v2516.col, d.lineWidth = 1, d.beginPath(), d.ellipse(_v2516.x, _v2516.y, _v2516.r, _v2516.r * 0.75, 0, 0, 6.283), d.stroke(), d.globalAlpha = 0.24, d.fillStyle = _v2516.col, d.beginPath(), d.ellipse(_v2516.x, _v2516.y, _v2516.r * _v2517, _v2516.r * _v2517 * 0.75, 0, 0, 6.283), d.fill());
@@ -11049,7 +11049,7 @@ window.__portVb = function () {
     for (let _v2520 of n.mons) {
       if (_v2520.dead || _v2520.state !== "wind" || _v2520.t.atk === "ranged" || !_v2506(_v2520.x, _v2520.y, 30)) continue;
       let _v2521 = 1 - _v2520.st / 0.4;
-      (d.globalAlpha = 0.18 + 0.25 * Se(_v2521, 0, 1), d.fillStyle = "#ff3a2a", d.beginPath(), d.moveTo(_v2520.x, _v2520.y), d.arc(_v2520.x, _v2520.y, _v2520.r + _v2520.t.range + 5, _v2520.wa - 0.8, _v2520.wa + 0.8), d.closePath(), d.fill(), d.globalAlpha = 1);
+      (d.globalAlpha = 0.18 + 0.25 * $e(_v2521, 0, 1), d.fillStyle = "#ff3a2a", d.beginPath(), d.moveTo(_v2520.x, _v2520.y), d.arc(_v2520.x, _v2520.y, _v2520.r + _v2520.t.range + 5, _v2520.wa - 0.8, _v2520.wa + 0.8), d.closePath(), d.fill(), d.globalAlpha = 1);
     }
   };
   _v2501 || _v2519();
@@ -11070,10 +11070,10 @@ window.__portVb = function () {
       d.globalAlpha = 1;
       d.globalCompositeOperation = "source-over";
     }
-    _v2522.kind === "device" ? r$(_v2522) : _v2522.kind === "vendor" ? a2(d, _v2522) : _v2522.kind === "stash" ? u5(d, _v2522) : _v2522.kind === "bench" ? I2(d, _v2522) : _v2522.kind === "altar" ? R2(d, _v2522) : _v2522.kind === "well" ? DlWell(d, _v2522) : _v2522.kind === "monument" ? Uw(d, _v2522) : _v2522.kind === "dog" ? Hw(d, _v2522) : _v2522.kind === "mirror" && _v2522.st === "idle" ? DlMirror(d, _v2522) : _v2522.kind === "delshard" ? DlShardDraw(d, _v2522) : _v2522.kind === "simulacrum" ? DlSim(d, _v2522) : _v2522.kind === "b-simportal" ? drawSimPortal(_v2522) : _v2522.kind === "ritual" && DlRitual(d, _v2522);
+    _v2522.kind === "device" ? UA(_v2522) : _v2522.kind === "vendor" ? hv(d, _v2522) : _v2522.kind === "stash" ? F3(d, _v2522) : _v2522.kind === "bench" ? _v(d, _v2522) : _v2522.kind === "altar" ? Wv(d, _v2522) : _v2522.kind === "well" ? DlWell(d, _v2522) : _v2522.kind === "monument" ? u3(d, _v2522) : _v2522.kind === "dog" ? p3(d, _v2522) : _v2522.kind === "mirror" && _v2522.st === "idle" ? DlMirror(d, _v2522) : _v2522.kind === "delshard" ? DlShardDraw(d, _v2522) : _v2522.kind === "simulacrum" ? DlSim(d, _v2522) : _v2522.kind === "b-simportal" ? drawSimPortal(_v2522) : _v2522.kind === "ritual" && DlRitual(d, _v2522);
   }
   let _v2528 = () => {
-    let _v2529 = ir();
+    let _v2529 = yr();
     for (let _v2530 of n.loots) {
       if (!_v2506(_v2530.x, _v2530.y, 30) || _v2530.hid && !_v2529) continue;
       if ((_v2530.hid && (d.globalAlpha = 0.5), _v2530.beam && _v2530.landed && !_v2530.hid)) {
@@ -11083,7 +11083,7 @@ window.__portVb = function () {
         (_v2532.addColorStop(0, "rgba(0,0,0,0)"), _v2532.addColorStop(1, _v2530.beam), d.globalAlpha = _v2531 * (_v2530.big ? 1.4 : 1), d.fillStyle = _v2532, d.fillRect(_v2530.x - (_v2530.big ? 3 : 2), _v2530.y - 150, _v2530.big ? 6 : 4, 150), d.globalAlpha = 1, d.globalCompositeOperation = "source-over");
       }
       (d.fillStyle = "rgba(0,0,0,0.4)", d.fillRect(Math.round(_v2530.x - 3), Math.round(_v2530.y), 6, 1));
-      let _v2533 = _v2530.kind === "cur" ? ci[_v2530.cur] : _v2530.it.kind === "map" ? Ga.map : _v2530.it.kind === "gem" || _v2530.it.kind === "sup" ? Ga.gem : _v2530.it.kind === "buff" ? Ga.buff : _v2530.it.kind === "meta" ? Ga.meta : _v2530.it.kind === "soul" ? Ga["soul_" + _v2530.it.beast] : Ga[pe[_v2530.it.base].icon];
+      let _v2533 = _v2530.kind === "cur" ? Si[_v2530.cur] : _v2530.it.kind === "map" ? Ha.map : _v2530.it.kind === "gem" || _v2530.it.kind === "sup" ? Ha.gem : _v2530.it.kind === "buff" ? Ha.buff : _v2530.it.kind === "meta" ? Ha.meta : _v2530.it.kind === "soul" ? Ha["soul_" + _v2530.it.beast] : Ha[pe[_v2530.it.base].icon];
       (d.drawImage(_v2533, Math.round(_v2530.x - _v2533.width / 2), Math.round(_v2530.y - _v2530.z - _v2533.height)), d.globalAlpha = 1);
     }
   };
@@ -11096,23 +11096,23 @@ window.__portVb = function () {
   for (let _v2539 of n.comps || []) _v2506(_v2539.x, _v2539.y, 40) && _v2534.push(_v2539);
   for (let _v2540 of n.bells) _v2506(_v2540.x, _v2540.y, 30) && _v2534.push(_v2540);
   for (let _v2541 of n.objs) _v2541.kind === "shrine" && _v2506(_v2541.x, _v2541.y, 30) && _v2534.push(_v2541);
-  (_v2534.push(n.pl), fa.e && _v2534.push(fa.e), _v2534.sort((_v2542, _v2543) => _v2542.y - _v2543.y), si.mode = _v2501 ? 1 : 0);
-  for (let _v2544 of _v2534) _v2501 && _v2544.kind === "fire" || (_v2544 === n.pl ? JT() : _v2544.kind === "pet" ? Ry(d, _v2544, _v2501) : _v2544.comp ? y2(d, _v2544, _v2501) : n.minions.includes(_v2544) ? e$(_v2544) : n.bells.includes(_v2544) ? t$(_v2544) : _v2544.kind === "shrine" ? a$(_v2544) : _v2544.kind === "box" ? n$(_v2544) : _v2544.kind === "fire" ? Z5(_v2544) : _v2544.spr && _v2544.rot != null ? o$(_v2544) : YT(_v2544));
+  (_v2534.push(n.pl), ua.e && _v2534.push(ua.e), _v2534.sort((_v2542, _v2543) => _v2542.y - _v2543.y), bi.mode = _v2501 ? 1 : 0);
+  for (let _v2544 of _v2534) _v2501 && _v2544.kind === "fire" || (_v2544 === n.pl ? OA() : _v2544.kind === "pet" ? W2(d, _v2544, _v2501) : _v2544.comp ? jv(d, _v2544, _v2501) : n.minions.includes(_v2544) ? qA(_v2544) : n.bells.includes(_v2544) ? WA(_v2544) : _v2544.kind === "shrine" ? GA(_v2544) : _v2544.kind === "box" ? _A(_v2544) : _v2544.kind === "fire" ? h4(_v2544) : _v2544.spr && _v2544.rot != null ? HA(_v2544) : zA(_v2544));
   if (_v2501) {
     for (let _v2545 of n.parts) _v2545.glow || !_v2506(_v2545.x, _v2545.y, 10) || (d.globalAlpha = _v2545.life < _v2545.max * 0.4 ? _v2545.life / (_v2545.max * 0.4) : 1, d.fillStyle = _v2545.col, d.fillRect(Math.round(_v2545.x), Math.round(_v2545.y - _v2545.z), _v2545.s, _v2545.s));
-    (d.globalAlpha = 1, C1(_v2506), _5(), Z2(d, ot, _v2498, _v2499, _v2492, _v2493, _v2497), _v2500());
-    for (let _v2546 of _v2534) _v2546.kind === "fire" && Z5(_v2546);
-    for (let _v2547 of _v2534) _v2547.comp && Lh(d, _v2547);
-    (Vu(d), Ku(d), Al() && (d.save(), d.translate(0, -Re.lift)), Qu(d), th(d), Al() && d.restore());
-    for (let _v2548 of _v2534) _v2548 !== n.pl && !_v2548.comp && !_v2548.kind && !(_v2548.spr && _v2548.rot != null) && !n.minions.includes(_v2548) && !n.bells.includes(_v2548) && K5(_v2548);
+    (d.globalAlpha = 1, kg(_v2506), m4(), ok(d, ft, _v2498, _v2499, _v2492, _v2493, _v2497), _v2500());
+    for (let _v2546 of _v2534) _v2546.kind === "fire" && h4(_v2546);
+    for (let _v2547 of _v2534) _v2547.comp && wm(d, _v2547);
+    (Dh(d), zh(d), Ul() && (d.save(), d.translate(0, -ve.lift)), Wh(d), _h(d), Ul() && d.restore());
+    for (let _v2548 of _v2534) _v2548 !== n.pl && !_v2548.comp && !_v2548.kind && !(_v2548.spr && _v2548.rot != null) && !n.minions.includes(_v2548) && !n.bells.includes(_v2548) && g4(_v2548);
     (_v2519(), _v2528());
   }
-  si.mode = 0;
-  for (let _v2549 of n.projs) _v2506(_v2549.x, _v2549.y, 12) && i$(_v2549);
-  X2(_v2506);
+  bi.mode = 0;
+  for (let _v2549 of n.projs) _v2506(_v2549.x, _v2549.y, 12) && ZA(_v2549);
+  dk(_v2506);
   try {
-    if (typeof lv === "function") lv(_v2506);
-    if (typeof $5 === "function") $5(_v2506);
+    if (typeof kk === "function") kk(_v2506);
+    if (typeof K3 === "function") K3(_v2506);
   } catch (_v2550) {}
   for (let _v2551 of n.sticks) {
     if (!_v2506(_v2551.x, _v2551.y, 20)) continue;
@@ -11122,22 +11122,22 @@ window.__portVb = function () {
     (d.fillStyle = _v2556 ? "#ffffff" : "#ff6a1a", d.fillRect(Math.round(_v2554 - 1.5), Math.round(_v2555 - 1.5), 3, 3));
   }
   for (let _v2557 of n.eprojs) _v2506(_v2557.x, _v2557.y, 10) && (d.fillStyle = _v2557.col, d.fillRect(Math.round(_v2557.x - 1.5), Math.round(_v2557.y - 7.5), 3, 3), d.fillStyle = "#fff", d.fillRect(Math.round(_v2557.x - 0.5), Math.round(_v2557.y - 6.5), 1, 1));
-  let _v2558 = It();
+  let _v2558 = Qe();
   for (let _v2559 of n.parts) {
     if (!_v2506(_v2559.x, _v2559.y, 10) || _v2501 && !_v2559.glow) continue;
     let _v2560 = _v2559.life < _v2559.max * 0.4 ? _v2559.life / (_v2559.max * 0.4) : 1;
     (d.globalAlpha = _v2559.glow ? _v2560 * _v2558 : _v2560, _v2559.glow && (d.globalCompositeOperation = "lighter"), d.fillStyle = _v2559.col, d.fillRect(Math.round(_v2559.x), Math.round(_v2559.y - _v2559.z), _v2559.s, _v2559.s), _v2559.glow && (d.globalCompositeOperation = "source-over"));
   }
-  if ((d.globalAlpha = 1, _v2501 || C1(_v2506), Es(It(), c$), _v2501 || (_5(), f$(_v2498, _v2499, _v2492, _v2493)), _v2500(), d.globalCompositeOperation = "lighter", !_v2501)) for (let _v2561 of n.LIGHTS) {
+  if ((d.globalAlpha = 1, _v2501 || kg(_v2506), Os(Qe(), VA), _v2501 || (m4(), JA(_v2498, _v2499, _v2492, _v2493)), _v2500(), d.globalCompositeOperation = "lighter", !_v2501)) for (let _v2561 of n.LIGHTS) {
     if (!_v2561.c || !_v2506(_v2561.x, _v2561.y, _v2561.r)) continue;
     let _v2562 = d.createRadialGradient(_v2561.x, _v2561.y, 0, _v2561.x, _v2561.y, _v2561.r * 0.7);
-    (_v2562.addColorStop(0, Ve(_v2561.c, 0.2 * (_v2561.i || 1))), _v2562.addColorStop(1, Ve(_v2561.c, 0)), d.fillStyle = _v2562, d.fillRect(_v2561.x - _v2561.r, _v2561.y - _v2561.r, _v2561.r * 2, _v2561.r * 2));
+    (_v2562.addColorStop(0, tt(_v2561.c, 0.2 * (_v2561.i || 1))), _v2562.addColorStop(1, tt(_v2561.c, 0)), d.fillStyle = _v2562, d.fillRect(_v2561.x - _v2561.r, _v2561.y - _v2561.r, _v2561.r * 2, _v2561.r * 2));
   }
   for (let _v2563 of n.objs) _v2563.kind === "ritual" && _v2506(_v2563.x, _v2563.y, 80) && DlRitualBase(d, _v2563);
-  Es(It(), () => {
+  Os(Qe(), () => {
     for (let _v2564 of n.fx) if (_v2564.k === "flash") {
       let _v2565 = _v2564.t / _v2564.max, _v2566 = d.createRadialGradient(_v2564.x, _v2564.y, 0, _v2564.x, _v2564.y, _v2564.r);
-      (_v2566.addColorStop(0, Ve(_v2564.col, 0.55 * (1 - _v2565))), _v2566.addColorStop(1, Ve(_v2564.col, 0)), d.fillStyle = _v2566, d.fillRect(_v2564.x - _v2564.r, _v2564.y - _v2564.r, _v2564.r * 2, _v2564.r * 2));
+      (_v2566.addColorStop(0, tt(_v2564.col, 0.55 * (1 - _v2565))), _v2566.addColorStop(1, tt(_v2564.col, 0)), d.fillStyle = _v2566, d.fillRect(_v2564.x - _v2564.r, _v2564.y - _v2564.r, _v2564.r * 2, _v2564.r * 2));
     }
   });
   for (let _v2567 of n.pl.smears) {
@@ -11151,13 +11151,13 @@ window.__portVb = function () {
       (_v2570 - _v2569 > 6 && (_v2570 = _v2569 + 6.28), d.beginPath(), d.arc(_v2567.x, _v2567.y, _v2567.r, _v2569, _v2570), d.arc(_v2567.x, _v2567.y, _v2567.r * (0.45 + 0.4 * _v2568), _v2570, _v2569, !0), d.closePath(), d.fill());
     }
   }
-  (d.globalAlpha = 1, d.globalCompositeOperation = "source-over", Es(It(), () => {
-    for (let _v2572 of n.fx) l$.has(_v2572.k) && v5(_v2572, Se(_v2572.t / _v2572.max, 0, 1));
-  }), g5(), b5(), J2(), _v2500(), n.desat > 0.01 && (d.setTransform(1, 0, 0, 1, 0, 0), d.globalCompositeOperation = "saturation", d.fillStyle = `rgba(128,128,128,${Math.min(1, n.desat)})`, d.fillRect(0, 0, ot.width, ot.height), d.globalCompositeOperation = "source-over", _v2500()), n.del && (d.setTransform(1, 0, 0, 1, 0, 0), (function () {
-    let _v2573 = Se(n.del.depth / 250, 0, 1), _v2574 = d.createRadialGradient(ot.width / 2, ot.height / 2, Math.min(ot.width, ot.height) * 0.18, ot.width / 2, ot.height / 2, Math.max(ot.width, ot.height) * 0.72);
-    (_v2574.addColorStop(0, "rgba(200,210,235,0)"), _v2574.addColorStop(1, "rgba(150,160,200," + (0.12 + _v2573 * 0.34).toFixed(3) + ")"), d.fillStyle = _v2574, d.fillRect(0, 0, ot.width, ot.height));
+  (d.globalAlpha = 1, d.globalCompositeOperation = "source-over", Os(Qe(), () => {
+    for (let _v2572 of n.fx) KA.has(_v2572.k) && W3(_v2572, $e(_v2572.t / _v2572.max, 0, 1));
+  }), z3(), D3(), lk(), _v2500(), n.desat > 0.01 && (d.setTransform(1, 0, 0, 1, 0, 0), d.globalCompositeOperation = "saturation", d.fillStyle = `rgba(128,128,128,${Math.min(1, n.desat)})`, d.fillRect(0, 0, ft.width, ft.height), d.globalCompositeOperation = "source-over", _v2500()), n.del && (d.setTransform(1, 0, 0, 1, 0, 0), (function () {
+    let _v2573 = $e(n.del.depth / 250, 0, 1), _v2574 = d.createRadialGradient(ft.width / 2, ft.height / 2, Math.min(ft.width, ft.height) * 0.18, ft.width / 2, ft.height / 2, Math.max(ft.width, ft.height) * 0.72);
+    (_v2574.addColorStop(0, "rgba(200,210,235,0)"), _v2574.addColorStop(1, "rgba(150,160,200," + (0.12 + _v2573 * 0.34).toFixed(3) + ")"), d.fillStyle = _v2574, d.fillRect(0, 0, ft.width, ft.height));
     for (let _v2575 = 0; _v2575 < 5; _v2575++) {
-      let _v2576 = (n.T * (5 + _v2575 * 1.6) + _v2575 * 137) % (ot.width + 240) - 120, _v2577 = (Math.sin(n.T * 0.35 + _v2575 * 1.7) + 1) / 2 * ot.height;
+      let _v2576 = (n.T * (5 + _v2575 * 1.6) + _v2575 * 137) % (ft.width + 240) - 120, _v2577 = (Math.sin(n.T * 0.35 + _v2575 * 1.7) + 1) / 2 * ft.height;
       (d.globalAlpha = 0.04 + _v2573 * 0.07, d.fillStyle = "#cfd8e8", d.beginPath(), d.ellipse(_v2576, _v2577, 90 + _v2575 * 22, 42 + _v2575 * 12, 0, 0, 6.283), d.fill());
     }
     d.globalAlpha = 1;
@@ -11168,7 +11168,7 @@ window.__portVb = function () {
       let _v2579 = _v2578.rar === 2 ? 20 : _v2578.rar === 1 ? 16 : 12, _v2580 = Math.round(_v2578.x - _v2579 / 2), _v2581 = Math.round(_v2578.y - _v2578.h - 5);
       (d.fillStyle = "rgba(0,0,0,0.7)", d.fillRect(_v2580 - 1, _v2581 - 1, _v2579 + 2, _v2578.rar ? 4 : 3), d.fillStyle = _v2578.rar === 2 ? "#e0c040" : _v2578.rar === 1 ? "#7a80ff" : "#c8303a", d.fillRect(_v2580, _v2581, Math.max(0, _v2579 * _v2578.hp / _v2578.maxhp), 1), _v2578.rar && (d.fillStyle = _v2578.stunT > 0 ? "#ffffff" : "#c89a30", d.fillRect(_v2580, _v2581 + 2, _v2579 * (_v2578.stunT > 0 ? 1 : Math.min(1, _v2578.stun)), 1)));
     }
-    if ((_v2578.rar === 2 && (d.font = "600 5px " + tn, d.textAlign = "center", d.fillStyle = "#000", d.fillText(_v2578.name, _v2578.x + 0.4, _v2578.y - _v2578.h - 6.6), d.fillStyle = "#ecd85a", d.fillText(_v2578.name, _v2578.x, _v2578.y - _v2578.h - 7)), _v2578.stunT > 0)) for (let _v2582 = 0; _v2582 < 3; _v2582++) {
+    if ((_v2578.rar === 2 && (d.font = "600 5px " + cn, d.textAlign = "center", d.fillStyle = "#000", d.fillText(_v2578.name, _v2578.x + 0.4, _v2578.y - _v2578.h - 6.6), d.fillStyle = "#ecd85a", d.fillText(_v2578.name, _v2578.x, _v2578.y - _v2578.h - 7)), _v2578.stunT > 0)) for (let _v2582 = 0; _v2582 < 3; _v2582++) {
       let _v2583 = n.T * 6 + _v2582 * 2.09;
       (d.fillStyle = "#ffe080", d.fillRect(Math.round(_v2578.x + Math.cos(_v2583) * 5), Math.round(_v2578.y - _v2578.h - 3 + Math.sin(_v2583) * 1.5), 1, 1));
     }
@@ -11176,71 +11176,71 @@ window.__portVb = function () {
   for (let _v2584 of n.mons) if (_v2584.dummy) {
     _v2584.log = _v2584.log.filter(_v2585 => n.T - _v2585[0] < 4);
     let _v2586 = _v2584.log.reduce((_v2587, _v2588) => _v2587 + _v2588[1], 0), _v2589 = _v2584.log.length ? Math.max(1, n.T - _v2584.log[0][0]) : 1;
-    (d.font = "7px " + Ei, d.textAlign = "center", d.fillStyle = "#000", d.fillText("DPS " + Oe(_v2586 / _v2589), _v2584.x + 0.5, _v2584.y - _v2584.h - 25.5), d.fillStyle = "#ffd27a", d.fillText("DPS " + Oe(_v2586 / _v2589), _v2584.x, _v2584.y - _v2584.h - 26), _v2584.rar && (d.fillStyle = "#c89a30", d.fillRect(_v2584.x - 10, _v2584.y - _v2584.h - 3, 20 * (_v2584.stunT > 0 ? 1 : Math.min(1, _v2584.stun)), 1)));
+    (d.font = "7px " + Zi, d.textAlign = "center", d.fillStyle = "#000", d.fillText("DPS " + ze(_v2586 / _v2589), _v2584.x + 0.5, _v2584.y - _v2584.h - 25.5), d.fillStyle = "#ffd27a", d.fillText("DPS " + ze(_v2586 / _v2589), _v2584.x, _v2584.y - _v2584.h - 26), _v2584.rar && (d.fillStyle = "#c89a30", d.fillRect(_v2584.x - 10, _v2584.y - _v2584.h - 3, 20 * (_v2584.stunT > 0 ? 1 : Math.min(1, _v2584.stun)), 1)));
   }
-  (d$(_v2498, _v2499, _v2492, _v2493), Ry(d, tn));
+  (QA(_v2498, _v2499, _v2492, _v2493), W2(d, cn));
   for (let _v2590 of n.texts) {
     let _v2591 = _v2590.t / _v2590.max;
     d.globalAlpha = _v2591 > 0.6 ? 1 - (_v2591 - 0.6) / 0.4 : 1;
     let _v2592 = _v2590.crit ? 1 + Math.max(0, 0.12 - _v2590.t) * 5 : 1;
-    (d.font = (_v2590.crit ? "700 " : "") + (_v2590.s * _v2592).toFixed(1) + "px " + (_v2590.txt.match(/[一-鿿]/) ? tn : Ei), d.textAlign = "center", d.lineWidth = 2, d.strokeStyle = "#000", d.strokeText(_v2590.txt, _v2590.x, _v2590.y), d.fillStyle = _v2590.col, d.fillText(_v2590.txt, _v2590.x, _v2590.y));
+    (d.font = (_v2590.crit ? "700 " : "") + (_v2590.s * _v2592).toFixed(1) + "px " + (_v2590.txt.match(/[一-鿿]/) ? cn : Zi), d.textAlign = "center", d.lineWidth = 2, d.strokeStyle = "#000", d.strokeText(_v2590.txt, _v2590.x, _v2590.y), d.fillStyle = _v2590.col, d.fillText(_v2590.txt, _v2590.x, _v2590.y));
   }
   if ((d.globalAlpha = 1, n.state === "play" && !n.pl.dead)) {
-    for (let _v2593 of n.objs) if ((_v2593.kind === "box" && !_v2593.open && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1296 && ls(_v2593.x, _v2593.y - 14, "F 开启宝箱"), _v2593.kind === "rift" && _v2593.st === "idle" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 3600 && ls(_v2593.x, _v2593.y - 16, "走入裂隙即开启"), _v2593.kind === "device" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1600 && ls(_v2593.x, _v2593.y - 26, "F / 点击 打开地图装置"), _v2593.kind === "vendor" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && ls(_v2593.x, _v2593.y - 30, "F / 点击 与商人交易"), _v2593.kind === "stash" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && ls(_v2593.x, _v2593.y - 22, "F / 点击 打开仓库"), _v2593.kind === "bench" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && ls(_v2593.x, _v2593.y - 26, "F / 点击 打开工艺台"), _v2593.kind === "altar" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && ls(_v2593.x, _v2593.y - 32, "F / 点击 打开余烬祭坛"), _v2593.kind === "well" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && ls(_v2593.x, _v2593.y - 30, "F / 点击 打开灵魂之井"), _v2593.kind === "simulacrum" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && ls(_v2593.x, _v2593.y - 32, u.simUnlocked ? "F / 点击 进入迷雾副本 (70 层)" : "F / 点击 解锁迷雾副本 (需 8 裂片)"), _v2593.kind === "mirror" && _v2593.st === "idle" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1600 && ls(_v2593.x, _v2593.y - 26, "F / 点击 开启惊悸迷雾"), _v2593.kind === "ritual" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1600 && ls(_v2593.x, _v2593.y - 32, _v2593.st === "idle" ? "F / 点击 开始驱灵仪式 · 已吸收 " + (_v2593.stored || 0) : _v2593.st === "done" ? "F / 点击 领取恩典 · 贡品 " + RitTribute() : "驱灵仪式 · 第 " + _v2593.wave + "/" + _v2593.waves + " 波 · 贡品 " + RitTribute()), _v2593.kind === "monument" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && ls(_v2593.x, _v2593.y - 50, "F / 点击 查看创世群纪念碑"), _v2593.kind === "dog" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && ls(_v2593.x, _v2593.y - 32, Sc() ? "F / 点击 看看今天的签" : "F / 点击 找过油肉抽签"), _v2593.kind === "shrine" && !_v2593.used && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 2500)) {
-      let _v2594 = as.find(_v2595 => _v2595.k === _v2593.type);
-      ls(_v2593.x, _v2593.y - 28, _v2594.n + " · " + _v2594.d);
+    for (let _v2593 of n.objs) if ((_v2593.kind === "box" && !_v2593.open && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1296 && us(_v2593.x, _v2593.y - 14, "F 开启宝箱"), _v2593.kind === "rift" && _v2593.st === "idle" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 3600 && us(_v2593.x, _v2593.y - 16, "走入裂隙即开启"), _v2593.kind === "device" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1600 && us(_v2593.x, _v2593.y - 26, "F / 点击 打开地图装置"), _v2593.kind === "vendor" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && us(_v2593.x, _v2593.y - 30, "F / 点击 与商人交易"), _v2593.kind === "stash" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && us(_v2593.x, _v2593.y - 22, "F / 点击 打开仓库"), _v2593.kind === "bench" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && us(_v2593.x, _v2593.y - 26, "F / 点击 打开工艺台"), _v2593.kind === "altar" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && us(_v2593.x, _v2593.y - 32, "F / 点击 打开余烬祭坛"), _v2593.kind === "well" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && us(_v2593.x, _v2593.y - 30, "F / 点击 打开灵魂之井"), _v2593.kind === "simulacrum" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && us(_v2593.x, _v2593.y - 32, u.simUnlocked ? "F / 点击 进入迷雾副本 (70 层)" : "F / 点击 解锁迷雾副本 (需 8 裂片)"), _v2593.kind === "mirror" && _v2593.st === "idle" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1600 && us(_v2593.x, _v2593.y - 26, "F / 点击 开启惊悸迷雾"), _v2593.kind === "ritual" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1600 && us(_v2593.x, _v2593.y - 32, _v2593.st === "idle" ? "F / 点击 开始驱灵仪式 · 已吸收 " + (_v2593.stored || 0) : _v2593.st === "done" ? "F / 点击 领取恩典 · 贡品 " + RitTribute() : "驱灵仪式 · 第 " + _v2593.wave + "/" + _v2593.waves + " 波 · 贡品 " + RitTribute()), _v2593.kind === "monument" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && us(_v2593.x, _v2593.y - 50, "F / 点击 查看创世群纪念碑"), _v2593.kind === "dog" && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 1156 && us(_v2593.x, _v2593.y - 32, Zc() ? "F / 点击 看看今天的签" : "F / 点击 找过油肉抽签"), _v2593.kind === "shrine" && !_v2593.used && (_v2593.x - n.pl.x) ** 2 + (_v2593.y - n.pl.y) ** 2 < 2500)) {
+      let _v2594 = is.find(_v2595 => _v2595.k === _v2593.type);
+      us(_v2593.x, _v2593.y - 28, _v2594.n + " · " + _v2594.d);
     }
-    for (let _v2596 of n.objs) _v2596.kind === "rift" && _v2596.st === "open" && (d.font = "6px " + Ei, d.textAlign = "center", d.fillStyle = "#000", d.fillText(Math.ceil(_v2596.t) + "s · " + (_v2596.kills || 0), _v2596.x + 0.5, _v2596.y - _v2596.R * 0.8 - 3.5), d.fillStyle = "#d0a0ff", d.fillText(Math.ceil(_v2596.t) + "s · " + (_v2596.kills || 0), _v2596.x, _v2596.y - _v2596.R * 0.8 - 4));
+    for (let _v2596 of n.objs) _v2596.kind === "rift" && _v2596.st === "open" && (d.font = "6px " + Zi, d.textAlign = "center", d.fillStyle = "#000", d.fillText(Math.ceil(_v2596.t) + "s · " + (_v2596.kills || 0), _v2596.x + 0.5, _v2596.y - _v2596.R * 0.8 - 3.5), d.fillStyle = "#d0a0ff", d.fillText(Math.ceil(_v2596.t) + "s · " + (_v2596.kills || 0), _v2596.x, _v2596.y - _v2596.R * 0.8 - 4));
     for (let _v2597 of n.objs) {
       if (_v2597.kind !== "abyss") continue;
       let _v2598 = (_v2597.x - n.pl.x) ** 2 + (_v2597.y - n.pl.y) ** 2;
-      (_v2597.st === "fissures" && _v2598 < 90400 && ls(_v2597.x, _v2597.y - 22, "深渊裂缝 · 关闭 " + _v2597.fissures.filter(_v2599 => _v2599.closed).length + "/" + _v2597.fissures.length), _v2597.st === "pit" && _v2598 < 90400 && ls(_v2597.x, _v2597.y - 24, "深渊巨坑 · 清理怪物"), _v2597.st === "sealed" && _v2598 < 90400 && ls(_v2597.x, _v2597.y - 24, "深渊保险箱正在升起"), _v2597.st === "done" && _v2598 < 90400 && ls(_v2597.x, _v2597.y - 24, "深渊保险箱"));
-      for (let _v2600 of _v2597.fissures) !_v2600.closed && (_v2600.x - n.pl.x) ** 2 + (_v2600.y - n.pl.y) ** 2 < 32400 && ls(_v2600.x, _v2600.y - 12, "击杀附近怪物 (" + _v2600.kills + "/" + _v2600.need + ")");
+      (_v2597.st === "fissures" && _v2598 < 90400 && us(_v2597.x, _v2597.y - 22, "深渊裂缝 · 关闭 " + _v2597.fissures.filter(_v2599 => _v2599.closed).length + "/" + _v2597.fissures.length), _v2597.st === "pit" && _v2598 < 90400 && us(_v2597.x, _v2597.y - 24, "深渊巨坑 · 清理怪物"), _v2597.st === "sealed" && _v2598 < 90400 && us(_v2597.x, _v2597.y - 24, "深渊保险箱正在升起"), _v2597.st === "done" && _v2598 < 90400 && us(_v2597.x, _v2597.y - 24, "深渊保险箱"));
+      for (let _v2600 of _v2597.fissures) !_v2600.closed && (_v2600.x - n.pl.x) ** 2 + (_v2600.y - n.pl.y) ** 2 < 32400 && us(_v2600.x, _v2600.y - 12, "击杀附近怪物 (" + _v2600.kills + "/" + _v2600.need + ")");
     }
   }
-  if (n.state === "play" && !n.pl.dead) for (let _v2601 of n.objs) (_v2601.kind === "enc" && _v2601.st === "idle" && _v2601.type !== "ice" && (_v2601.x - n.pl.x) ** 2 + (_v2601.y - n.pl.y) ** 2 < 8100 && ls(_v2601.x, _v2601.y - 22, ft[_v2601.type].enc + " · 靠近开始"), _v2601.kind === "enc" && _v2601.st === "active" && (d.font = "6px " + Ei, d.textAlign = "center", d.fillStyle = "#000", d.fillText(Math.ceil(_v2601.t) + "s", _v2601.x + 0.5, _v2601.y - 27.5), d.fillStyle = "#ffd27a", d.fillText(Math.ceil(_v2601.t) + "s", _v2601.x, _v2601.y - 28)));
-  for (let _v2602 of n.mons) _v2602.type === "icechest" && !_v2602.dead && (_v2602.x - n.pl.x) ** 2 + (_v2602.y - n.pl.y) ** 2 < 1e4 && ls(_v2602.x, _v2602.y - 16, "冰封宝藏 · 火焰伤害 ×3");
-  (n.flashW > 0.01 && re.flash > 0 && (d.setTransform(1, 0, 0, 1, 0, 0), d.fillStyle = `rgba(255,250,240,${Math.min(0.8, n.flashW) * re.flash})`, d.fillRect(0, 0, ot.width, ot.height)), n.Z.type === "map" && p$());
+  if (n.state === "play" && !n.pl.dead) for (let _v2601 of n.objs) (_v2601.kind === "enc" && _v2601.st === "idle" && _v2601.type !== "ice" && (_v2601.x - n.pl.x) ** 2 + (_v2601.y - n.pl.y) ** 2 < 8100 && us(_v2601.x, _v2601.y - 22, gt[_v2601.type].enc + " · 靠近开始"), _v2601.kind === "enc" && _v2601.st === "active" && (d.font = "6px " + Zi, d.textAlign = "center", d.fillStyle = "#000", d.fillText(Math.ceil(_v2601.t) + "s", _v2601.x + 0.5, _v2601.y - 27.5), d.fillStyle = "#ffd27a", d.fillText(Math.ceil(_v2601.t) + "s", _v2601.x, _v2601.y - 28)));
+  for (let _v2602 of n.mons) _v2602.type === "icechest" && !_v2602.dead && (_v2602.x - n.pl.x) ** 2 + (_v2602.y - n.pl.y) ** 2 < 1e4 && us(_v2602.x, _v2602.y - 16, "冰封宝藏 · 火焰伤害 ×3");
+  (n.flashW > 0.01 && ie.flash > 0 && (d.setTransform(1, 0, 0, 1, 0, 0), d.fillStyle = `rgba(255,250,240,${Math.min(0.8, n.flashW) * ie.flash})`, d.fillRect(0, 0, ft.width, ft.height)), n.Z.type === "map" && YA());
 };
-YT = function (_v2603) {
+zA = function (_v2603) {
   if (_v2603.hidden) return;
-  if (si.mode === 2) return K5(_v2603);
-  let _v2604 = Jt[_v2603.spr], _v2605 = _v2603.face < 0, _v2606 = _v2605 ? _v2604.flip : _v2604.img, _v2607 = _v2603.moving && _v2603.frozen <= 0 ? Math.abs(Math.sin((n.T + _v2603.bob) * 10)) * 1.2 : 0, _v2608 = 0, _v2609 = 0;
+  if (bi.mode === 2) return g4(_v2603);
+  let _v2604 = Xt[_v2603.spr], _v2605 = _v2603.face < 0, _v2606 = _v2605 ? _v2604.flip : _v2604.img, _v2607 = _v2603.moving && _v2603.frozen <= 0 ? Math.abs(Math.sin((n.T + _v2603.bob) * 10)) * 1.2 : 0, _v2608 = 0, _v2609 = 0;
   if (_v2603.shT > 0) {
     let _v2610 = Math.sin(n.T * 95) * 1.6 * (_v2603.shT / 0.14);
     (_v2608 = _v2603.shx * _v2610, _v2609 = _v2603.shy * _v2610 * 0.6);
   }
   let _v2611 = Math.round(_v2603.x - _v2604.w / 2 + _v2608), _v2612 = Math.round(_v2603.y - _v2604.h + 1 - _v2607 + _v2609);
-  if ((d.fillStyle = "rgba(0,0,0,0.42)", d.beginPath(), d.ellipse(_v2603.x, _v2603.y + 0.5, _v2603.r * 1.1, _v2603.r * 0.4, 0, 0, 6.283), d.fill(), _v2603.rar >= 1 && !si.mode)) {
-    let _v2613 = _v2603.rar === 1 ? "#6a70ff" : _v2603.rar === 2 ? "#f0d040" : "#ff5030", _v2614 = Ze(_v2604, _v2613, _v2605);
+  if ((d.fillStyle = "rgba(0,0,0,0.42)", d.beginPath(), d.ellipse(_v2603.x, _v2603.y + 0.5, _v2603.r * 1.1, _v2603.r * 0.4, 0, 0, 6.283), d.fill(), _v2603.rar >= 1 && !bi.mode)) {
+    let _v2613 = _v2603.rar === 1 ? "#6a70ff" : _v2603.rar === 2 ? "#f0d040" : "#ff5030", _v2614 = Ne(_v2604, _v2613, _v2605);
     (d.globalAlpha = 0.85, d.drawImage(_v2614, _v2611 - 1, _v2612), d.drawImage(_v2614, _v2611 + 1, _v2612), d.drawImage(_v2614, _v2611, _v2612 - 1), d.drawImage(_v2614, _v2611, _v2612 + 1), d.globalAlpha = 1);
   }
-  _v2603.weak && (d.globalAlpha = 0.32, d.drawImage(Ze(_v2604, "#2ee6a8", _v2605), _v2611, _v2612), d.globalAlpha = 1);
-  _v2603.abmod && (d.globalAlpha = 0.55, d.strokeStyle = "#2ee6a8", d.lineWidth = 0.8, d.beginPath(), d.ellipse(_v2603.x, _v2603.y + 0.5, _v2603.r * 1.6, _v2603.r * 0.62, 0, 0, 6.283), d.stroke(), d.fillStyle = "#2ee6a8", d.fillRect(_v2603.x - 9, _v2603.y - _v2603.h - 6, 2, 2), d.fillRect(_v2603.x + 7, _v2603.y - _v2603.h - 6, 2, 2), d.globalAlpha = 1, (_v2603.x - n.pl.x) ** 2 + (_v2603.y - n.pl.y) ** 2 < 40000 && ls(_v2603.x, _v2603.y - _v2603.h - 7, ABMODS[_v2603.abmod].n));
+  _v2603.weak && (d.globalAlpha = 0.32, d.drawImage(Ne(_v2604, "#2ee6a8", _v2605), _v2611, _v2612), d.globalAlpha = 1);
+  _v2603.abmod && (d.globalAlpha = 0.55, d.strokeStyle = "#2ee6a8", d.lineWidth = 0.8, d.beginPath(), d.ellipse(_v2603.x, _v2603.y + 0.5, _v2603.r * 1.6, _v2603.r * 0.62, 0, 0, 6.283), d.stroke(), d.fillStyle = "#2ee6a8", d.fillRect(_v2603.x - 9, _v2603.y - _v2603.h - 6, 2, 2), d.fillRect(_v2603.x + 7, _v2603.y - _v2603.h - 6, 2, 2), d.globalAlpha = 1, (_v2603.x - n.pl.x) ** 2 + (_v2603.y - n.pl.y) ** 2 < 40000 && us(_v2603.x, _v2603.y - _v2603.h - 7, ABMODS[_v2603.abmod].n));
   if (_v2603.mark) {
     let _v2615 = _v2603.mark.type === "sniper" ? "#ffd27a" : "#ff6040", _v2616 = _v2603.x, _v2617 = _v2603.y - _v2603.h - 9, _v2618 = 3.5 + Math.sin(n.T * 8) * 0.6;
     (d.strokeStyle = _v2615, d.lineWidth = 0.8, d.beginPath(), d.arc(_v2616, _v2617, _v2618, 0, 6.283), d.stroke(), d.fillStyle = _v2615, d.fillRect(_v2616 - 0.5, _v2617 - _v2618 - 2, 1, 2), d.fillRect(_v2616 - 0.5, _v2617 + _v2618, 1, 2), d.fillRect(_v2616 - _v2618 - 2, _v2617 - 0.5, 2, 1), d.fillRect(_v2616 + _v2618, _v2617 - 0.5, 2, 1));
   }
-  (_v2603.marked && (d.strokeStyle = "#a8e070", d.lineWidth = 0.8, d.beginPath(), d.arc(_v2603.x, _v2603.y - _v2603.h - 8, 2.5, 0, 6.283), d.stroke()), _v2603.rift && (d.globalAlpha = 0.5, d.drawImage(Ze(_v2604, "#b080ff", _v2605), _v2611, _v2612 - 1), d.globalAlpha = 1));
+  (_v2603.marked && (d.strokeStyle = "#a8e070", d.lineWidth = 0.8, d.beginPath(), d.arc(_v2603.x, _v2603.y - _v2603.h - 8, 2.5, 0, 6.283), d.stroke()), _v2603.rift && (d.globalAlpha = 0.5, d.drawImage(Ne(_v2604, "#b080ff", _v2605), _v2611, _v2612 - 1), d.globalAlpha = 1));
   let _v2619 = 1, _v2620 = 1;
   if (_v2603.sqT > 0 && _v2603.frozen <= 0) {
     let _v2621 = _v2603.sqT / 0.12 * (_v2603.sqA || 0.2) * (_v2603.rar >= 2 ? 0.5 : 1);
     (_v2619 = 1 + _v2621, _v2620 = 1 - _v2621 * 0.75);
   }
   let _v2622 = _v2604.w * _v2619, _v2623 = _v2604.h * _v2620, _v2624 = Math.round(_v2603.x - _v2622 / 2 + _v2608), _v2625 = Math.round(_v2603.y - _v2623 + 1 - _v2607 + _v2609);
-  (_v2619 !== 1 ? d.drawImage(_v2603.rar ? _v2606 : A1(_v2603.spr, _v2605), _v2624 - (_v2603.rar ? 0 : _v2619), _v2625 - (_v2603.rar ? 0 : _v2620), _v2603.rar ? _v2622 : _v2622 + 2 * _v2619, _v2603.rar ? _v2623 : _v2623 + 2 * _v2620) : _v2603.rar ? d.drawImage(_v2606, _v2611, _v2612) : d.drawImage(A1(_v2603.spr, _v2605), _v2611 - 1, _v2612 - 1), si.mode !== 1 && ((_v2603.state === "wind" || _v2603.state === "aim" || _v2603.state === "bslam" || _v2603.state === "bnova") && Math.floor(n.T * 20) % 2 && (d.globalAlpha = 0.5, d.drawImage(Ze(_v2604, "#ff6a50", _v2605), _v2611, _v2612), d.globalAlpha = 1), _v2603.frozen > 0 ? (d.globalAlpha = 0.6, d.drawImage(Ze(_v2604, "#aeeaff", _v2605), _v2611, _v2612), d.globalAlpha = 1) : _v2603.chill > 0 && (d.globalAlpha = 0.28, d.drawImage(Ze(_v2604, "#7fd0ff", _v2605), _v2611, _v2612), d.globalAlpha = 1), _v2603.shockT > 0 && E() < 0.25 && L(_v2603.x + D(-4, 4), _v2603.y, 1, ["#a8b4ff", "#fff"], 30, 0.15, {
+  (_v2619 !== 1 ? d.drawImage(_v2603.rar ? _v2606 : vg(_v2603.spr, _v2605), _v2624 - (_v2603.rar ? 0 : _v2619), _v2625 - (_v2603.rar ? 0 : _v2620), _v2603.rar ? _v2622 : _v2622 + 2 * _v2619, _v2603.rar ? _v2623 : _v2623 + 2 * _v2620) : _v2603.rar ? d.drawImage(_v2606, _v2611, _v2612) : d.drawImage(vg(_v2603.spr, _v2605), _v2611 - 1, _v2612 - 1), bi.mode !== 1 && ((_v2603.state === "wind" || _v2603.state === "aim" || _v2603.state === "bslam" || _v2603.state === "bnova") && Math.floor(n.T * 20) % 2 && (d.globalAlpha = 0.5, d.drawImage(Ne(_v2604, "#ff6a50", _v2605), _v2611, _v2612), d.globalAlpha = 1), _v2603.frozen > 0 ? (d.globalAlpha = 0.6, d.drawImage(Ne(_v2604, "#aeeaff", _v2605), _v2611, _v2612), d.globalAlpha = 1) : _v2603.chill > 0 && (d.globalAlpha = 0.28, d.drawImage(Ne(_v2604, "#7fd0ff", _v2605), _v2611, _v2612), d.globalAlpha = 1), _v2603.shockT > 0 && I() < 0.25 && E(_v2603.x + B(-4, 4), _v2603.y, 1, ["#a8b4ff", "#fff"], 30, 0.15, {
     z: _v2603.h * 0.6,
     glow: !0,
     g: 0
-  }), _v2603.flash > 0 && (d.globalAlpha = Math.min(1, _v2603.flash * 12), d.drawImage(Ze(_v2604, "#ffffff", _v2605), _v2611, _v2612), d.globalAlpha = 1)));
+  }), _v2603.flash > 0 && (d.globalAlpha = Math.min(1, _v2603.flash * 12), d.drawImage(Ne(_v2604, "#ffffff", _v2605), _v2611, _v2612), d.globalAlpha = 1)));
 };
-c$ = function () {
+VA = function () {
   for (let _v2626 of n.fx) {
-    if (l$.has(_v2626.k)) continue;
-    let _v2627 = Se(_v2626.t / _v2626.max, 0, 1);
+    if (KA.has(_v2626.k)) continue;
+    let _v2627 = $e(_v2626.t / _v2626.max, 0, 1);
     if (!isFinite(_v2626.x) || !isFinite(_v2626.y)) continue;
     try {
-      let _v2628 = _v2626.col && typeof _v2626.col === "string" && _v2626.col[0] === "#" ? Qs(_v2626.col) : [1, 0.85, 0.62], _v2629 = Math.max(0, 1 - _v2627), _v2630 = _v2631 => "rgba(" + Math.round(_v2628[0] * 255) + "," + Math.round(_v2628[1] * 255) + "," + Math.round(_v2628[2] * 255) + "," + _v2631.toFixed(3) + ")", _v2632 = _v2626.k === "ring" ? _v2626.r1 || _v2626.r || 24 : _v2626.k === "cone" ? _v2626.r || 24 : _v2626.k === "slash" || _v2626.k === "iai" ? (_v2626.r || 26) + 12 : _v2626.r || _v2626.r1 || 18;
+      let _v2628 = _v2626.col && typeof _v2626.col === "string" && _v2626.col[0] === "#" ? ao(_v2626.col) : [1, 0.85, 0.62], _v2629 = Math.max(0, 1 - _v2627), _v2630 = _v2631 => "rgba(" + Math.round(_v2628[0] * 255) + "," + Math.round(_v2628[1] * 255) + "," + Math.round(_v2628[2] * 255) + "," + _v2631.toFixed(3) + ")", _v2632 = _v2626.k === "ring" ? _v2626.r1 || _v2626.r || 24 : _v2626.k === "cone" ? _v2626.r || 24 : _v2626.k === "slash" || _v2626.k === "iai" ? (_v2626.r || 26) + 12 : _v2626.r || _v2626.r1 || 18;
       if (!isFinite(_v2632) || _v2632 <= 0) _v2632 = 18;
       d.save();
       try {
@@ -11255,22 +11255,22 @@ c$ = function () {
       let _v2635 = 1 - Math.pow(1 - _v2627, 3), _v2636 = _v2626.r0 + (_v2626.r1 - _v2626.r0) * _v2635;
       if (!isFinite(_v2636) || _v2636 <= 0) continue;
       (d.globalAlpha = 1 - _v2627, d.strokeStyle = _v2626.col, d.lineWidth = _v2626.w * (1 - _v2627 * 0.5), d.beginPath(), d.ellipse(_v2626.x, _v2626.y, _v2636, _v2636 * 0.78, 0, 0, 6.283), d.stroke(), d.globalAlpha = (1 - _v2627) * 0.4, d.lineWidth = _v2626.w * 1.9 * (1 - _v2627) + 0.4, d.beginPath(), d.ellipse(_v2626.x, _v2626.y, _v2636 * 0.9, _v2636 * 0.7, 0, 0, 6.283), d.stroke(), d.globalAlpha = (1 - _v2627) * 0.55, d.lineWidth = 0.7, d.beginPath(), d.ellipse(_v2626.x, _v2626.y, _v2636 * 1.14, _v2636 * 0.9, 0, 0, 6.283), d.stroke(), d.globalAlpha = 1);
-    } else if (_v2626.k === "bolt") (d.globalAlpha = (1 - _v2627) * 0.45, d.globalCompositeOperation = "lighter", d.beginPath(), _v2626.pts.forEach((_v2637, _v2638) => _v2638 ? d.lineTo(_v2637.x, _v2637.y) : d.moveTo(_v2637.x, _v2637.y)), d.strokeStyle = "#6a48ff", d.lineWidth = 5, d.stroke(), d.globalAlpha = 1 - _v2627, d.strokeStyle = _v2626.col, d.lineWidth = 2.2, d.stroke(), d.strokeStyle = "#ffffff", d.lineWidth = 0.8, d.stroke(), d.globalCompositeOperation = "source-over"); else if (_v2626.k === "sky") (_v2626.pts || (_v2626.pts = Do([{
-      x: _v2626.x + D(-8, 8),
+    } else if (_v2626.k === "bolt") (d.globalAlpha = (1 - _v2627) * 0.45, d.globalCompositeOperation = "lighter", d.beginPath(), _v2626.pts.forEach((_v2637, _v2638) => _v2638 ? d.lineTo(_v2637.x, _v2637.y) : d.moveTo(_v2637.x, _v2637.y)), d.strokeStyle = "#6a48ff", d.lineWidth = 5, d.stroke(), d.globalAlpha = 1 - _v2627, d.strokeStyle = _v2626.col, d.lineWidth = 2.2, d.stroke(), d.strokeStyle = "#ffffff", d.lineWidth = 0.8, d.stroke(), d.globalCompositeOperation = "source-over"); else if (_v2626.k === "sky") (_v2626.pts || (_v2626.pts = Qs([{
+      x: _v2626.x + B(-8, 8),
       y: _v2626.y - 130
     }, {
       x: _v2626.x,
       y: _v2626.y
     }])), d.globalCompositeOperation = "lighter", d.beginPath(), _v2626.pts.forEach((_v2639, _v2640) => _v2640 ? d.lineTo(_v2639.x, _v2639.y) : d.moveTo(_v2639.x, _v2639.y)), d.globalAlpha = (1 - _v2627) * 0.4, d.strokeStyle = "#6a48ff", d.lineWidth = 6 * (1 - _v2627) + 1.5, d.stroke(), d.globalAlpha = 1 - _v2627, d.strokeStyle = _v2626.col, d.lineWidth = 3 * (1 - _v2627) + 0.5, d.stroke(), d.strokeStyle = "#fff", d.lineWidth = 1, d.stroke(), d.globalCompositeOperation = "source-over"); else if (_v2626.k === "slash") (d.globalAlpha = 1 - _v2627, d.strokeStyle = _v2626.col, d.lineWidth = 1.5, d.beginPath(), d.arc(_v2626.x, _v2626.y, _v2626.r, _v2626.ang - 0.9 + _v2627 * 0.6, _v2626.ang + 0.3 + _v2627 * 0.6), d.stroke()); else if (_v2626.k === "cone") {
       (d.globalAlpha = (1 - _v2627) * 0.6, d.globalCompositeOperation = "lighter", d.fillStyle = _v2626.col);
-      let _v2641 = _v2626.r * (0.3 + 0.7 * fs(_v2627));
+      let _v2641 = _v2626.r * (0.3 + 0.7 * ms(_v2627));
       (d.beginPath(), d.moveTo(_v2626.x, _v2626.y), d.arc(_v2626.x, _v2626.y, _v2641, _v2626.ang - _v2626.a / 2, _v2626.ang + _v2626.a / 2), d.closePath(), d.fill(), d.globalCompositeOperation = "source-over");
     } else if (_v2626.k === "iai") {
       let _v2642 = _v2627 < 0.2 ? _v2627 / 0.2 : 1 - (_v2627 - 0.2) / 0.8;
       (d.globalAlpha = 1, d.globalCompositeOperation = "lighter", d.strokeStyle = "#ffffff", d.lineWidth = 2.5 * _v2642 + 0.3, d.beginPath(), d.moveTo(_v2626.x0, _v2626.y0), d.lineTo(_v2626.x1, _v2626.y1), d.stroke(), d.strokeStyle = "#ff8090", d.lineWidth = 0.6, d.stroke(), d.globalCompositeOperation = "source-over");
     } else if (_v2626.k === "star") {
       (d.globalAlpha = 1 - _v2627, d.fillStyle = _v2626.col);
-      let _v2643 = _v2626.r * (0.5 + 0.5 * fs(_v2627));
+      let _v2643 = _v2626.r * (0.5 + 0.5 * ms(_v2627));
       d.beginPath();
       for (let _v2644 = 0; _v2644 < 8; _v2644++) {
         let _v2645 = _v2644 / 8 * 6.283, _v2646 = _v2644 % 2 ? _v2643 * 0.22 : _v2643;
@@ -11528,22 +11528,22 @@ c$ = function () {
   }
   d.globalAlpha = 1;
 };
-_5 = function () {
+m4 = function () {
   n.LIGHTS = [];
-  let _v2696 = _v2697 => 0.85 + Math.sin(n.T * 9 + _v2697) * 0.08 + E() * 0.05;
+  let _v2696 = _v2697 => 0.85 + Math.sin(n.T * 9 + _v2697) * 0.08 + I() * 0.05;
   n.LIGHTS.push({
     x: n.pl.x,
     y: n.pl.y - 6,
     r: n.Z.type === "hideout" ? 190 : 135,
     i: 1
   });
-  let _v2698 = ny();
+  let _v2698 = p2();
   _v2698 && n.LIGHTS.push(_v2698);
-  let _v2699 = ah(hs("wings"));
+  let _v2699 = Uh(Va("wings"));
   _v2699 && n.LIGHTS.push(_v2699);
-  let _v2700 = E2(hs("back"));
+  let _v2700 = Nv(Va("back"));
   _v2700 && n.LIGHTS.push(_v2700);
-  let _v2701 = ey();
+  let _v2701 = r2();
   (_v2701 && n.LIGHTS.push(_v2701), n.Z.lights.forEach((_v2702, _v2703) => n.LIGHTS.push({
     x: _v2702.x,
     y: _v2702.y,
@@ -11556,7 +11556,7 @@ _5 = function () {
     x: _v2704.x,
     y: _v2704.y - 6,
     r: _v2704.kind === "fireball" ? 42 : 26,
-    c: _v2704.kind === "fireball" ? "#ff8a30" : Vt[_v2704.c.dom],
+    c: _v2704.kind === "fireball" ? "#ff8a30" : Yt[_v2704.c.dom],
     i: 0.8
   });
   for (let _v2705 of n.eprojs) n.LIGHTS.push({
@@ -11639,7 +11639,7 @@ _5 = function () {
     x: _v2709.x,
     y: _v2709.y,
     r: 70,
-    c: u.device ? na[u.device.theme].torch : "#8a6aff",
+    c: u.device ? la[u.device.theme].torch : "#8a6aff",
     i: 0.8
   }), _v2709.kind === "mirror" && n.LIGHTS.push({
     env: 1,
@@ -11723,7 +11723,7 @@ _5 = function () {
     x: _v2719.x,
     y: _v2719.y,
     r: 50,
-    c: ft[_v2719.type] ? ft[_v2719.type].col : "#fff",
+    c: gt[_v2719.type] ? gt[_v2719.type].col : "#fff",
     i: 0.6
   }));
   n.pl.clone && n.LIGHTS.push({
@@ -11737,11 +11737,11 @@ _5 = function () {
     x: _v2720.x,
     y: _v2720.y - 14,
     r: 46,
-    c: as.find(_v2721 => _v2721.k === _v2720.type).col,
+    c: is.find(_v2721 => _v2721.k === _v2720.type).col,
     i: 0.8
   });
   if (n.pl.shrineT > 0) {
-    let _v2722 = as.find(_v2723 => _v2723.k === n.pl.shrine);
+    let _v2722 = is.find(_v2723 => _v2723.k === n.pl.shrine);
     _v2722 && n.LIGHTS.push({
       x: n.pl.x,
       y: n.pl.y - 6,
@@ -11765,44 +11765,44 @@ _5 = function () {
     i: 0.8
   });
 };
-p$ = function () {
-  let _v2725 = n.Z.M, _v2726 = n.touchMode && n.miniBox, _v2727 = _v2726 ? Math.min(1.6, _v2726.w / _v2725.W) : Math.min(1.9, Rc * 0.2 / _v2725.W), _v2728 = _v2726 ? _v2726.right ? _v2726.x - _v2725.W * _v2727 : _v2726.x : Rc - _v2725.W * _v2727 - 10, _v2729 = _v2726 ? _v2726.y : Math.min(wd * 0.25, 74);
-  (d.setTransform(ai * _v2727, 0, 0, ai * _v2727, _v2728 * ai, _v2729 * ai), d.globalAlpha = 0.85, d.fillStyle = "rgba(0,0,0,0.35)", d.fillRect(-1, -1, _v2725.W + 2, _v2725.H + 2), d.drawImage(n.Z.mini, 0, 0));
+YA = function () {
+  let _v2725 = n.Z.M, _v2726 = n.touchMode && n.miniBox, _v2727 = _v2726 ? Math.min(1.6, _v2726.w / _v2725.W) : Math.min(1.9, Xc * 0.2 / _v2725.W), _v2728 = _v2726 ? _v2726.right ? _v2726.x - _v2725.W * _v2727 : _v2726.x : Xc - _v2725.W * _v2727 - 10, _v2729 = _v2726 ? _v2726.y : Math.min(Jd * 0.25, 74);
+  (d.setTransform(gi * _v2727, 0, 0, gi * _v2727, _v2728 * gi, _v2729 * gi), d.globalAlpha = 0.85, d.fillStyle = "rgba(0,0,0,0.35)", d.fillRect(-1, -1, _v2725.W + 2, _v2725.H + 2), d.drawImage(n.Z.mini, 0, 0));
   let _v2730 = _v2725.rooms[_v2725.rooms.length - 1];
   (d.fillStyle = n.Z.done ? "#6a6a6a" : "#ff4030", d.fillRect(_v2730.cx - 1, _v2730.cy - 1, 3, 3));
   for (let _v2731 of n.objs) {
-    let _v2732 = Math.floor(_v2731.x / Z), _v2733 = Math.floor(_v2731.y / Z);
+    let _v2732 = Math.floor(_v2731.x / K), _v2733 = Math.floor(_v2731.y / K);
     n.Z.explored[_v2733 * _v2725.W + _v2732] && (_v2731.kind === "box" && !_v2731.open && (d.fillStyle = "#ffd060", d.fillRect(_v2732 - 1, _v2733 - 1, 2, 2)), _v2731.kind === "rift" && _v2731.st !== "done" && (d.fillStyle = "#b080ff", d.fillRect(_v2732 - 1, _v2733 - 1, 3, 3)), _v2731.kind === "abyss" && (d.fillStyle = _v2731.st === "done" ? "#6a6a6a" : "#2ee6a8", d.fillRect(_v2732 - 1, _v2733 - 1, 3, 3)), _v2731.kind === "abyss" && _v2731.fissures.forEach(_v2734 => {
       if (_v2734.closed) return;
-      let _v2735 = Math.floor(_v2734.x / Z), _v2736 = Math.floor(_v2734.y / Z);
+      let _v2735 = Math.floor(_v2734.x / K), _v2736 = Math.floor(_v2734.y / K);
       (d.fillStyle = "#9dffb4", d.fillRect(_v2735 - 1, _v2736 - 1, 2, 2));
-    }), _v2731.kind === "mirror" && (d.fillStyle = "#cfd8e8", d.fillRect(_v2732 - 1, _v2733 - 1, 3, 3)), _v2731.kind === "ritual" && (d.fillStyle = _v2731.st === "done" ? "#ffd0e0" : "#d06a8a", d.fillRect(_v2732 - 1, _v2733 - 1, 3, 3)), _v2731.kind === "enc" && (_v2731.st === "idle" || _v2731.st === "active" || _v2731.st === "chest") && (d.fillStyle = ft[_v2731.type].col, d.fillRect(_v2732 - 1, _v2733 - 1, 3, 3)), _v2731.kind === "shrine" && !_v2731.used && (d.fillStyle = as.find(_v2737 => _v2737.k === _v2731.type).col, d.fillRect(_v2732 - 1, _v2733 - 1, 3, 3)));
+    }), _v2731.kind === "mirror" && (d.fillStyle = "#cfd8e8", d.fillRect(_v2732 - 1, _v2733 - 1, 3, 3)), _v2731.kind === "ritual" && (d.fillStyle = _v2731.st === "done" ? "#ffd0e0" : "#d06a8a", d.fillRect(_v2732 - 1, _v2733 - 1, 3, 3)), _v2731.kind === "enc" && (_v2731.st === "idle" || _v2731.st === "active" || _v2731.st === "chest") && (d.fillStyle = gt[_v2731.type].col, d.fillRect(_v2732 - 1, _v2733 - 1, 3, 3)), _v2731.kind === "shrine" && !_v2731.used && (d.fillStyle = is.find(_v2737 => _v2737.k === _v2731.type).col, d.fillRect(_v2732 - 1, _v2733 - 1, 3, 3)));
   }
-  (d.fillStyle = "#ffffff", d.fillRect(n.pl.x / Z - 1, n.pl.y / Z - 1, 2, 2), d.globalAlpha = 1);
+  (d.fillStyle = "#ffffff", d.fillRect(n.pl.x / K - 1, n.pl.y / K - 1, 2, 2), d.globalAlpha = 1);
 };
-r4 = function (_v2738) {
+C4 = function (_v2738) {
   for (let _v2739 in n.pl.cds) n.pl.cds[_v2739] > 0 && (n.pl.cds[_v2739] -= _v2738);
   for (let _v2740 of ["parryT", "noutouT", "drT", "disT", "waveT", "parryBuffT", "shrineT", "shrineT2", "noHitT"]) n.pl[_v2740] > 0 && (n.pl[_v2740] -= _v2738);
-  (n.pl.noHitT = n.pl.noHitT || 0, n.pl.sinceHit = (n.pl.sinceHit || 0) + _v2738, C$(_v2738));
+  (n.pl.noHitT = n.pl.noHitT || 0, n.pl.sinceHit = (n.pl.sinceHit || 0) + _v2738, hC(_v2738));
   for (let _v2741 = n.sticks.length - 1; _v2741 >= 0; _v2741--) {
     let _v2742 = n.sticks[_v2741];
-    (_v2742.t -= _v2738, _v2742.host && !_v2742.host.dead && (_v2742.x = _v2742.host.x, _v2742.y = _v2742.host.y), _v2742.t <= 0 && D1(_v2742, 1));
+    (_v2742.t -= _v2738, _v2742.host && !_v2742.host.dead && (_v2742.x = _v2742.host.x, _v2742.y = _v2742.host.y), _v2742.t <= 0 && Rg(_v2742, 1));
   }
-  for (let _v2743 of n.bells.slice()) (_v2743.t -= _v2738, _v2743.t <= 0 && eu(_v2743, "crack"));
+  for (let _v2743 of n.bells.slice()) (_v2743.t -= _v2738, _v2743.t <= 0 && Bu(_v2743, "crack"));
   for (let _v2744 of n.walls) {
-    if ((_v2744.t -= _v2738, _v2744.tick -= _v2738, E() < 0.8)) {
-      let _v2745 = E();
+    if ((_v2744.t -= _v2738, _v2744.tick -= _v2738, I() < 0.8)) {
+      let _v2745 = I();
       n.parts.push({
-        x: qs(_v2744.x1, _v2744.x2, _v2745) + D(-1, 1),
-        y: qs(_v2744.y1, _v2744.y2, _v2745),
+        x: Hs(_v2744.x1, _v2744.x2, _v2745) + B(-1, 1),
+        y: Hs(_v2744.y1, _v2744.y2, _v2745),
         z: 1,
-        vx: D(-4, 4),
+        vx: B(-4, 4),
         vy: 0,
-        vz: D(20, 45),
+        vz: B(20, 45),
         g: -20,
         life: 0.5,
         max: 0.5,
-        col: ae(["#ff6a1a", "#ffb040", "#ffd060"]),
+        col: oe(["#ff6a1a", "#ffb040", "#ffd060"]),
         s: 1,
         glow: !0,
         drag: 1
@@ -11810,7 +11810,7 @@ r4 = function (_v2738) {
     }
     if (_v2744.tick <= 0) {
       _v2744.tick = 0.3;
-      for (let _v2746 of n.mons) _v2746.dead || _v2746.dummy && !1 || pd(_v2746.x, _v2746.y, _v2744.x1, _v2744.y1, _v2744.x2, _v2744.y2) < _v2746.r + 6 && (X(_v2746, _v2744.c, _v2744.src, 0.3, {
+      for (let _v2746 of n.mons) _v2746.dead || _v2746.dummy && !1 || qd(_v2746.x, _v2746.y, _v2744.x1, _v2744.y1, _v2744.x2, _v2744.y2) < _v2746.r + 6 && (ae(_v2746, _v2744.c, _v2744.src, 0.3, {
         el: "fire"
       }), !_v2746.dead && !_v2746.ign && (_v2746.ign = {
         dps: _v2744.c.avg * 0.3,
@@ -11835,29 +11835,29 @@ r4 = function (_v2738) {
       }));
       for (let _v2749 of n.mons) !_v2749.dead && (_v2749.x - _v2748.x) ** 2 + (_v2749.y - _v2748.y) ** 2 < _v2748.r * _v2748.r && (_v2749.chill = 1, _v2749.chillAmt = Math.max(_v2749.chillAmt, 0.35));
     }
-    _v2748.t <= 0 && Td(_v2748, 1);
+    _v2748.t <= 0 && Xd(_v2748, 1);
   }
-  R$(_v2738);
+  mC(_v2738);
   for (let _v2750 of n.mons) (_v2750.mark && (_v2750.mark.t -= _v2738, _v2750.mark.t <= 0 && (_v2750.mark = null)), _v2750.expT > 0 && (_v2750.expT -= _v2738, _v2750.expT <= 0 && (_v2750.res.cold += _v2750.expA || 0, _v2750.expA = 0)));
   for (let _v2751 of n.objs) if (_v2751.kind === "shrine" && !_v2751.used && (_v2751.x - n.pl.x) ** 2 + (_v2751.y - n.pl.y) ** 2 < 324) {
     (_v2751.used = !0, n.pl.shrine = _v2751.type, n.pl.shrineT = 45, n.pl.shrine2 = null, n.pl.shrineT2 = 0);
-    let _v2752 = as.find(_v2753 => _v2753.k === _v2751.type), _v2754 = null;
-    OmHas("omen_prayer") && OmTake("omen_prayer", _v2751.x, _v2751.y - 20) && (_v2754 = ae(as.filter(_v2755 => _v2755.k !== _v2751.type)), n.pl.shrine2 = _v2754.k, n.pl.shrineT2 = 45, L(_v2751.x, _v2751.y, 40, [_v2754.col, "#ffffff"], 90, 0.9, {
+    let _v2752 = is.find(_v2753 => _v2753.k === _v2751.type), _v2754 = null;
+    OmHas("omen_prayer") && OmTake("omen_prayer", _v2751.x, _v2751.y - 20) && (_v2754 = oe(is.filter(_v2755 => _v2755.k !== _v2751.type)), n.pl.shrine2 = _v2754.k, n.pl.shrineT2 = 45, E(_v2751.x, _v2751.y, 40, [_v2754.col, "#ffffff"], 90, 0.9, {
       glow: !0,
       vz: 140,
       g: 60
     }));
-    (T("shrine"), ke(_v2752.n + (_v2754 ? " + " + _v2754.n : ""), _v2752.d + (_v2754 ? " · " + _v2754.d : "") + " · 45 秒"), L(_v2751.x, _v2751.y, 40, [_v2752.col, "#ffffff"], 90, 0.9, {
+    ($("shrine"), ke(_v2752.n + (_v2754 ? " + " + _v2754.n : ""), _v2752.d + (_v2754 ? " · " + _v2754.d : "") + " · 45 秒"), E(_v2751.x, _v2751.y, 40, [_v2752.col, "#ffffff"], 90, 0.9, {
       glow: !0,
       vz: 140,
       g: 60
     }));
   }
 };
-Ec = function (_v2756) {
+tf = function (_v2756) {
   return !!(n.pl && (n.pl.shrineT > 0 && n.pl.shrine === _v2756 || n.pl.shrineT2 > 0 && n.pl.shrine2 === _v2756));
 };
-Le = function (_v2757, _v2758, _v2759, _v2760, _v2761, _v2762, _v2763 = {}) {
+Fe = function (_v2757, _v2758, _v2759, _v2760, _v2761, _v2762, _v2763 = {}) {
   let _v2764 = {
     id: _v2757,
     t: _v2758,
@@ -11866,34 +11866,34 @@ Le = function (_v2757, _v2758, _v2759, _v2760, _v2761, _v2762, _v2763 = {}) {
     stat: _v2761,
     ranges: _v2762,
     w: _v2763.w || 100,
-    lv: _v2763.lv || M3,
+    lv: _v2763.lv || US,
     div: _v2763.div || 1,
     nm: _v2763.nm || "",
     dsec: !!_v2763.dsec,
     fac: _v2763.fac || null,
     pair: Array.isArray(_v2762[0][0])
   };
-  (Yt[_v2757] = _v2764, Gc.push(_v2764));
+  (ta[_v2757] = _v2764, pf.push(_v2764));
 };
-Ut = function (_v2765, _v2766) {
+Kt = function (_v2765, _v2766) {
   let _v2767 = pe[_v2765.base];
   return {
-    uid: ya(),
+    uid: Sa(),
     kind: "item",
     base: _v2765.base,
     slot: _v2767.slot,
     ilvl: Math.max(_v2766 || 1, _v2765.lv || 1),
     rarity: 3,
     uniq: _v2765.id,
-    impl: q1(_v2767),
+    impl: Lg(_v2767),
     mods: _v2765.mods.map(([_v2768, _v2769]) => ({
       id: _v2768,
       t: "U",
       ur: _v2769,
-      v: bo(_v2769)
+      v: wo(_v2769)
     })),
     name: _v2765.n,
-    rsock: yl(_v2767.slot) ? 1 : 0,
+    rsock: Ol(_v2767.slot) ? 1 : 0,
     runes: []
   };
 };
@@ -11910,7 +11910,7 @@ function __riftNormalProbe(_v0cur, _v0it) {
     if (u && u.cur) curSave = JSON.parse(JSON.stringify(u.cur));
     var clone = JSON.parse(JSON.stringify(_v0it));
     var res;
-    try { res = cL(_v0cur, clone); } catch (e) { res = "这颗通货不能用于该装备"; }
+    try { res = c9(_v0cur, clone); } catch (e) { res = "这颗通货不能用于该装备"; }
     return (res === null) ? null : res;
   } catch (e) {
     return null;
@@ -11927,49 +11927,49 @@ function __riftNormalProbe(_v0cur, _v0it) {
 function __riftOmenSpecialApply(_v0cur, _v0it) {
   try {
     if (!_v0it || _v0it.kind !== "item") return "只能用于装备";
-    var sp = (_v0it.mods || []).filter(function (m) { return m && AffixClass(m) === "sp" && !qr(_v0it, m); });
+    var sp = (_v0it.mods || []).filter(function (m) { return m && AffixClass(m) === "sp" && !Qr(_v0it, m); });
     var cap = (AffixSlotCfg().special || 2);
     var isRemove = (_v0cur === "annul" || _v0cur === "scour");
     var isDivine = (_v0cur === "divine");
     var changed = false;
     if (isRemove && sp.length) {
-      _v0it.mods.splice(_v0it.mods.indexOf(sp[Math.floor(E() * sp.length)]), 1);
+      _v0it.mods.splice(_v0it.mods.indexOf(sp[Math.floor(I() * sp.length)]), 1);
       changed = true;
     } else if (isDivine && sp.length) {
       sp.forEach(function (m) {
-        if (m.ur) m.v = bo(m.ur);
+        if (m.ur) m.v = wo(m.ur);
         else {
-          var def = Da(_v0it, m.id);
-          if (def && def.ranges) m.v = bo(def.ranges[m.ti]);
+          var def = qa(_v0it, m.id);
+          if (def && def.ranges) m.v = wo(def.ranges[m.ti]);
         }
       });
       changed = true;
     } else {
       // 其它通货（以及剥离/神圣在没有特殊词缀时）：加一条特殊词缀；满 2 条就替换一条；总词缀满则替换一条普通词缀
       if (sp.length >= cap) {
-        _v0it.mods.splice(_v0it.mods.indexOf(sp[Math.floor(E() * sp.length)]), 1);
+        _v0it.mods.splice(_v0it.mods.indexOf(sp[Math.floor(I() * sp.length)]), 1);
       } else if (AffixTotalRoom(_v0it) <= 0) {
-        var victim = (_v0it.mods || []).filter(function (m) { return !qr(_v0it, m) && AffixClass(m) !== "sp"; });
+        var victim = (_v0it.mods || []).filter(function (m) { return !Qr(_v0it, m) && AffixClass(m) !== "sp"; });
         if (!victim.length) return "没有可替换的词缀";
-        _v0it.mods.splice(_v0it.mods.indexOf(victim[Math.floor(E() * victim.length)]), 1);
+        _v0it.mods.splice(_v0it.mods.indexOf(victim[Math.floor(I() * victim.length)]), 1);
       }
-      var sides = E() < 0.5 ? ["P", "S"] : ["S", "P"], nmod = null;
+      var sides = I() < 0.5 ? ["P", "S"] : ["S", "P"], nmod = null;
       var __essIds = null;
-      try { if (typeof mu !== "undefined" && mu[_v0cur]) __essIds = mu[_v0cur]; } catch (eEss) {}
+      try { if (typeof Yu !== "undefined" && Yu[_v0cur]) __essIds = Yu[_v0cur]; } catch (eEss) {}
       var __forceT2 = false;
       try { __forceT2 = !!(window && window.__RIFT_ADV_T2); } catch (eFT) {}
-      for (var si = 0; si < sides.length && !nmod; si++) nmod = h4(_v0it, sides[si], __essIds || undefined);
+      for (var si = 0; si < sides.length && !nmod; si++) nmod = O4(_v0it, sides[si], __essIds || undefined);
       if (!nmod) return "没有可用词缀";
       // 高级通货 + 预兆：把特殊词缀强制定在最高两阶（T1/T2）
       if (__forceT2) {
         try {
-          var __spDef = Da(_v0it, nmod.id);
+          var __spDef = qa(_v0it, nmod.id);
           if (__spDef && __spDef.ranges && __spDef.ranges.length) {
             var __top = __spDef.ranges.length - 1;
-            var __ti2 = __top - (E() < 0.5 ? 0 : 1);
+            var __ti2 = __top - (I() < 0.5 ? 0 : 1);
             if (__ti2 < 0) __ti2 = 0;
             nmod.ti = __ti2;
-            nmod.v = bo(__spDef.ranges[__ti2]);
+            nmod.v = wo(__spDef.ranges[__ti2]);
           }
         } catch (eFT2) {}
       }
@@ -11979,15 +11979,15 @@ function __riftOmenSpecialApply(_v0cur, _v0it) {
     }
     if (!changed) return "特殊词缀处理失败";
     try { OmTake("omen_special"); } catch (e0) {}
-    try { aa(_v0it); } catch (e1) {}
+    try { na(_v0it); } catch (e1) {}
     return null;
   } catch (e) { return "特殊词缀处理失败"; }
 }
-cL = function (_v2770, _v2771) {
+c9 = function (_v2770, _v2771) {
   if (!_v2771) return "无效目标";
   if (_v2770 === "ember" || _v2770 === "ash") return "在藏身处的余烬祭坛使用";
-  if (z[_v2770].grp === "bone") return DsDesecrate(_v2770, _v2771);
-  let _v2772 = z[_v2770].grp;
+  if (q[_v2770].grp === "bone") return DsDesecrate(_v2770, _v2771);
+  let _v2772 = q[_v2770].grp;
   if (_v2772 === "sig") return "首领印记用于在地图装置开启裂隙之心";
   if (_v2771.kind === "meta" || _v2771.kind === "buff") return "无法对该宝石使用通货";
   // 异界高级预兆：只允许“当前装备按普通规则本来就能用”的通货；能用则改为作用于特殊词缀栏
@@ -12003,7 +12003,7 @@ cL = function (_v2770, _v2771) {
       jewel2: 3,
       jewel3: 4
     })[_v2770];
-    return _v2771.sock >= 5 ? "插槽已达上限 5" : _v2771.sock !== _v2773 ? z[_v2770].n + "只能把插槽从 " + _v2773 + " 提升到 " + (_v2773 + 1) + " (当前 " + _v2771.sock + ")" : (_v2771.sock++, null);
+    return _v2771.sock >= 5 ? "插槽已达上限 5" : _v2771.sock !== _v2773 ? q[_v2770].n + "只能把插槽从 " + _v2773 + " 提升到 " + (_v2773 + 1) + " (当前 " + _v2771.sock + ")" : (_v2771.sock++, null);
   }
   if (_v2771.kind === "gem" || _v2771.kind === "sup" || _v2771.kind === "buff") return "这种通货不能用于宝石";
   if (_v2771.corrupted && _v2772 !== "rune") return "已腐化的物品无法改造";
@@ -12012,7 +12012,7 @@ cL = function (_v2770, _v2771) {
   let _v2774 = _v2771.rarity === 3;
   if (_v2770 === "mods_runesmith_artificer") {
     if (_v2771.kind !== "item") return "只能用于装备";
-    if (!yl(_v2771.slot)) return "该部位没有符文插槽";
+    if (!Ol(_v2771.slot)) return "该部位没有符文插槽";
     if (_v2771.rsUsed || (_v2771.specialRsock || 0) > 0) return "这件装备已经使用过符文师工匠石 · 每件只能使用一次";
     var __rsIlvl = Math.max(1, +_v2771.ilvl || 1);
     var __rsAdd = Math.max(1, Math.floor(__rsIlvl / 15));
@@ -12023,7 +12023,7 @@ cL = function (_v2770, _v2771) {
   }
   if (_v2770 === "artif") {
     if (_v2771.kind !== "item") return "只能用于装备";
-    var __artCap = yl(_v2771.slot) + (_v2771.extraSock || 0);
+    var __artCap = Ol(_v2771.slot) + (_v2771.extraSock || 0);
     if (!__artCap) return "该部位没有符文插槽";
     var __normalUsed = Math.max(0, (_v2771.rsock || 0) - (_v2771.specialRsock || 0));
     return __normalUsed >= __artCap ? "符文插槽已满 (" + __artCap + ")" : (_v2771.rsock = (_v2771.rsock || 0) + 1, null);
@@ -12034,7 +12034,7 @@ cL = function (_v2770, _v2771) {
     _v2771.runes = _v2771.runes || [];
     var __rsSpecialStart = _v2771.rsock - (_v2771.specialRsock || 0);
     if (_v2771.runes.length >= __rsSpecialStart) {
-      var __rsRune = _v2770, __rsRn = (z[__rsRune] && z[__rsRune].rn) || null, __rsOK = false;
+      var __rsRune = _v2770, __rsRn = (q[__rsRune] && q[__rsRune].rn) || null, __rsOK = false;
       try {
         for (var __rwi2 = 0; __rwi2 < RUNE_WORDS.length && !__rsOK; __rwi2++) {
           var __seq = RUNE_WORDS[__rwi2].seq || [];
@@ -12053,7 +12053,7 @@ cL = function (_v2770, _v2771) {
   if (_v2772 === "ess") {
     if (_v2771.kind !== "item") return "只能用于装备";
     if (_v2774) return "传奇装备无法使用精华";
-    let _v2776 = _v2771.mods.filter(_v2777 => qr(_v2771, _v2777) || AffixClass(_v2777) !== "regular"), _v2778 = _v2771.meta, _v2779 = _v2780 => _v2780 !== _v2778 && AffixSideCap(_v2771, _v2780) - AffixRegCount(_v2771, _v2780) > 0, _v2781 = {
+    let _v2776 = _v2771.mods.filter(_v2777 => Qr(_v2771, _v2777) || AffixClass(_v2777) !== "regular"), _v2778 = _v2771.meta, _v2779 = _v2780 => _v2780 !== _v2778 && AffixSideCap(_v2771, _v2780) - AffixRegCount(_v2771, _v2780) > 0, _v2781 = {
       r: _v2771.rarity,
       mods: _v2771.mods,
       meta: _v2771.meta
@@ -12064,16 +12064,16 @@ cL = function (_v2770, _v2771) {
     for (let _v2783 of ["P", "S", "P", "S"]) {
       if (__essAdded >= 2) break;
       if (!_v2779(_v2783)) continue;
-      let __essMod = h4(_v2771, _v2783, mu[_v2770]);
+      let __essMod = O4(_v2771, _v2783, Yu[_v2770]);
       if (!__essMod) continue;
       try {
-        var __essDef = Da(_v2771, __essMod.id);
+        var __essDef = qa(_v2771, __essMod.id);
         if (__essDef && __essDef.ranges && __essDef.ranges.length) {
           var __essTop = __essDef.ranges.length - 1;
-          var __essTi = __essTop - (E() < 0.5 ? 0 : 1);
+          var __essTi = __essTop - (I() < 0.5 ? 0 : 1);
           if (__essTi < 0) __essTi = 0;
           __essMod.ti = __essTi;
-          __essMod.v = bo(__essDef.ranges[__essTi]);
+          __essMod.v = wo(__essDef.ranges[__essTi]);
         }
       } catch (eEssTi) {}
       _v2771.mods.push(__essMod);
@@ -12081,16 +12081,16 @@ cL = function (_v2770, _v2771) {
     }
     if (!__essAdded) {
       (_v2771.rarity = _v2781.r, _v2771.mods = _v2781.mods, _v2781.meta && (_v2771.meta = _v2781.meta));
-      let _v2784 = ["P", "S"].some(_v2785 => D$(_v2771, _v2785, mu[_v2770], []).length);
+      let _v2784 = ["P", "S"].some(_v2785 => SC(_v2771, _v2785, Yu[_v2770], []).length);
       return _v2776.length && _v2784 ? "精华词缀那一侧被锁定或已满" : "该部位无法获得此精华的词缀";
     }
     // 只保留这 2 条精华词缀，不再随机补满其它词缀
-    return (aa(_v2771), null);
+    return (na(_v2771), null);
   }
   if (_v2770 === "vaal") {
     if (_v2771.kind !== "item") return "只能用于装备";
-    let _v2786 = !_a.dry && u, _v2787 = !!_v2786 && (u.pity || 0) >= Ri, _v2788 = Ph(_v2771, () => lL(_v2771, _v2787));
-    return (_v2786 && (u.pity = _v2788 === "impl" || _v2788 === "sock" ? 0 : (u.pity || 0) + 1, _a.last = {
+    let _v2786 = !Ya.dry && u, _v2787 = !!_v2786 && (u.pity || 0) >= _i, _v2788 = Mm(_v2771, () => l9(_v2771, _v2787));
+    return (_v2786 && (u.pity = _v2788 === "impl" || _v2788 === "sock" ? 0 : (u.pity || 0) + 1, Ya.last = {
       k: "vaal",
       out: _v2788,
       pity: _v2787
@@ -12099,35 +12099,35 @@ cL = function (_v2770, _v2771) {
   switch (_v2770) {
     case "trans":
       if (_v2771.rarity !== 0) return "需要普通物品";
-      (_v2771.rarity = 1, ht(_v2771));
+      (_v2771.rarity = 1, wt(_v2771));
       break;
     case "aug":
       if (_v2771.rarity !== 1) return "需要魔法物品";
       if (_v2771.mods.length >= 2) return "词缀已满";
-      if (!ht(_v2771)) return "没有可用词缀";
+      if (!wt(_v2771)) return "没有可用词缀";
       break;
     case "alt":
       {
         if (_v2771.rarity !== 1) return "需要魔法物品";
-        let _v2789 = _v2771.mods.filter(_v2790 => qr(_v2771, _v2790) || AffixClass(_v2790) !== "regular");
+        let _v2789 = _v2771.mods.filter(_v2790 => Qr(_v2771, _v2790) || AffixClass(_v2790) !== "regular");
         if (_v2789.length >= 2) return "没有可以改变的词缀(破溃或已锁定)";
-        (_v2771.mods = _v2789, ht(_v2771), !_v2789.length && Io(0.5) && ht(_v2771));
+        (_v2771.mods = _v2789, wt(_v2771), !_v2789.length && Do(0.5) && wt(_v2771));
         break;
       }
     case "alch":
       if (_v2771.rarity !== 0) return "需要普通物品";
       _v2771.rarity = 2;
-      for (let _v2791 = 0; _v2791 < 4; _v2791++) ht(_v2771);
-      if (_v2771.kind === "map" && ne("affix_zeal")) ht(_v2771);
+      for (let _v2791 = 0; _v2791 < 4; _v2791++) wt(_v2771);
+      if (_v2771.kind === "map" && re("affix_zeal")) wt(_v2771);
       break;
     case "regal":
       if (_v2771.rarity !== 1) return "需要魔法物品";
       _v2771.rarity = 2;
-      if (!ht(_v2771)) {
+      if (!wt(_v2771)) {
         _v2771.rarity = 1;
         return "没有可用词缀";
       }
-      aa(_v2771);
+      na(_v2771);
       return null;
     case "chaos":
       {
@@ -12137,9 +12137,9 @@ cL = function (_v2770, _v2771) {
           if (_v2792) return (DsMapChaos(_v2771, _v2792), OmTake(_v2792 === "quant" ? "omen_chaos_quant" : _v2792 === "mon" ? "omen_chaos_mon" : "omen_chaos_rar"), null);
         }
         if (OmHas("omen_special")) {
-          let _v2793 = _v2771.mods.filter(_v2794 => AffixClass(_v2794) === "special" && !qr(_v2771, _v2794));
+          let _v2793 = _v2771.mods.filter(_v2794 => AffixClass(_v2794) === "special" && !Qr(_v2771, _v2794));
           if (!_v2793.length) return "特殊词缀栏没有可改变的词缀";
-          let _v2795 = _v2771.mods.slice(), _v2796 = ae(_v2793);
+          let _v2795 = _v2771.mods.slice(), _v2796 = oe(_v2793);
           _v2771.mods.splice(_v2771.mods.indexOf(_v2796), 1);
           let _v2797 = AffixAddSpecial(_v2771);
           if (_v2797) {
@@ -12149,14 +12149,14 @@ cL = function (_v2770, _v2771) {
           OmTake("omen_special");
           return null;
         }
-        let _v2798 = OmHas("omen_whittle") ? "omen_whittle" : OmHas("omen_chaos_p") ? "omen_chaos_p" : OmHas("omen_chaos_s") ? "omen_chaos_s" : null, _v2799 = _v2798 === "omen_chaos_p" ? "P" : _v2798 === "omen_chaos_s" ? "S" : null, _v2800 = _v2771.mods.filter(_v2801 => !qr(_v2771, _v2801) && AffixClass(_v2801) === "regular" && (!_v2799 || _v2801.t === _v2799));
+        let _v2798 = OmHas("omen_whittle") ? "omen_whittle" : OmHas("omen_chaos_p") ? "omen_chaos_p" : OmHas("omen_chaos_s") ? "omen_chaos_s" : null, _v2799 = _v2798 === "omen_chaos_p" ? "P" : _v2798 === "omen_chaos_s" ? "S" : null, _v2800 = _v2771.mods.filter(_v2801 => !Qr(_v2771, _v2801) && AffixClass(_v2801) === "regular" && (!_v2799 || _v2801.t === _v2799));
         if (!_v2800.length) {
-          return _v2799 ? _v2799 === "P" ? "没有可移除的前缀" : "没有可移除的后缀" : ht(_v2771) ? null : "没有可以改变的词缀(破溃或已锁定)";
+          return _v2799 ? _v2799 === "P" ? "没有可移除的前缀" : "没有可移除的后缀" : wt(_v2771) ? null : "没有可以改变的词缀(破溃或已锁定)";
         }
-        let _v2802 = _v2798 === "omen_whittle" ? OmWhittle(_v2771, _v2800) : ae(_v2800);
+        let _v2802 = _v2798 === "omen_whittle" ? OmWhittle(_v2771, _v2800) : oe(_v2800);
         if (!_v2802) return "没有可消减的低等级词缀";
         _v2771.mods.splice(_v2771.mods.indexOf(_v2802), 1);
-        if (!ht(_v2771)) {
+        if (!wt(_v2771)) {
           _v2771.mods.push(_v2802);
           return "没有可用词缀";
         }
@@ -12168,19 +12168,19 @@ cL = function (_v2770, _v2771) {
         if (_v2771.rarity !== 1 && _v2771.rarity !== 2) return "需要魔法或稀有物品";
         if (!_v2771.mods.length) return "没有词缀";
         if (OmHas("omen_special")) {
-          let _v2803 = _v2771.mods.filter(_v2804 => AffixClass(_v2804) === "special" && !qr(_v2771, _v2804));
+          let _v2803 = _v2771.mods.filter(_v2804 => AffixClass(_v2804) === "special" && !Qr(_v2771, _v2804));
           if (!_v2803.length) return "特殊词缀栏没有可移除的词缀";
-          _v2771.mods.splice(_v2771.mods.indexOf(ae(_v2803)), 1);
+          _v2771.mods.splice(_v2771.mods.indexOf(oe(_v2803)), 1);
           OmTake("omen_special");
-          _v2771.rarity === 1 && aa(_v2771);
+          _v2771.rarity === 1 && na(_v2771);
           return null;
         }
         if (OmHas("omen_abyss_light")) {
-          let _v2805 = _v2771.mods.filter(_v2806 => _v2806.dsec && !qr(_v2771, _v2806));
-          return _v2805.length ? (_v2771.mods.splice(_v2771.mods.indexOf(ae(_v2805)), 1), OmTake("omen_abyss_light"), _v2771.rarity === 1 && aa(_v2771), null) : "没有渎灵词缀";
+          let _v2805 = _v2771.mods.filter(_v2806 => _v2806.dsec && !Qr(_v2771, _v2806));
+          return _v2805.length ? (_v2771.mods.splice(_v2771.mods.indexOf(oe(_v2805)), 1), OmTake("omen_abyss_light"), _v2771.rarity === 1 && na(_v2771), null) : "没有渎灵词缀";
         }
-        let _v2807 = OmHas("omen_annul_p") ? "P" : OmHas("omen_annul_s") ? "S" : null, _v2808 = _v2771.mods.filter(_v2809 => !qr(_v2771, _v2809) && AffixClass(_v2809) === "regular" && (!_v2807 || _v2809.t === _v2807));
-        return _v2808.length ? (_v2771.mods.splice(_v2771.mods.indexOf(ae(_v2808)), 1), _v2771.rarity === 1 && aa(_v2771), _v2807 && OmTake(_v2807 === "P" ? "omen_annul_p" : "omen_annul_s"), null) : _v2807 ? _v2807 === "P" ? "没有可移除的前缀" : "没有可移除的后缀" : "没有可以移除的词缀(破溃或已锁定)";
+        let _v2807 = OmHas("omen_annul_p") ? "P" : OmHas("omen_annul_s") ? "S" : null, _v2808 = _v2771.mods.filter(_v2809 => !Qr(_v2771, _v2809) && AffixClass(_v2809) === "regular" && (!_v2807 || _v2809.t === _v2807));
+        return _v2808.length ? (_v2771.mods.splice(_v2771.mods.indexOf(oe(_v2808)), 1), _v2771.rarity === 1 && na(_v2771), _v2807 && OmTake(_v2807 === "P" ? "omen_annul_p" : "omen_annul_s"), null) : _v2807 ? _v2807 === "P" ? "没有可移除的前缀" : "没有可移除的后缀" : "没有可以移除的词缀(破溃或已锁定)";
       }
     case "exalt":
       {
@@ -12210,12 +12210,12 @@ cL = function (_v2770, _v2771) {
       {
         if (_v2771.rarity === 0) return "没有可重随的词缀";
         if (OmHas("omen_special")) {
-          let _v2819 = _v2771.mods.filter(_v2820 => AffixClass(_v2820) === "special" && !qr(_v2771, _v2820));
+          let _v2819 = _v2771.mods.filter(_v2820 => AffixClass(_v2820) === "special" && !Qr(_v2771, _v2820));
           if (!_v2819.length) return "特殊词缀栏没有可重随的词缀";
           for (let _v2821 of _v2819) {
-            if (_v2821.ur) _v2821.v = bo(_v2821.ur); else {
-              let _v2822 = Da(_v2771, _v2821.id);
-              _v2821.v = bo(_v2822.ranges[_v2821.ti]);
+            if (_v2821.ur) _v2821.v = wo(_v2821.ur); else {
+              let _v2822 = qa(_v2771, _v2821.id);
+              _v2821.v = wo(_v2822.ranges[_v2821.ti]);
             }
           }
           OmTake("omen_special");
@@ -12226,32 +12226,32 @@ cL = function (_v2770, _v2771) {
           if (_v2771.corrupted) return "已腐化的物品无法圣化";
           if (_v2771.sanctified) return "已经圣化";
           (OmTake("omen_sanctify"), _v2771.mods.forEach(_v2823 => {
-            _v2823.v = _v2823.v.map(_v2824 => Math.max(1, Math.round(_v2824 * D(0.78, 1.22))));
+            _v2823.v = _v2823.v.map(_v2824 => Math.max(1, Math.round(_v2824 * B(0.78, 1.22))));
           }), _v2771.sanctified = !0);
           return null;
         }
         if (OmHas("omen_blessed")) {
           if (!_v2771.impl || !_v2771.impl.length) return "没有固有词缀";
           (OmTake("omen_blessed"), _v2771.impl.forEach(_v2825 => {
-            let _v2826 = _v2825.v.map(_v2827 => Math.max(0, Math.round(_v2827 * D(0.85, 1.15))));
+            let _v2826 = _v2825.v.map(_v2827 => Math.max(0, Math.round(_v2827 * B(0.85, 1.15))));
             _v2825.v = _v2826.length === 2 ? [Math.min(..._v2826), Math.max(..._v2826)] : _v2826;
           }));
           return null;
         }
-        let _v2828 = _v2771.mods.filter(_v2829 => !qr(_v2771, _v2829));
+        let _v2828 = _v2771.mods.filter(_v2829 => !Qr(_v2771, _v2829));
         if (!_v2828.length) return "没有可以重随的词缀(破溃或已锁定)";
-        for (let _v2830 of _v2828) if (_v2830.ur) _v2830.v = bo(_v2830.ur); else {
-          let _v2831 = Da(_v2771, _v2830.id);
-          _v2830.v = bo(_v2831.ranges[_v2830.ti]);
+        for (let _v2830 of _v2828) if (_v2830.ur) _v2830.v = wo(_v2830.ur); else {
+          let _v2831 = qa(_v2771, _v2830.id);
+          _v2830.v = wo(_v2831.ranges[_v2830.ti]);
         }
         return null;
       }
     case "frac":
-      return _v2771.kind !== "item" && _v2771.kind !== "soul" ? "只能用于装备或兽魂" : _v2771.rarity !== 2 ? "需要稀有装备" : AffixRegCount(_v2771, "P") + AffixRegCount(_v2771, "S") < 4 ? "需要至少 4 条常规词缀" : _v2771.mods.some(_v2832 => _v2832.fr) ? "每件装备只能有 1 条破溃词缀" : (ae(_v2771.mods.filter(_v2833 => AffixClass(_v2833) === "regular" && AffixIsSide(_v2833))).fr = !0, null);
+      return _v2771.kind !== "item" && _v2771.kind !== "soul" ? "只能用于装备或兽魂" : _v2771.rarity !== 2 ? "需要稀有装备" : AffixRegCount(_v2771, "P") + AffixRegCount(_v2771, "S") < 4 ? "需要至少 4 条常规词缀" : _v2771.mods.some(_v2832 => _v2832.fr) ? "每件装备只能有 1 条破溃词缀" : (oe(_v2771.mods.filter(_v2833 => AffixClass(_v2833) === "regular" && AffixIsSide(_v2833))).fr = !0, null);
     case "scour":
       {
         if (_v2771.rarity === 0 || _v2774) return "需要魔法或稀有物品";
-        (_v2771.mods = _v2771.mods.filter(_v2834 => qr(_v2771, _v2834) || AffixClass(_v2834) !== "regular"), delete _v2771.meta, _v2771.rarity = B$(_v2771.mods.filter(_v2835 => AffixClass(_v2835) === "regular")));
+        (_v2771.mods = _v2771.mods.filter(_v2834 => Qr(_v2771, _v2834) || AffixClass(_v2834) !== "regular"), delete _v2771.meta, _v2771.rarity = MC(_v2771.mods.filter(_v2835 => AffixClass(_v2835) === "regular")));
         break;
       }
     case "chance":
@@ -12260,9 +12260,9 @@ cL = function (_v2770, _v2771) {
         let _v2836 = OmHas("omen_ancient");
         if (_v2836 && _v2771.kind !== "item") return "远古预兆只能作用于装备";
         if (_v2771.kind === "item") {
-          let _v2837 = pt.filter(_v2838 => pe[_v2838.base].slot === _v2771.slot && (_v2771.slot !== "W" || pe[_v2838.base].wt === pe[_v2771.base].wt));
-          if (_v2837.length && (_v2836 || E() < 0.04)) {
-            let _v2839 = Ut(ae(_v2837), _v2771.ilvl);
+          let _v2837 = yt.filter(_v2838 => pe[_v2838.base].slot === _v2771.slot && (_v2771.slot !== "W" || pe[_v2838.base].wt === pe[_v2771.base].wt));
+          if (_v2837.length && (_v2836 || I() < 0.04)) {
+            let _v2839 = Kt(oe(_v2837), _v2771.ilvl);
             return (Object.assign(_v2771, _v2839, {
               uid: _v2771.uid
             }), _v2836 && OmTake("omen_ancient"), null);
@@ -12272,25 +12272,25 @@ cL = function (_v2770, _v2771) {
         if (OmHas("omen_chance2")) {
           if (_v2771.kind !== "item") return "机遇预兆只能作用于装备";
           (_v2771.rarity = 2, OmTake("omen_chance2"));
-          for (let _v2840 = 0; _v2840 < 4; _v2840++) ht(_v2771);
+          for (let _v2840 = 0; _v2840 < 4; _v2840++) wt(_v2771);
           break;
         }
-        if (E() < 0.7) (_v2771.rarity = 1, ht(_v2771), Io(0.5) && ht(_v2771)); else {
+        if (I() < 0.7) (_v2771.rarity = 1, wt(_v2771), Do(0.5) && wt(_v2771)); else {
           _v2771.rarity = 2;
-          for (let _v2841 = 0; _v2841 < 4; _v2841++) ht(_v2771);
+          for (let _v2841 = 0; _v2841 < 4; _v2841++) wt(_v2771);
         }
         break;
       }
     default:
       return "未知通货";
   }
-  return (aa(_v2771), null);
+  return (na(_v2771), null);
 };
-hc = function (_v2842, _v2843) {
+zc = function (_v2842, _v2843) {
   _v2842 = _v2842 || "witch";
-  let _v2844 = ie[_v2842], _v2845 = Nt[_v2842];
+  let _v2844 = le[_v2842], _v2845 = Ut[_v2842];
   (u = {
-    v: z1,
+    v: Eg,
     cls: _v2842,
     fsalt: String(Date.now()),
     debug: !!_v2843,
@@ -12325,7 +12325,7 @@ hc = function (_v2842, _v2843) {
     cur: {},
     om: {},
     omenSeen: 0,
-    tree: [kr(_v2842)],
+    tree: [Er(_v2842)],
     bonusPts: 0,
     hist: [],
     device: null,
@@ -12362,7 +12362,7 @@ hc = function (_v2842, _v2843) {
     shopHeat: {},
     advClassStart: _v2842,
     god: !1
-  }, u.advTree = ["adv_root", _v2842 + "_start"], vt.forEach(_v2846 => u.cur[_v2846] = 0), Object.assign(u.cur, {
+  }, u.advTree = ["adv_root", _v2842 + "_start"], Tt.forEach(_v2846 => u.cur[_v2846] = 0), Object.assign(u.cur, {
     trans: 6,
     aug: 4,
     alt: 4,
@@ -12376,19 +12376,19 @@ hc = function (_v2842, _v2843) {
     omen_exalt_p: 2,
     omen_whittle: 1
   }));
-  let _v2847 = Ea.find(_v2848 => _v2848.wt === _v2844.wt && _v2848.lv === 1), _v2849 = Et(_v2847, 5, 0);
-  (_v2849.rarity = 1, _v2849.mods = _v2844.wt === "staff" ? [Ii("spellInc", 1), Ii("castSpd", 0)] : [Ii("physInc", 1), Ii("atkSpd", 0)], aa(_v2849), u.equip.weapon = _v2849, u.equip.body = Et(pe[_v2842 === "witch" || _v2842 === "monk" || _v2842 === "sorceress" ? "学徒长袍" : "粗布外衣"], 1, 0), u.equip.boots = Et(pe.旅者之靴, 1, 0), u.equip.ring1 = Et(pe.红玉戒指, 3, 0), u.equip.belt = Et(pe.皮腰带, 1, 0));
+  let _v2847 = Pa.find(_v2848 => _v2848.wt === _v2844.wt && _v2848.lv === 1), _v2849 = Ft(_v2847, 5, 0);
+  (_v2849.rarity = 1, _v2849.mods = _v2844.wt === "staff" ? [Vi("spellInc", 1), Vi("castSpd", 0)] : [Vi("physInc", 1), Vi("atkSpd", 0)], na(_v2849), u.equip.weapon = _v2849, u.equip.body = Ft(pe[_v2842 === "witch" || _v2842 === "monk" || _v2842 === "sorceress" ? "学徒长袍" : "粗布外衣"], 1, 0), u.equip.boots = Ft(pe.旅者之靴, 1, 0), u.equip.ring1 = Ft(pe.红玉戒指, 3, 0), u.equip.belt = Ft(pe.皮腰带, 1, 0));
   let _v2850 = ({
     ranger: "锐利箭袋",
     huntress: "木圆盾",
     samurai: "胁差",
     warrior: "木圆盾"
   })[_v2842];
-  (_v2850 && (u.equip.offhand = Et(pe[_v2850], 1, 0)), u.inv.push(Ht(1), Ht(1), Ht(1), Ht(2), Et(pe.皮革兜帽, 3, 0), Et(pe.皮手套, 3, 0)), _v2842 === "witch" && u.inv.push(Et(pe.骨制短杖, 3, 1), Et(pe.骨制法器, 3, 0)), _v2844.skills.forEach(([_v2851, _v2852, _v2853], _v2854) => u.skills[_v2854] = ho(_v2851, _v2852, _v2853)), _v2844.gems.forEach(([_v2855, _v2856, _v2857]) => u.gems.push(ho(_v2855, _v2856, _v2857))), _v2844.sups.forEach(_v2858 => u.gems.push(_s(_v2858))));
+  (_v2850 && (u.equip.offhand = Ft(pe[_v2850], 1, 0)), u.inv.push(Zt(1), Zt(1), Zt(1), Zt(2), Ft(pe.皮革兜帽, 3, 0), Ft(pe.皮手套, 3, 0)), _v2842 === "witch" && u.inv.push(Ft(pe.骨制短杖, 3, 1), Ft(pe.骨制法器, 3, 0)), _v2844.skills.forEach(([_v2851, _v2852, _v2853], _v2854) => u.skills[_v2854] = vo(_v2851, _v2852, _v2853)), _v2844.gems.forEach(([_v2855, _v2856, _v2857]) => u.gems.push(vo(_v2855, _v2856, _v2857))), _v2844.sups.forEach(_v2858 => u.gems.push(Ys(_v2858))));
   let _v2859 = new Set([..._v2844.skills, ..._v2844.gems].map(_v2860 => _v2860[0]));
   (_v2845.pool.forEach(_v2861 => {
-    _v2859.has(_v2861) || u.gems.push(ho(_v2861, 1, 2));
-  }), ["huntress", "monk", "samurai", "warrior", "jianke"].includes(_v2842) && u.gems.push(ho("cyclone", 1, 2)), u.buffs[0] = el(_v2845.buff), u.gems.push(ar(({
+    _v2859.has(_v2861) || u.gems.push(vo(_v2861, 1, 2));
+  }), ["huntress", "monk", "samurai", "warrior", "jianke"].includes(_v2842) && u.gems.push(vo("cyclone", 1, 2)), u.buffs[0] = yl(_v2845.buff), u.gems.push(ur(({
     witch: "meta_cof",
     ranger: "meta_coc",
     huntress: "meta_coc",
@@ -12398,7 +12398,7 @@ hc = function (_v2842, _v2843) {
     sorceress: "meta_coc",
     warrior: "meta_coms",
     jianke: "meta_coc"
-  })[_v2842])), u.gems.push(_s("hourglass"), _s(({
+  })[_v2842])), u.gems.push(Ys("hourglass"), Ys(({
     witch: "icebite",
     ranger: "ricochet",
     huntress: "frenzyGain",
@@ -12408,15 +12408,15 @@ hc = function (_v2842, _v2843) {
     sorceress: "arcanetempo",
     warrior: "armourexplode",
     jianke: "jkEcho"
-  })[_v2842])), _v2843 && _l(), W("char:bind", {
+  })[_v2842])), _v2843 && pc(), G("char:bind", {
     fresh: !0,
     id: null
   }));
 };
-Fm = function (_v2862) {
+C1 = function (_v2862) {
   if (typeof _v2862.v != "number") return null;
-  for (; _v2862.v < z1 && P$[_v2862.v]; ) P$[_v2862.v](_v2862);
-  if (_v2862.v !== z1) return null;
+  for (; _v2862.v < Eg && kC[_v2862.v]; ) kC[_v2862.v](_v2862);
+  if (_v2862.v !== Eg) return null;
   for (; _v2862.skills.length < 7; ) _v2862.skills.push(null);
   _v2862.om && typeof _v2862.om == "object" || (_v2862.om = {});
   typeof _v2862.omenSeen == "number" || (_v2862.omenSeen = 0);
@@ -12433,14 +12433,14 @@ Fm = function (_v2862) {
   try {
     // 旧存档可能带有已不存在的一层天赋/升华节点 key，先过滤，避免渲染时读未定义节点的 .b 崩溃
     try {
-      if (Array.isArray(_v2862.tree) && typeof be !== "undefined" && be && Array.isArray(be.nodes)) {
+      if (Array.isArray(_v2862.tree) && typeof xe !== "undefined" && xe && Array.isArray(xe.nodes)) {
         var __validTree = {};
-        be.nodes.forEach(function (n) { if (n && n.id != null) __validTree[n.id] = 1; });
+        xe.nodes.forEach(function (n) { if (n && n.id != null) __validTree[n.id] = 1; });
         _v2862.tree = _v2862.tree.filter(function (k) { return !!__validTree[k]; });
       }
-      if (Array.isArray(_v2862.ascNodes) && _v2862.asc && typeof Me !== "undefined" && Me[_v2862.asc] && Array.isArray(Me[_v2862.asc].nodes)) {
+      if (Array.isArray(_v2862.ascNodes) && _v2862.asc && typeof Ce !== "undefined" && Ce[_v2862.asc] && Array.isArray(Ce[_v2862.asc].nodes)) {
         var __validAsc = {};
-        Me[_v2862.asc].nodes.forEach(function (n) { if (n && n.k != null) __validAsc[n.k] = 1; });
+        Ce[_v2862.asc].nodes.forEach(function (n) { if (n && n.k != null) __validAsc[n.k] = 1; });
         _v2862.ascNodes = _v2862.ascNodes.filter(function (k) { return !!__validAsc[k]; });
       }
       // 旧版本曾解除宝石等级上限，读档时把自然等级收回到 40（装备加等级仍可超过 40）
@@ -12453,23 +12453,23 @@ Fm = function (_v2862) {
       } catch (e2) {}
       // 过滤旧存档里已删除的主动/元技能宝石（例如工程示例），避免读取 X[gid].icon 崩溃
       try {
-        if (typeof te !== "undefined" && te) {
+        if (typeof se !== "undefined" && se) {
           var __knownSkill = function (g) {
             if (!g || g.kind !== "gem") return true;
-            return !!(te[g.gid]);
+            return !!(se[g.gid]);
           };
           if (Array.isArray(_v2862.gems)) _v2862.gems = _v2862.gems.filter(__knownSkill);
           if (Array.isArray(_v2862.skills)) _v2862.skills = _v2862.skills.map(function (sk) { return sk && __knownSkill(sk) ? sk : null; });
           if (Array.isArray(_v2862.gems)) {
             _v2862.gems.forEach(function (g) {
-              if (g && Array.isArray(g.inner)) g.inner = g.inner.map(function (it) { return it && te[it.gid] ? it : null; });
+              if (g && Array.isArray(g.inner)) g.inner = g.inner.map(function (it) { return it && se[it.gid] ? it : null; });
             });
           }
         }
       } catch (e3) {}
       // 旧存档可能还带着已删除的辅助宝石（例如工程示例），过滤掉避免宝石页读取未定义 .mech
       try {
-        var __supTable = typeof oe !== "undefined" ? oe : null;
+        var __supTable = typeof ne !== "undefined" ? ne : null;
         if (__supTable) {
           if (Array.isArray(_v2862.gems)) _v2862.gems = _v2862.gems.filter(function (g) { return !g || g.kind !== "sup" || !!__supTable[g.gid]; });
           if (Array.isArray(_v2862.skills)) _v2862.skills.forEach(function (sk) {
@@ -12490,32 +12490,32 @@ Fm = function (_v2862) {
   }
   return _v2862;
 };
-mL = function () {
-  ($("kill:loot", _v2867 => {
+m9 = function () {
+  (A("kill:loot", _v2867 => {
     let _v2868 = _v2867.m;
-    (_v2868.rift && (ne("rift3") && (_v2867.dm *= 1.4), ne("rift7") && (_v2867.dm *= 1.6)), _v2868.rar === 3 ? (ne("boss1") && (_v2867.dm *= 1.5), _v2868.awake && (_v2867.dm *= 2), ne("boss7") && (_v2867.dm *= 3), ne("boss4") && (_v2867.rb += 100)) : ne("boss7") && (_v2867.dm *= 0.6), _v2868.envHit && ne("enc3") && (_v2867.dm *= 2), _v2868.encM && ne("enc7") && (_v2867.dm *= 1.5));
-  }), $("kill", ({m: _v2869}) => {
+    (_v2868.rift && (re("rift3") && (_v2867.dm *= 1.4), re("rift7") && (_v2867.dm *= 1.6)), _v2868.rar === 3 ? (re("boss1") && (_v2867.dm *= 1.5), _v2868.awake && (_v2867.dm *= 2), re("boss7") && (_v2867.dm *= 3), re("boss4") && (_v2867.rb += 100)) : re("boss7") && (_v2867.dm *= 0.6), _v2868.envHit && re("enc3") && (_v2867.dm *= 2), _v2868.encM && re("enc7") && (_v2867.dm *= 1.5));
+  }), A("kill", ({m: _v2869}) => {
     if (!(_v2869.rar !== 3 || _v2869.guard)) {
-      if ((ne("boss3") && E() < 0.08 && de(_v2869.x, _v2869.y, {
+      if ((re("boss3") && I() < 0.08 && ue(_v2869.x, _v2869.y, {
         kind: "cur",
         cur: "divine"
-      }), ne("boss6") && E() < 0.15)) {
-        let _v2870 = pt.filter(_v2871 => !_v2871.noDrop && _v2871.lv <= n.Z.lvl + 5);
-        _v2870.length && de(_v2869.x, _v2869.y, {
+      }), re("boss6") && I() < 0.15)) {
+        let _v2870 = yt.filter(_v2871 => !_v2871.noDrop && _v2871.lv <= n.Z.lvl + 5);
+        _v2870.length && ue(_v2869.x, _v2869.y, {
           kind: "it",
-          it: Ut(ae(_v2870), n.Z.lvl)
+          it: Kt(oe(_v2870), n.Z.lvl)
         });
       }
-      if (ne("boss7") && E() < 0.03) for (let _v2872 = 0; _v2872 < 3; _v2872++) de(_v2869.x, _v2869.y, {
+      if (re("boss7") && I() < 0.03) for (let _v2872 = 0; _v2872 < 3; _v2872++) ue(_v2869.x, _v2869.y, {
         kind: "cur",
         cur: "divine"
       });
     }
-  }), $("boss:map", _v2873 => {
-    ne("boss2") && (_v2873.up = 0.68);
-  }), $("boss:kill", ({m: _v2874}) => bw(_v2874)));
+  }), A("boss:map", _v2873 => {
+    re("boss2") && (_v2873.up = 0.68);
+  }), A("boss:kill", ({m: _v2874}) => q5(_v2874)));
 };
-Object.assign(H4, {
+Object.assign(pS, {
   预兆: "Omens",
   全部预兆: "All Omens",
   "全部预兆 ×5": "All Omens ×5",
@@ -12578,42 +12578,42 @@ Object.assign(H4, {
   "你点击的下一个神龛会提供一个额外效果": "the next Shrine you click will grant an additional effect"
 });
 var DS_SLOTS = "WQSKXHBGFLRAO";
-Le("ds_es", "P", DS_SLOTS, "+{0} 能量护盾", "es", [[60, 85], [90, 120]], {
+Fe("ds_es", "P", DS_SLOTS, "+{0} 能量护盾", "es", [[60, 85], [90, 120]], {
   nm: "渎灵·溺光",
   dsec: !0,
   fac: "amanamu",
   w: 1,
   lv: [1, 50]
 });
-Le("ds_cast", "S", DS_SLOTS, "施法速度提高 {0}%", "castSpd", [[12, 16], [18, 24]], {
+Fe("ds_cast", "S", DS_SLOTS, "施法速度提高 {0}%", "castSpd", [[12, 16], [18, 24]], {
   nm: "渎灵·低语",
   dsec: !0,
   fac: "amanamu",
   w: 1,
   lv: [1, 50]
 });
-Le("ds_skill", "P", DS_SLOTS, "+{0} 所有技能宝石等级", "skillLvl", [[1, 1], [2, 2]], {
+Fe("ds_skill", "P", DS_SLOTS, "+{0} 所有技能宝石等级", "skillLvl", [[1, 1], [2, 2]], {
   nm: "渎灵·虚空",
   dsec: !0,
   fac: "amanamu",
   w: 1,
   lv: [1, 50]
 });
-Le("ds_life", "P", DS_SLOTS, "+{0} 最大生命", "life", [[70, 90], [100, 130]], {
+Fe("ds_life", "P", DS_SLOTS, "+{0} 最大生命", "life", [[70, 90], [100, 130]], {
   nm: "渎灵·血肉",
   dsec: !0,
   fac: "kurgal",
   w: 1,
   lv: [1, 50]
 });
-Le("ds_atk", "S", DS_SLOTS, "攻击速度提高 {0}%", "atkSpd", [[12, 15], [16, 22]], {
+Fe("ds_atk", "S", DS_SLOTS, "攻击速度提高 {0}%", "atkSpd", [[12, 15], [16, 22]], {
   nm: "渎灵·喘息",
   dsec: !0,
   fac: "kurgal",
   w: 1,
   lv: [1, 50]
 });
-Le("ds_leech", "S", DS_SLOTS, "击中偷取 {0}% 伤害为生命", "leech", [[20, 30], [35, 50]], {
+Fe("ds_leech", "S", DS_SLOTS, "击中偷取 {0}% 伤害为生命", "leech", [[20, 30], [35, 50]], {
   nm: "渎灵·黑血",
   dsec: !0,
   fac: "kurgal",
@@ -12621,36 +12621,36 @@ Le("ds_leech", "S", DS_SLOTS, "击中偷取 {0}% 伤害为生命", "leech", [[20
   lv: [1, 50],
   div: 10
 });
-Le("ds_crit", "S", DS_SLOTS, "暴击率提高 {0}%", "critInc", [[40, 55], [60, 80]], {
+Fe("ds_crit", "S", DS_SLOTS, "暴击率提高 {0}%", "critInc", [[40, 55], [60, 80]], {
   nm: "渎灵·军团",
   dsec: !0,
   fac: "ulaman",
   w: 1,
   lv: [1, 50]
 });
-Le("ds_move", "S", DS_SLOTS, "移动速度提高 {0}%", "moveInc", [[15, 19], [20, 26]], {
+Fe("ds_move", "S", DS_SLOTS, "移动速度提高 {0}%", "moveInc", [[15, 19], [20, 26]], {
   nm: "渎灵·跋涉",
   dsec: !0,
   fac: "ulaman",
   w: 1,
   lv: [1, 50]
 });
-Le("ds_rarity", "S", DS_SLOTS, "物品稀有度提高 {0}%", "rarity", [[35, 45], [50, 65]], {
+Fe("ds_rarity", "S", DS_SLOTS, "物品稀有度提高 {0}%", "rarity", [[35, 45], [50, 65]], {
   nm: "渎灵·特克罗",
   dsec: !0,
   fac: "tecrod",
   w: 1,
   lv: [1, 50]
 });
-Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17, 22]], {
+Fe("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17, 22]], {
   nm: "渎灵·回响",
   dsec: !0,
   w: 1,
   lv: [1, 50]
 });
 (function () {
-  var _v2875 = c$;
-  c$ = function () {
+  var _v2875 = VA;
+  VA = function () {
     try {
       _v2875();
     } catch (_v2876) {
@@ -12686,8 +12686,8 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
   window.addEventListener("pointerdown", _v2881, true);
 })();
 (function () {
-  var _v2884 = et;
-  et = function (_v2885, _v2886, _v2887, _v2888, _v2889) {
+  var _v2884 = nt;
+  nt = function (_v2885, _v2886, _v2887, _v2888, _v2889) {
     var _v2890 = _v2884.apply(this, arguments);
     try {
       if (_v2890 && !_v2890.minion && !_v2890.ally) {
@@ -12712,8 +12712,8 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
     } catch (_v2892) {}
     return _v2890;
   };
-  var _v2893 = qf;
-  qf = function () {
+  var _v2893 = dd;
+  dd = function () {
     try {
       if (n && n.Z && n.Z.type === "map" && n.delRun) {
         var _v2894 = null, _v2895 = 4900;
@@ -12731,16 +12731,16 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
     } catch (_v2899) {}
     return _v2893.apply(this, arguments);
   };
-  var _v2900 = Qr;
-  Qr = function (_v2901, _v2902, _v2903) {
+  var _v2900 = di;
+  di = function (_v2901, _v2902, _v2903) {
     var _v2904 = _v2900.apply(this, arguments);
     try {
       if (n.delRun && _v2901 && _v2901.delBoss) DelBossKilled(_v2901);
     } catch (_v2905) {}
     return _v2904;
   };
-  var _v2906 = bc;
-  bc = function () {
+  var _v2906 = Wc;
+  Wc = function () {
     var _v2907 = _v2906.apply(this, arguments);
     try {
       if (!DelLayerMap && n.delRun && (!n.Z || n.Z.type !== "map" || !n.Z.delLayer)) {
@@ -12751,8 +12751,8 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
     } catch (_v2908) {}
     return _v2907;
   };
-  var _v2909 = c$;
-  c$ = function () {
+  var _v2909 = VA;
+  VA = function () {
     _v2909();
     try {
       if (n.delRun) for (var _v2910 = 0; _v2910 < n.objs.length; _v2910++) {
@@ -12761,8 +12761,8 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
       }
     } catch (_v2913) {}
   };
-  var _v2914 = rT;
-  rT = function () {
+  var _v2914 = U$;
+  U$ = function () {
     var _v2915 = _v2914.apply(this, arguments) || [];
     try {
       if (n.delRun) _v2915.push(["惊悸迷雾 · 第 " + n.delRun.layer + "/" + DEL_LAYERS + " 层", !0]);
@@ -12785,16 +12785,16 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
   }
 })();
 (function () {
-  var _v2922 = Qr;
-  Qr = function (_v2923, _v2924, _v2925) {
+  var _v2922 = di;
+  di = function (_v2923, _v2924, _v2925) {
     var _v2926 = _v2922.apply(this, arguments);
     try {
       if (_v2923 && n.Z && n.Z.type === "map" && _v2923.rar === 3) {
         var _v2927 = Math.max(1, n.Z && n.Z.lvl || 80);
         var _v2928 = function (_v2929, _v2930) {
-          if (Na[_v2929] && E() < _v2930) de(_v2923.x, _v2923.y, {
+          if (Ua[_v2929] && I() < _v2930) ue(_v2923.x, _v2923.y, {
             kind: "it",
-            it: Ut(Na[_v2929], _v2927)
+            it: Kt(Ua[_v2929], _v2927)
           });
         };
         _v2928("headhunter", BAL.drop.headhunter);
@@ -12807,8 +12807,8 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
   };
 })();
 (function () {
-  var _v2932 = xp;
-  xp = function (_v2933) {
+  var _v2932 = ou;
+  ou = function (_v2933) {
     var _v2934 = _v2932.apply(this, arguments);
     try {
       if (_v2933 && _v2933.abyssBox) GrantAtlasPoint("深渊");
@@ -12996,8 +12996,8 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
       } catch (_v2993) {}
     });
   })();
-  var _v2994 = Mx;
-  Mx = function (_v2995) {
+  var _v2994 = Zw;
+  Zw = function (_v2995) {
     _v2994(_v2995);
     try {
       var _v2996 = Date.now();
@@ -13010,8 +13010,8 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
   };
 })();
 (function () {
-  var _v2998 = et;
-  et = function (_v2999, _v3000, _v3001, _v3002, _v3003) {
+  var _v2998 = nt;
+  nt = function (_v2999, _v3000, _v3001, _v3002, _v3003) {
     var _v3004 = _v2998.apply(this, arguments);
     try {
       if (_v3004 && n.simRun) {
@@ -13027,16 +13027,16 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
     } catch (_v3005) {}
     return _v3004;
   };
-  var _v3006 = Qr;
-  Qr = function (_v3007, _v3008, _v3009) {
+  var _v3006 = di;
+  di = function (_v3007, _v3008, _v3009) {
     var _v3010 = _v3006.apply(this, arguments);
     try {
       if (n.simRun && _v3007 && _v3007.simBoss) SimBossKilled(_v3007);
     } catch (_v3011) {}
     return _v3010;
   };
-  var _v3012 = qf;
-  qf = function () {
+  var _v3012 = dd;
+  dd = function () {
     try {
       if (n && n.Z && n.Z.type === "map" && n.simRun) {
         var _v3013 = null, _v3014 = 4900;
@@ -13054,8 +13054,8 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
     } catch (_v3018) {}
     return _v3012.apply(this, arguments);
   };
-  var _v3019 = bc;
-  bc = function () {
+  var _v3019 = Wc;
+  Wc = function () {
     var _v3020 = _v3019.apply(this, arguments);
     try {
       if (!SimLayerMap && (n.simRun || n.sim) && (!n.Z || n.Z.type !== "map" || !n.Z.simLayer)) {
@@ -13065,8 +13065,8 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
     } catch (_v3021) {}
     return _v3020;
   };
-  var _v3022 = rT;
-  rT = function () {
+  var _v3022 = U$;
+  U$ = function () {
     var _v3023 = _v3022.apply(this, arguments) || [];
     try {
       if (n.simRun) _v3023.push(["迷雾副本 · 第 " + n.simRun.layer + "/" + SIM_LAYERS + " 层", !0]);
@@ -13078,8 +13078,8 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
   var _v3025 = window.HOTFIX;
   if (!_v3025) return;
   try {
-    if (_v3025.currencies) for (var _v3026 in _v3025.currencies) if (z[_v3026]) Object.assign(z[_v3026], _v3025.currencies[_v3026]);
-    if (_v3025.mods) for (var _v3027 in _v3025.mods) if (Yt[_v3027]) Object.assign(Yt[_v3027], _v3025.mods[_v3027]);
+    if (_v3025.currencies) for (var _v3026 in _v3025.currencies) if (q[_v3026]) Object.assign(q[_v3026], _v3025.currencies[_v3026]);
+    if (_v3025.mods) for (var _v3027 in _v3025.mods) if (ta[_v3027]) Object.assign(ta[_v3027], _v3025.mods[_v3027]);
     if (_v3025.bal) Object.assign(BAL, _v3025.bal);
     try {
       RuneApplyConfig(BAL.runes);
@@ -13087,27 +13087,27 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
       console.warn("[rune] hotfix apply failed", _v3028);
     }
     SIM_LAYERS = BAL.simLayers;
-    if (typeof _v3025.atlasCap === "number") $r = _v3025.atlasCap;
+    if (typeof _v3025.atlasCap === "number") Br = _v3025.atlasCap;
     if (_v3025.uniques) for (var _v3029 in _v3025.uniques) {
-      var _v3030 = Na[_v3029] || pt.find(function (_v3031) {
+      var _v3030 = Ua[_v3029] || yt.find(function (_v3031) {
         return _v3031.id === _v3029;
       });
       if (_v3030) Object.assign(_v3030, _v3025.uniques[_v3029]);
     }
     if (typeof _v3025.apply === "function") _v3025.apply({
-      P: z,
-      Ct: Yt,
-      Ur: rn,
-      Oe: pt,
-      aa: Na,
-      Na: Hs,
+      P: q,
+      Ct: ta,
+      Ur: un,
+      Oe: yt,
+      aa: Ua,
+      Na: Ks,
       le: pe,
       BAL: BAL,
       get As() {
-        return $r;
+        return Br;
       },
       set As(_v3032) {
-        $r = _v3032;
+        Br = _v3032;
       },
       get u() {
         return u;
@@ -13193,7 +13193,7 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
   var _v3036 = [];
   _v3035.forEach(function (_v3037) {
     if (!_v3037 || !_v3037.id || !_v3037.n || !_v3037.base) return;
-    if (Na[_v3037.id]) return;
+    if (Ua[_v3037.id]) return;
     if (!pe[_v3037.base]) {
       console.warn("[暗金扩展] 基底不存在, 已跳过: " + _v3037.base + " (" + _v3037.id + ")");
       return;
@@ -13204,7 +13204,7 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
     _v3037.fl = _v3037.fl || "";
     _v3037.src = _v3037.src || "world";
     var _v3038 = _v3037.mods.filter(function (_v3039) {
-      return !_v3039 || !_v3039[0] || !Yt[_v3039[0]] && !rn[_v3039[0]];
+      return !_v3039 || !_v3039[0] || !ta[_v3039[0]] && !un[_v3039[0]];
     });
     if (_v3038.length) {
       console.warn("[暗金扩展] 未知词缀, 已跳过: " + _v3037.id + " -> " + _v3038.map(function (_v3040) {
@@ -13212,8 +13212,8 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
       }).join(","));
       return;
     }
-    pt.push(_v3037);
-    Na[_v3037.id] = _v3037;
+    yt.push(_v3037);
+    Ua[_v3037.id] = _v3037;
     _v3036.push(_v3037.id);
   });
   if (_v3036.length) console.info("[暗金扩展] 已加载新暗金: " + _v3036.join(", "));
@@ -13222,7 +13222,7 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
 (function () {
   function _v3041(_v3042) {
     return _v3042.sr.map(function (_v3043) {
-      return _v3043 ? fe(_v3043[0], _v3043[1]) : null;
+      return _v3043 ? de(_v3043[0], _v3043[1]) : null;
     });
   }
   function _v3044(_v3045, _v3046, _v3047) {
@@ -13236,7 +13236,7 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
     return _v3047[0] + _v3049 % (_v3047[1] - _v3047[0] + 1);
   }
   function _v3051(_v3052) {
-    var _v3053 = _v3052 && _v3052.uniq ? Na[_v3052.uniq] : null;
+    var _v3053 = _v3052 && _v3052.uniq ? Ua[_v3052.uniq] : null;
     if (!_v3053 || !_v3053.sr) return null;
     if (!Array.isArray(_v3052.ur) || _v3052.ur.length !== _v3053.sr.length) {
       _v3052.ur = _v3053.sr.map(function (_v3054, _v3055) {
@@ -13252,16 +13252,16 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
       return _v3057.ur[_v3060] == null ? _v3059 : _v3059.replace("{0}", String(_v3057.ur[_v3060]));
     });
   }
-  var _v3061 = Ut;
-  Ut = function (_v3062, _v3063) {
+  var _v3061 = Kt;
+  Kt = function (_v3062, _v3063) {
     var _v3064 = _v3061.apply(this, arguments);
     try {
       if (_v3064 && _v3062 && _v3062.sr) _v3064.ur = _v3041(_v3062);
     } catch (_v3065) {}
     return _v3064;
   };
-  var _v3066 = Os;
-  Os = function (_v3067) {
+  var _v3066 = qs;
+  qs = function (_v3067) {
     var _v3068 = _v3066.apply(this, arguments);
     try {
       if (_v3068 && _v3068.h && _v3067 && _v3067.uniq) {
@@ -13280,23 +13280,23 @@ Le("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
   };
 })();
 try {
-  if (typeof vt !== "undefined" && vt && vt.length >= 0) {
-    vt.length = 0;
-    Object.keys(z).forEach(function (_v3076) {
-      vt.push(_v3076);
+  if (typeof Tt !== "undefined" && Tt && Tt.length >= 0) {
+    Tt.length = 0;
+    Object.keys(q).forEach(function (_v3076) {
+      Tt.push(_v3076);
     });
   }
 } catch (_v3077) {
   console.warn("[port] rebuild lt", _v3077);
 }
 try {
-  if (typeof va !== "undefined" && typeof Hs !== "undefined") {
-    va = {};
-    Hs.forEach(function (_v3078) {
+  if (typeof Ma !== "undefined" && typeof Ks !== "undefined") {
+    Ma = {};
+    Ks.forEach(function (_v3078) {
       _v3078.nodes.forEach(function (_v3079, _v3080) {
         _v3079.b = _v3078.key;
         _v3079.i = _v3080;
-        va[_v3079.k] = _v3079;
+        Ma[_v3079.k] = _v3079;
       });
     });
   }
@@ -13305,23 +13305,23 @@ try {
 }
 try {
   ["ds_es", "ds_cast", "ds_skill", "ds_life", "ds_atk", "ds_leech", "ds_crit", "ds_move", "ds_rarity", "ds_res"].forEach(function (_v3082) {
-    if (Yt[_v3082] && Gc.indexOf(Yt[_v3082]) < 0) Gc.push(Yt[_v3082]);
+    if (ta[_v3082] && pf.indexOf(ta[_v3082]) < 0) pf.push(ta[_v3082]);
   });
 } catch (_v3083) {
   console.warn("[port] rebuild zn", _v3083);
 }
 try {
-  if (typeof Q4 === "function") Q4();
+  if (typeof vS === "function") vS();
 } catch (_v3084) {
   console.warn("[port] x1", _v3084);
 }
 try {
-  if (typeof hA === "function") hA();
+  if (typeof eR === "function") eR();
 } catch (_v3085) {
   console.warn("[port] Cx", _v3085);
 }
 try {
-  if (typeof G7 === "function") G7();
+  if (typeof WL === "function") WL();
 } catch (_v3086) {
   console.warn("[port] qv", _v3086);
 }
@@ -13330,7 +13330,7 @@ document.addEventListener("keydown", function (_v3087) {
   try {
     if (n.menu) return;
     if (n.held) {
-      ks(null);
+      Ts(null);
       _v3087.preventDefault();
       _v3087.stopImmediatePropagation();
       return;
@@ -13352,13 +13352,13 @@ try {
     try {
       if (n.menu) return;
       if (n.held) {
-        ks(null);
+        Ts(null);
         _v3090.preventDefault();
         _v3090.stopImmediatePropagation();
         return;
       }
       if (n.tab) {
-        Lt();
+        Ot();
         try {
           n.tab = null;
           document.getElementById("panel").hidden = true;
@@ -13372,8 +13372,8 @@ try {
   }, true);
 } catch (_v3093) {}
 try {
-  var _usBase = Bs;
-  Bs = function () {
+  var _usBase = Ss;
+  Ss = function () {
     try {
       if (window.__escGuardUntil && Date.now() < window.__escGuardUntil) return;
     } catch (_v3094) {}
@@ -13396,7 +13396,7 @@ try {
     } catch (e) { return null; }
   }
   function __openGate() {
-    try { if (typeof u1 === "function") { u1(); return true; } } catch (e) { console.error("无尽裂隙打开失败", e); }
+    try { if (typeof ng === "function") { ng(); return true; } } catch (e) { console.error("无尽裂隙打开失败", e); }
     return false;
   }
   window.__openRiftGate = __openGate;
@@ -13434,7 +13434,7 @@ try {
           var d2 = (ob.x - n.pl.x) * (ob.x - n.pl.x) + (ob.y - n.pl.y) * (ob.y - n.pl.y);
           if (d2 < td) { td = d2; te = ob; }
         }
-        if (te) { ev.preventDefault(); ev.stopPropagation(); if (typeof CM === "function") CM(te); return; }
+        if (te) { ev.preventDefault(); ev.stopPropagation(); if (typeof h$ === "function") h$(te); return; }
       }
     } catch (e) { console.error("下一层打开失败", e); }
     if (!__gateNear()) return;
@@ -13447,8 +13447,8 @@ try {
       if (!d || !n || !n.pl) return;
       var g = __gateNear();
       if (!g) return;
-      var d = (bt && bt.s) || 1;
-      var sx = (g.x * d - (bt.l || 0) * d), sy = (g.y * d - (bt.t || 0) * d);
+      var d = (St && St.s) || 1;
+      var sx = (g.x * d - (St.l || 0) * d), sy = (g.y * d - (St.t || 0) * d);
       // 点击门附近（世界坐标换算到画布像素）
       var cv = document.getElementById("cv");
       if (!cv) return;
@@ -13465,15 +13465,15 @@ try {
   try {
     var _v3102 = typeof window !== "undefined" && window.RIFT_EXTRA_SKILLS || [];
     var _v3103 = typeof window !== "undefined" && window.RIFT_EXTRA_SUPPORTS || [];
-    var _v3104 = typeof Wg !== "undefined" && Wg && Wg.SK ? Wg.SK : typeof te !== "undefined" ? te : null;
-    var _v3105 = typeof cg !== "undefined" && cg && cg.SUP ? cg.SUP : typeof oe !== "undefined" ? oe : null;
+    var _v3104 = typeof Pb !== "undefined" && Pb && Pb.SK ? Pb.SK : typeof se !== "undefined" ? se : null;
+    var _v3105 = typeof tb !== "undefined" && tb && tb.SUP ? tb.SUP : typeof ne !== "undefined" ? ne : null;
     if (!_v3104 || !_v3105) {
       console.warn("[mods] 技能/辅助表不可用，跳过新宝石");
       return;
     }
     function _v3106(_v3107, _v3108) {
       try {
-        if (typeof _e !== "undefined" && _e && !_e[_v3107]) _e[_v3107] = _e[_v3108] || _e.arc || "";
+        if (typeof Ye !== "undefined" && Ye && !Ye[_v3107]) Ye[_v3107] = Ye[_v3108] || Ye.arc || "";
       } catch (_v3109) {}
     }
     var _v3110 = [], _v3111 = [];
@@ -13487,8 +13487,8 @@ try {
       _v3106(_v3112.id, "arc");
       if (_v3113.icon) {
         try {
-          if (typeof G !== "undefined" && G) G[_v3112.id] = _v3113.icon;
-          if (typeof _e !== "undefined" && _e) _e[_v3112.id] = _v3113.icon;
+          if (typeof W !== "undefined" && W) W[_v3112.id] = _v3113.icon;
+          if (typeof Ye !== "undefined" && Ye) Ye[_v3112.id] = _v3113.icon;
         } catch (e1) {}
       }
       _v3110.push(_v3112.id);
@@ -13507,29 +13507,29 @@ try {
     var _v3118 = typeof window !== "undefined" && window.RIFT_EXTRA_CURRENCIES || [];
     var _v3119 = window.__RIFT_CUR_ALIAS || (window.__RIFT_CUR_ALIAS = {});
     var _v3120 = [];
-    if (typeof z !== "undefined" && typeof vt !== "undefined") {
+    if (typeof q !== "undefined" && typeof Tt !== "undefined") {
       _v3118.forEach(function (_v3121) {
-        if (!_v3121 || !_v3121.id || _v3121.enabled === false || z[_v3121.id]) return;
+        if (!_v3121 || !_v3121.id || _v3121.enabled === false || q[_v3121.id]) return;
         var _v3122 = {};
         for (var _v3123 in _v3121) if (_v3123 !== "id" && _v3123 !== "enabled" && _v3123 !== "like") _v3122[_v3123] = _v3121[_v3123];
         if (!_v3122.n) _v3122.n = _v3121.id;
         if (!_v3122.d) _v3122.d = "";
         if (!_v3122.grp) _v3122.grp = "basic";
         if (_v3122.v == null) _v3122.v = 0.5;
-        if (_v3122.advLike && z[_v3122.advLike]) _v3122.v = Math.round(z[_v3122.advLike].v * (_v3122.vMult || 100));
-        z[_v3121.id] = _v3122;
-        if (_v3121.advLike && z[_v3121.advLike]) {
+        if (_v3122.advLike && q[_v3122.advLike]) _v3122.v = Math.round(q[_v3122.advLike].v * (_v3122.vMult || 100));
+        q[_v3121.id] = _v3122;
+        if (_v3121.advLike && q[_v3121.advLike]) {
           window.__RIFT_ADV = window.__RIFT_ADV || {};
           window.__RIFT_ADV[_v3121.id] = { like: _v3121.advLike };
         }
-        if (vt.indexOf(_v3121.id) < 0) vt.push(_v3121.id);
+        if (Tt.indexOf(_v3121.id) < 0) Tt.push(_v3121.id);
         _v3106(_v3121.id, "chaos");
-        if (_v3121.like && z[_v3121.like]) _v3119[_v3121.id] = _v3121.like;
+        if (_v3121.like && q[_v3121.like]) _v3119[_v3121.id] = _v3121.like;
         _v3120.push(_v3121.id);
       });
       if (!window.__RIFT_CUR_WRAPPED) {
         window.__RIFT_CUR_WRAPPED = 1;
-        var _v3124 = Vs, _v3125 = L0, _v3126 = Ci;
+        var _v3124 = eo, _v3125 = lp, _v3126 = Hi;
         var __advCraft = function (like, item) {
           if (!item || item.kind !== "item") return _v3124.apply(this, arguments);
           var extra = [].slice.call(arguments, 2);
@@ -13564,7 +13564,7 @@ try {
           };
           var tierOK = function (m) {
             try {
-              var def = typeof Da === "function" ? Da(item, m.id) : null;
+              var def = typeof qa === "function" ? qa(item, m.id) : null;
               if (!def || !def.ranges) return true;
               return def.ranges.length - (m.ti || 0) <= 2;
             } catch (e) { return true; }
@@ -13590,16 +13590,16 @@ try {
           // 400 轮都没点出 T2：保留最后一次已经生效的结果，不再回滚报错（保证通货能用）
           return null;
         };
-        Vs = function (_v3127) {
+        eo = function (_v3127) {
           if (window.__RIFT_ADV && window.__RIFT_ADV[_v3127]) {
             return __advCraft.apply(this, [window.__RIFT_ADV[_v3127].like].concat([].slice.call(arguments, 1)));
           }
           return _v3124.apply(this, [_v3119[_v3127] || _v3127].concat([].slice.call(arguments, 1)));
         };
-        L0 = function (_v3128) {
+        lp = function (_v3128) {
           return _v3125.apply(this, [_v3119[_v3128] || _v3128].concat([].slice.call(arguments, 1)));
         };
-        Ci = function (_v3129) {
+        Hi = function (_v3129) {
           return _v3126.apply(this, [_v3119[_v3129] || _v3129].concat([].slice.call(arguments, 1)));
         };
       }
@@ -13620,7 +13620,7 @@ try {
       starEffects: _v3130,
       runewords: _v3132,
       jewels: _v3134,
-      currencyTable: z,
+      currencyTable: q,
       currencyAlias: _v3119,
       skillTable: _v3104,
       supportTable: _v3105
@@ -13653,16 +13653,16 @@ window.__PORT.version = "1.05-port";
     var gainFor = function () { return (n && n.muted) ? 0 : 0.28; };
     var apply = function () {
       try {
-        if (typeof gr !== "undefined" && gr && gr.gain) {
+        if (typeof Ar !== "undefined" && Ar && Ar.gain) {
           var v = gainFor();
-          if (Math.abs((gr.gain.value || 0) - v) > 0.001) gr.gain.value = v;
+          if (Math.abs((Ar.gain.value || 0) - v) > 0.001) Ar.gain.value = v;
         }
       } catch (e) {}
     };
     window.__riftApplyAudio = apply;
     try {
-      var __baseAa2 = Xa;
-      Xa = function () { var r = __baseAa2.apply(this, arguments); apply(); return r; };
+      var __baseAa2 = os;
+      os = function () { var r = __baseAa2.apply(this, arguments); apply(); return r; };
     } catch (e0) {}
     document.addEventListener("click", function (ev) {
       try {
@@ -13674,12 +13674,12 @@ window.__PORT.version = "1.05-port";
     }, true);
     document.addEventListener("visibilitychange", function () {
       try {
-        if (typeof Be === "undefined" || !Be) return;
-        if (document.hidden) { if (Be.state === "running") Be.suspend(); }
-        else { if (Be.state === "suspended") Be.resume(); apply(); }
+        if (typeof Ge === "undefined" || !Ge) return;
+        if (document.hidden) { if (Ge.state === "running") Ge.suspend(); }
+        else { if (Ge.state === "suspended") Ge.resume(); apply(); }
       } catch (e2) {}
     });
-    window.addEventListener("pagehide", function () { try { if (typeof Be !== "undefined" && Be && Be.state === "running") Be.suspend(); } catch (e3) {} });
+    window.addEventListener("pagehide", function () { try { if (typeof Ge !== "undefined" && Ge && Ge.state === "running") Ge.suspend(); } catch (e3) {} });
     setInterval(apply, 1000);
     apply();
   } catch (e) {}
@@ -13700,7 +13700,7 @@ window.__PORT.version = "1.05-port";
         return v;
       } catch (e) { return 0; }
     };
-    $("skill:calc", function (e) {
+    A("skill:calc", function (e) {
       try {
         if (!e || e.cdBase == null) return;
         var red = __tempReduction();
@@ -13708,7 +13708,7 @@ window.__PORT.version = "1.05-port";
         e.cdBase = Math.max(0.1, e.cdBase + red);
       } catch (err) {}
     }, 5);
-    $("skill:start", function (e) {
+    A("skill:start", function (e) {
       try {
         if (!e || !e.c || !(e.c.cd > 0)) return;
         if (!__tempReduction()) return;
@@ -13724,23 +13724,23 @@ window.__PORT.version = "1.05-port";
     window.__quickSellHooked = 1;
     var afterSell = function () {
       // 卖完立刻重绘背包，不用手动关开背包
-      try { if (typeof Ds === "function") Ds(); } catch (e1) {}
+      try { if (typeof Gs === "function") Gs(); } catch (e1) {}
       try { if (typeof refresh === "function") refresh(); } catch (e2) {}
     };
     var sellRare = function () {
       var arr = (u.inv || []).filter(function (i) { return i && i.kind === "item" && i.rarity === 2; });
-      if (!arr.length) { I("没有可出售的稀有装备"); return; }
-      arr.forEach(function (i) { Un(i); });
+      if (!arr.length) { P("没有可出售的稀有装备"); return; }
+      arr.forEach(function (i) { er(i); });
       afterSell();
     };
     var sellIrr = function () {
       var arr = (u.inv || []).filter(function (i) {
         if (!i || i.kind !== "item" || i.rarity >= 3) return false;
         var b = pe[i.base];
-        return !!(b && b.slot === "W" && b.wt && !Nt[u.cls].wts.includes(b.wt));
+        return !!(b && b.slot === "W" && b.wt && !Ut[u.cls].wts.includes(b.wt));
       });
-      if (!arr.length) { I("没有无关的主手武器"); return; }
-      arr.forEach(function (i) { Un(i); });
+      if (!arr.length) { P("没有无关的主手武器"); return; }
+      arr.forEach(function (i) { er(i); });
       afterSell();
     };
     window.__QUICKSELL = { rare: sellRare, irrelevant: sellIrr };
@@ -13752,7 +13752,7 @@ window.__PORT.version = "1.05-port";
       return (u.inv || []).filter(function (i) {
         if (!i || i.kind !== "item" || i.rarity >= 3) return false;
         var b = pe[i.base];
-        return !!(b && b.slot === "W" && b.wt && !Nt[u.cls].wts.includes(b.wt));
+        return !!(b && b.slot === "W" && b.wt && !Ut[u.cls].wts.includes(b.wt));
       }).length;
     };
     var refresh = function () {
@@ -13786,10 +13786,10 @@ window.__PORT.version = "1.05-port";
 })();
 /* 抱团显著节点的「更多伤害」：dmgMore 按乘法生效（inc 类走基础属性系统） */
 try {
-  if (typeof C3 === "object" && C3 && !C3.dmgMore) C3.dmgMore = "更多伤害 +{v}%";
+  if (typeof JS === "object" && JS && !JS.dmgMore) JS.dmgMore = "更多伤害 +{v}%";
   if (!window.__dmgMoreHooked) {
     window.__dmgMoreHooked = 1;
-    $("skill:calc", function (e) {
+    A("skill:calc", function (e) {
       try {
         if (!e) return;
         var m = AdvStatTotals().dmgMore || 0;
@@ -13804,7 +13804,7 @@ window.__PORT.ready = true;
    旧 18.0.1 整段 Vb 覆盖会盖掉 18.0.3 的 HUD/优化（HP/ES 文字、药瓶、交互提示、木桩 DPS、
    伤害数字、200 格背包等）。这里不再覆盖 Vb：先调用基础 18.0.3 的 Vb，再用本 overlay 只补画
    自定义可见对象（深渊坑/裂隙 fissure、仪式、拟像门、迷雾镜、遗存碎片、自定义装置等）。 */
-var __portBaseVb = Ax;
+var __portBaseVb = Jw;
 function __portDrawAbyss(ob) {
   var sealed = ob.st === "sealed" || ob.st === "done";
   var pulse = ob.st === "pit" ? 1 + Math.sin(n.T * 6) * 0.08 : 1;
@@ -13852,12 +13852,12 @@ function __riftPromptSprite(text) {
     var scale = 4, fs = 28;
     var c = document.createElement("canvas");
     var cx = c.getContext("2d");
-    cx.font = "600 " + fs + "px " + (typeof tn !== "undefined" && tn ? tn : "'Microsoft YaHei', sans-serif");
+    cx.font = "600 " + fs + "px " + (typeof cn !== "undefined" && cn ? cn : "'Microsoft YaHei', sans-serif");
     var tw = cx.measureText(text).width;
     c.width = Math.ceil(tw) + 20;
     c.height = fs + 18;
     cx = c.getContext("2d");
-    cx.font = "600 " + fs + "px " + (typeof tn !== "undefined" && tn ? tn : "'Microsoft YaHei', sans-serif");
+    cx.font = "600 " + fs + "px " + (typeof cn !== "undefined" && cn ? cn : "'Microsoft YaHei', sans-serif");
     cx.textAlign = "center";
     cx.textBaseline = "middle";
     cx.fillStyle = "rgba(0,0,0,0.72)";
@@ -13903,11 +13903,11 @@ window.__portDrawGroundCustom = function () {
         }
         if (__pr) {
           try {
-            var __sc2 = (bt && bt.s) || 0;
+            var __sc2 = (St && St.s) || 0;
             if (__sc2) window.__riftPrompt = {
               text: __txt,
-              x: (__pr.x - (bt.l || 0)) * __sc2,
-              y: (__pr.y - 42 - (bt.t || 0)) * __sc2,
+              x: (__pr.x - (St.l || 0)) * __sc2,
+              y: (__pr.y - 42 - (St.t || 0)) * __sc2,
               size: Math.max(12, Math.min(30, 5.5 * __sc2))
             };
           } catch (e) {}
@@ -13974,21 +13974,21 @@ function __riftFixView() {
   try {
     if (typeof n === "undefined" || !n || !n.Z) return;
     var st = document.getElementById("stage");
-    if (!st || !ot) return;
+    if (!st || !ft) return;
     var w = st.clientWidth || 0, h = st.clientHeight || 0;
     if (w < 50 || h < 50) return;
     var dpr = Math.min(2, window.devicePixelRatio || 1);
     var wantW = Math.round(w * dpr), wantH = Math.round(h * dpr);
     var wantU0 = Math.max(1.2, Math.min(w / 480, h / 270)) * (n.touchMode && n.camZoom || 1);
     var bad = false;
-    if (Math.abs(ot.width - wantW) > 2 || Math.abs(ot.height - wantH) > 2) bad = true;
-    if (!isFinite(Yp) || Yp <= 0 || Math.abs(Yp - wantU0) > Math.max(0.03, wantU0 * 0.03)) bad = true;
-    if (!isFinite(so) || !isFinite(oo) || so <= 0 || oo <= 0) bad = true;
-    if (!isFinite(bt.s) || bt.s <= 0.1) bad = true;
+    if (Math.abs(ft.width - wantW) > 2 || Math.abs(ft.height - wantH) > 2) bad = true;
+    if (!isFinite(Fu) || Fu <= 0 || Math.abs(Fu - wantU0) > Math.max(0.03, wantU0 * 0.03)) bad = true;
+    if (!isFinite(lo) || !isFinite(co) || lo <= 0 || co <= 0) bad = true;
+    if (!isFinite(St.s) || St.s <= 0.1) bad = true;
     if (bad) {
-      try { Qm(); } catch (e1) {}
+      try { N1(); } catch (e1) {}
       try { window.__riftResetNext = true; } catch (e2) {}
-      try { if (window.__riftErrors) { window.__riftErrors.push("layout repaired U0=" + Yp + " ot=" + ot.width + "x" + ot.height); if (window.__riftErrors.length > 20) window.__riftErrors.shift(); } } catch (e3) {}
+      try { if (window.__riftErrors) { window.__riftErrors.push("layout repaired U0=" + Fu + " ot=" + ft.width + "x" + ft.height); if (window.__riftErrors.length > 20) window.__riftErrors.shift(); } } catch (e3) {}
     }
   } catch (e) {}
 }
@@ -14003,7 +14003,7 @@ function __riftResetCtxState() {
     d.shadowColor = "rgba(0,0,0,0)";
   } catch (e) {}
 }
-Ax = function () {
+Jw = function () {
   try { if (window.__riftResetNext) { window.__riftResetNext = false; __riftResetCtxState(); } } catch (e) {}
   __riftFixView();
   __riftResetCtxState();
@@ -14024,12 +14024,12 @@ Ax = function () {
    这里给所有 F 通货补齐图标，并定期自检。 */
 function __riftEnsureCurrencyIcons() {
   try {
-    if (typeof z === "undefined" || !z || typeof ci === "undefined" || !ci) return;
-    var ids = Object.keys(z);
+    if (typeof q === "undefined" || !q || typeof Si === "undefined" || !Si) return;
+    var ids = Object.keys(q);
     for (var i = 0; i < ids.length; i++) {
-      var id = ids[i], meta = z[id];
+      var id = ids[i], meta = q[id];
       if (!meta || typeof meta !== "object") continue;
-      if (ci[id]) continue;
+      if (Si[id]) continue;
       try {
         var c = document.createElement("canvas");
         c.width = 9; c.height = 9;
@@ -14042,8 +14042,8 @@ function __riftEnsureCurrencyIcons() {
           if (dd <= 4.2) { g.fillStyle = dd > 3.4 ? "#120e14" : col; g.fillRect(x, y, 1, 1); }
         }
         g.fillStyle = "rgba(255,255,255,0.8)"; g.fillRect(3, 2, 1, 1); g.fillRect(2, 3, 1, 1);
-        ci[id] = c;
-        if (typeof _e !== "undefined" && _e) _e[id] = c.toDataURL();
+        Si[id] = c;
+        if (typeof Ye !== "undefined" && Ye) Ye[id] = c.toDataURL();
       } catch (eIcon) {}
     }
   } catch (e) {}
@@ -14079,21 +14079,21 @@ function DropMulCfg() {
 var __dropMulApplied = !1;
 function DropMulApplyOnce() {
   try {
-    if (__dropMulApplied || typeof z === "undefined" || !z || typeof vt === "undefined") return;
+    if (__dropMulApplied || typeof q === "undefined" || !q || typeof Tt === "undefined") return;
     __dropMulApplied = !0;
     var cfg = DropMulCfg();
     ["divine", "exalt", "chaos", "annul"].forEach(function (id) {
-      if (z[id] && typeof z[id].w === "number") z[id].w = Math.max(0, z[id].w * cfg.coreCur);
+      if (q[id] && typeof q[id].w === "number") q[id].w = Math.max(0, q[id].w * cfg.coreCur);
     });
-    vt.forEach(function (id) {
-      var d = z[id];
+    Tt.forEach(function (id) {
+      var d = q[id];
       if (d && (d.grp === "rune" || d.grp === "ess") && typeof d.w === "number") d.w = d.w * cfg.rune;
     });
   } catch (e) {}
 }
 /* 基础货币选择走 h0：第一次调用时应用权重调整（之后热修 B.A.L 已稳定） */
-var __baseH0 = Xl;
-Xl = function () {
+var __baseH0 = yc;
+yc = function () {
   DropMulApplyOnce();
   return __baseH0.apply(this, arguments);
 };
@@ -14103,7 +14103,7 @@ OmDrop = function () {
   var r = __baseOmDrop.apply(this, arguments);
   try {
     var extra = DropMulCfg().omen - 1;
-    if (r && extra > 0 && E() < extra) __baseOmDrop.apply(this, arguments);
+    if (r && extra > 0 && I() < extra) __baseOmDrop.apply(this, arguments);
   } catch (e) {}
   return r;
 };
@@ -14112,7 +14112,7 @@ DsBoneDrop = function () {
   var r = __baseDsBoneDrop.apply(this, arguments);
   try {
     var extra = DropMulCfg().bone - 1;
-    if (r && extra > 0 && E() < extra) __baseDsBoneDrop.apply(this, arguments);
+    if (r && extra > 0 && I() < extra) __baseDsBoneDrop.apply(this, arguments);
   } catch (e) {}
   return r;
 };
@@ -14121,23 +14121,23 @@ function SimNormalDrop(m) {
   try {
     if (!m || !n || !n.simRun) return;
     var c = DropMulCfg().simNormal;
-    if (E() < c.cur) de(m.x, m.y, { kind: "cur", cur: Xl() });
-    if (E() < c.omen) OmDrop(m.x, m.y);
-    if (E() < c.bone) DsBoneDrop(m.x, m.y, 0);
-    if (E() < c.rune) {
-      var runes = vt.filter(function (id) { return z[id] && z[id].grp === "rune" && (z[id].w || 0) > 0; });
-      if (runes.length && typeof lt === "function") de(m.x, m.y, { kind: "cur", cur: lt(runes, function (id) { return z[id].w || 1; }) });
+    if (I() < c.cur) ue(m.x, m.y, { kind: "cur", cur: yc() });
+    if (I() < c.omen) OmDrop(m.x, m.y);
+    if (I() < c.bone) DsBoneDrop(m.x, m.y, 0);
+    if (I() < c.rune) {
+      var runes = Tt.filter(function (id) { return q[id] && q[id].grp === "rune" && (q[id].w || 0) > 0; });
+      if (runes.length && typeof ht === "function") ue(m.x, m.y, { kind: "cur", cur: ht(runes, function (id) { return q[id].w || 1; }) });
     }
-    if (E() < c.splinter) de(m.x, m.y, { kind: "cur", cur: "splinter" });
+    if (I() < c.splinter) ue(m.x, m.y, { kind: "cur", cur: "splinter" });
   } catch (e) {}
 }
 try {
-  $("kill:loot", function (e) {
+  A("kill:loot", function (e) {
     try {
       if (n && n.simRun && e && e.m && !e.m.simBoss) e.dm = 0;
     } catch (err) {}
   });
-  $("kill", function (ev) {
+  A("kill", function (ev) {
     try {
       if (n && n.simRun && ev && ev.m && !ev.m.simBoss) SimNormalDrop(ev.m);
     } catch (err) {}

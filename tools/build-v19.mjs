@@ -21,7 +21,7 @@ const EXPOSE = path.join(W, "build", "expose_v19.js");
 const CSSF = path.join(W, "pack", "余烬裂隙-PoE2内容扩展包v2.0.5", "迁移工具", "build", "port_css.css");
 const MODS_DIR = path.join(W, "pack", "余烬裂隙-PoE2内容扩展包v2.0.5", "mods");
 const HOTFIX_DIR = path.join(W, "pack", "余烬裂隙-PoE2内容扩展包v2.0.5", "迁移工具", "hotfix");
-const VERSION = "2.2.0";
+const VERSION = "2.3.0";
 const REPORT = path.join(W, "reports", "build-v19-report.json");
 
 const MOD_FILES = ["skills.js", "supports.js", "currencies.js", "star_effects.js", "runewords.js", "jewels.js"];
@@ -114,32 +114,41 @@ function main() {
   base = tryPatch(base, /lvl\s*<\s*20\b/g, "lvl<30", "gem-cap-lt");
   base = tryPatch(base, /lvl\s*>=\s*20\b/g, "lvl>=30", "gem-cap-gte");
 
-  /* --- 防崩加固（v19 符号已重命名，锚点按 v19 实际代码重写） --- */
+  /* --- 防崩加固（v19.2 又换了一批压缩名，锚点按 v19.2 实际代码重建） ---
+   * v19.1 → v19.2 的锚点变化：
+   *   bg-draw       局部变量重排（k,g,v,w → v,g,k,x），drawImage 目标表达式不变
+   *   loot-icon-cur 通货图标表 ci → Si（v19.2 里 Si 是按需生成的图标缓存）
+   *   loot-icon-base 底材图标表 Ga → Ha
+   *   mon-sprite    贴图表 Jt → Xt
+   * 判断依据见 reports/MIGRATION-REPORT.md 与 out/symbol_map_19to192.json。
+   */
   // 1) 背景绘制后挂自定义地面绘制钩子（扩展包移植块依赖）
   base = tryPatch(
     base,
-    "d.drawImage(n.Z.img,k,g,v,w,k,g,v,w);let M=(y,R,j)=>",
-    "d.drawImage(n.Z.img,k,g,v,w,k,g,v,w);try{window.__portDrawGroundCustom&&window.__portDrawGroundCustom()}catch(e){}let M=(y,R,j)=>",
+    "d.drawImage(n.Z.img,v,g,k,x,v,g,k,x);let M=(y,R,j)=>",
+    "d.drawImage(n.Z.img,v,g,k,x,v,g,k,x);try{window.__portDrawGroundCustom&&window.__portDrawGroundCustom()}catch(e){}let M=(y,R,j)=>",
     "guard:bg-draw"
   );
   // 2) 掉落图标：未知通货 / 未知底材时不能抛错（一抛整帧中断 → 吞字、贴图消失）
+  //    v19.2 的 Si 是按需生成的缓存，未必有 trans/aug 键，取到 undefined 也无妨——
+  //    真正的兜底是下面 loot-icon-base 里的 `j&&` 判空。
   base = tryPatch(
     base,
-    'let j=R.kind==="cur"?ci[R.cur]:',
-    'let j=R.kind==="cur"?(ci[R.cur]||ci.trans||ci.aug||null):',
+    'let j=R.kind==="cur"?Si[R.cur]:',
+    'let j=R.kind==="cur"?(Si[R.cur]||Si.trans||Si.aug||null):',
     "guard:loot-icon-cur"
   );
   base = tryPatch(
     base,
-    ':Ga[pe[R.it.base].icon];d.drawImage(j,',
-    ':(pe[R.it.base]?Ga[pe[R.it.base].icon]:null);j&&d.drawImage(j,',
+    ':Ha[pe[R.it.base].icon];d.drawImage(j,',
+    ':(pe[R.it.base]?Ha[pe[R.it.base].icon]:null);j&&d.drawImage(j,',
     "guard:loot-icon-base"
   );
   // 3) 怪物贴图：未知 spr 直接跳过该怪物，不让整帧中断
   base = tryPatch(
     base,
-    "let t=Jt[e.spr],a=e.face<0,s=a?t.flip:t.img",
-    "let t=Jt[e.spr]||Jt.zombie;if(!t)return;let a=e.face<0,s=a?t.flip:t.img",
+    "let t=Xt[e.spr],a=e.face<0,s=a?t.flip:t.img",
+    "let t=Xt[e.spr]||Xt.zombie;if(!t)return;let a=e.face<0,s=a?t.flip:t.img",
     "guard:mon-sprite"
   );
 

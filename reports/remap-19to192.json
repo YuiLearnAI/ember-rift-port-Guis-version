@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-11-01T07:37:31.105Z",
+  "source": "build/block_v19.js",
+  "totalFreeRefs": 7147,
+  "distinctFree": 494,
+  "replacedOccurrences": 2754,
+  "unresolved": [
+    {
+      "name": "d",
+      "count": 733,
+      "conf": null
+    },
+    {
+      "name": "u",
+      "count": 592,
+      "conf": null
+    },
+    {
+      "name": "pe",
+      "count": 34,
+      "conf": null
+    },
+    {
+      "name": "Int16Array",
+      "count": 1,
+      "conf": null
+    }
+  ],
+  "mediumConfidence": [
+    "Ei",
+    "$h",
+    "WS",
+    "wp",
+    "C0",
+    "Wd",
+    "qh",
+    "ug",
+    "wu"
+  ]
+}

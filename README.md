@@ -1,9 +1,10 @@
 # 余烬裂隙扩展包 · v19 迁移工作区
 
-把「余烬裂隙 PoE2 内容扩展包 v2.0.5」（原底包 18.0.3）移植到 <https://ember-rift.pages.dev/> 当前线上版本（v19）的完整工程：符号重映射 → 移植块重写 → 构建 → 回归验证 → 修改器同步。
+把「余烬裂隙 PoE2 内容扩展包 v2.0.5」（原底包 18.0.3）移植到 <https://ember-rift.pages.dev/> 当前线上版本（**v19.2 踏麟 · 真言**）的完整工程：符号重映射 → 移植块重写 → 构建 → 回归验证 → 修改器同步。
 
-- **发布版**：`build/余烬裂隙-异界内容扩展-v2.2.0-v19.html`
-- **核心资产**：`out/symbol_map_18to19.json`（1697 条符号映射）
+- **发布版**：`build/余烬裂隙-异界内容扩展-v2.3.0-v19.html`
+- **改版 Wiki**：`build/wiki-异界版-v2.3.0.html`
+- **核心资产**：`out/symbol_map_19to192.json`（1946 条符号映射，v19.1 → v19.2）；历史：`out/symbol_map_18to19.json`（1697 条）
 - **修改器**：`cheat/cheat/ember-rift-gui.user.js`（已支持 `ember-rift.pages.dev`）
 
 > 免责声明：本仓库为个人学习用途的同人内容与二次开发工程，与游戏官方无关。游戏本体、原始扩展包版权归各自作者所有。请勿用于商业用途；若权利人提出异议请提 issue，会立即下架相关内容。
@@ -12,26 +13,27 @@
 
 ```
 port/
-├─ base/v19-online.html        官方 v19 原始底包（回滚基线，勿改）
-├─ base/wiki-online.html       官方 Wiki 快照（改版 Wiki 的基底，勿改）
+├─ base/v19-online.html        官方底包快照 v19.2（构建输入，勿改）
+├─ base/wiki-online.html       官方 Wiki 快照 v19.2（改版 Wiki 的基底，勿改）
 ├─ pack/                       原扩展包副本（含 block_new.js 历史快照）
 ├─ cheat/                      修改器副本
 ├─ build/
 │   ├─ block_baseline_18.0.3.js   迁移前基线（18.0.3 符号）
-│   ├─ block_v19.js               ★ v19 版移植块（唯一手改源）
+│   ├─ block_v19.js               ★ v19 版移植块（唯一手改源，符号面向 v19.2）
 │   ├─ expose_v19.js              测试 API 桥
 │   ├─ test-v19.html              测试版（含 expose，无热修）
-│   ├─ 余烬裂隙-异界内容扩展-v2.2.0-v19.html   ★ 发布版
-│   └─ wiki-异界版-v2.2.0.html                  ★ 改版 Wiki（单文件）
+│   ├─ 余烬裂隙-异界内容扩展-v2.3.0-v19.html   ★ 发布版
+│   └─ wiki-异界版-v2.3.0.html                  ★ 改版 Wiki（单文件）
 ├─ out/
-│   ├─ symbol_map_18to19.json     1697 条符号映射（核心资产）
+│   ├─ symbol_map_19to192.json    1946 条符号映射（核心资产，v19.1→v19.2）
+│   ├─ symbol_map_18to19.json     1697 条符号映射（历史，v18→v19）
 │   ├─ remap_report.json          重映射统计
 │   └─ build-v19-report.json      构建补丁应用/跳过清单
 ├─ tools/
 │   ├─ remap.mjs                  符号重映射（作用域安全）
 │   ├─ build-v19.mjs              构建
 │   ├─ syntax.mjs                 语法门
-│   ├─ harness_v19.cjs            玩法回归（397 条断言）
+│   ├─ harness_v19.cjs            玩法回归（399 条断言）
 │   ├─ smoke-v19.cjs              发布版冒烟
 │   ├─ verify_map.mjs             映射目标合法性校验
 │   ├─ dev-server.mjs             本地预览服务器（零依赖）
@@ -68,7 +70,7 @@ npm run build                                  # 出包（产物与当前提交�
 npm run verify                                 # check + test + smoke 三道门禁，必须全绿
 node tools/syntax.mjs  build/test-v19.html     # 语法门
 node tools/harness_v19.cjs build/test-v19.html # 玩法回归（要求 ALL PASS）
-node tools/smoke-v19.cjs "build/余烬裂隙-异界内容扩展-v2.2.0-v19.html"   # 发布版冒烟
+node tools/smoke-v19.cjs                       # 发布版冒烟（自动取 build/ 下最新发布版）
 node tools/verify_map.mjs                      # 映射目标合法性
 ```
 

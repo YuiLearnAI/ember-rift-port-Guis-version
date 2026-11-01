@@ -4,8 +4,25 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { JSDOM } = require("jsdom");
 
-const htmlPath = process.argv[2];
+// 默认冒烟对象 = build/ 下最新的发布版产物（文件名带版本号，写死会在升版后失效）
+function defaultArtifact() {
+  const dir = path.join(__dirname, "..", "build");
+  if (!fs.existsSync(dir)) return null;
+  const cands = fs
+    .readdirSync(dir)
+    .filter((f) => f.startsWith("余烬裂隙-异界内容扩展-") && f.endsWith(".html"))
+    .map((f) => ({ f, t: fs.statSync(path.join(dir, f)).mtimeMs }))
+    .sort((a, b) => b.t - a.t);
+  return cands.length ? path.join(dir, cands[0].f) : null;
+}
+
+const htmlPath = process.argv[2] || defaultArtifact();
+if (!htmlPath) {
+  console.error("找不到发布版产物，先跑 npm run build");
+  process.exit(1);
+}
 const html = fs.readFileSync(htmlPath, "utf8");
+console.log("smoke target:", path.relative(path.join(__dirname, ".."), htmlPath));
 
 // --- extract inline script blocks (skip external src scripts) ---
 const scriptRe = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi;

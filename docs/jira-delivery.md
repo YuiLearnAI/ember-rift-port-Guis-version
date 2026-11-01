@@ -196,9 +196,13 @@ gh api -X PUT repos/YuiLearnAI/ember-rift-port-Guis-version/branches/main/protec
 
 ## 八、发布与追溯
 
-| 版本 | 时间 | 工单范围 | 产物 |
-|------|------|---------|------|
-| v2.2.0 | 2026-11-01 | EMB-101 ~ EMB-104 | `build/余烬裂隙-异界内容扩展-v2.2.0-v19.html`、`build/wiki-异界版-v2.2.0.html` |
+| 版本 | 基底 | 时间 | 工单范围 | 产物 |
+|------|------|------|---------|------|
+| v2.2.0 | v19.1 | 2026-11-01 | EMB-101 ~ EMB-104 | `build/余烬裂隙-异界内容扩展-v2.2.0-v19.html`、`build/wiki-异界版-v2.2.0.html` |
+| v2.3.0 | v19.2 踏麟 · 真言 | 2026-11-01 | EMB-110、EMB-111 | `build/余烬裂隙-异界内容扩展-v2.3.0-v19.html`、`build/wiki-异界版-v2.3.0.html` |
+
+> 版本号规则：**基底升级必换版本号**。同一版本号对应同一个官方基底，否则 `tools/assets.json` 的 sha256
+> 无法同时描述两套产物，Release 归档也会互相覆盖。
 
 发版时打 tag `v2.2.0`，tag message 引用本表。目标是：**任意一个产物文件，能在 10 分钟内反查到「哪个工单、哪次提交、跑了哪些验证」**。
 
@@ -231,13 +235,16 @@ npm run assets:pull -- --force          # 哈希不符时强制覆盖（本地�
 
 | 落地路径 | 性质 | 是否可复现 |
 |---|---|---|
-| `base/v19-online.html` | 上游快照（构建输入） | 否，必须保全 |
-| `base/wiki-online.html` | 上游快照（Wiki 输入） | 否，必须保全 |
+| `base/v19-online.html` | 上游快照 v19.2（构建输入） | 否，必须保全 |
+| `base/wiki-online.html` | 上游快照 v19.2（Wiki 输入） | 否，必须保全 |
 | `cheat/cheat/wiki.html` | 与上一行同内容的副本 | 否，必须保全 |
 | `build/test-v19.html` | 构建产物 | ✅ `npm run build` |
-| `build/余烬裂隙-异界内容扩展-v2.2.0-v19.html` | 构建产物 | ✅ `npm run build` |
-| `build/wiki-异界版-v2.2.0.html` | 构建产物 | ✅ `npm run wiki`（固定 `EMB_BUILD_AT` 后字节一致） |
+| `build/余烬裂隙-异界内容扩展-v2.3.0-v19.html` | 构建产物 | ✅ `npm run build` |
+| `build/wiki-异界版-v2.3.0.html` | 构建产物 | ✅ `npm run wiki`（固定 `EMB_BUILD_AT` 后字节一致） |
 | `pack/**/余烬裂隙-异界内容扩展-v2.1.0.html` | 历史发行版归档 | 否，仅留档 |
+
+当前 Release 标签：`assets-v2.3.0`。上一版 `assets-v2.2.0` 保留 v19.1 基底与 v2.2.0 产物，**不要删**——
+它是回滚 v2.2.0 的唯一来源。
 
 **不可复现的三个上游快照必须保全**：删了 Release 就真没了，这是本仓库唯一的单点。
 
