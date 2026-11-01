@@ -4635,19 +4635,32 @@ function JewelTooltip(_v1073) {
     h: '<div class="th" style="color:' + _v1075 + '">' + O(_v1074.n) + "<small>天赋珠宝 · T" + _v1074.tier + '</small></div><div class="tb"><div class="sp">' + _v1076 + '</div><div class="sep"></div><div class="md">' + O(_v1074.d || "") + '</div><div class="sep"></div><div class="hint">可镶嵌在高级天赋树的「珠宝栏位」（点亮后点击该栏位选择）</div></div>'
   };
 }
+/* ------------------------------------------------------------------
+ * 珠宝渲染接管（图标 / 背包格子 / tooltip）
+ *
+ * 判据必须只认「扩展包自己生成的珠宝」：官方 v19.2 新增的传奇珠宝
+ * （逆流之玉 / 招魂之玉 / 盈虚之玉）kind 同样是 "jewel"，若按 kind 判断，
+ * 会被整类吃掉 —— 表现就是背包里图标空白、格子丢了稀有度边框、悬浮
+ * 只显示扩展包的通用「天赋珠宝 · T1」说明，看不到它到底是什么。
+ * 特征区分：扩展珠宝带 jid（且能被 JewelDef 解析），官方珠宝带 uj / jt / th。
+ * 非扩展珠宝一律透传宿主实现。
+ * ------------------------------------------------------------------ */
+function PortIsExtJewel(_e) {
+  return !!(_e && _e.kind === "jewel" && typeof _e.jid === "string" && _e.jid && !_e.uj && JewelDef(_e.jid));
+}
 var _rpJewel = Ym;
 Ym = function (_v1078) {
-  if (_v1078 && _v1078.kind === "jewel") return JEWEL_ICONS[_v1078.jid] || (JewelDef(_v1078.jid) ? JewelIcon(JewelDef(_v1078.jid)) : "");
+  if (PortIsExtJewel(_v1078)) return JEWEL_ICONS[_v1078.jid] || (JewelDef(_v1078.jid) ? JewelIcon(JewelDef(_v1078.jid)) : "");
   return _rpJewel.apply(this, arguments);
 };
 var _$sJewel = Mo;
 Mo = function (_v1079, _v1080, _v1081) {
-  if (_v1079 && _v1079.kind === "jewel") return '<div class="cell gm" ' + (_v1081 || "") + ' data-act="' + _v1080 + '" data-uid="' + _v1079.uid + '" data-tt="it:' + _v1079.uid + '" data-craft="' + _v1079.uid + '"><img src="' + Ym(_v1079) + '" alt=""><span class="tg">珠宝</span></div>';
+  if (PortIsExtJewel(_v1079)) return '<div class="cell gm" ' + (_v1081 || "") + ' data-act="' + _v1080 + '" data-uid="' + _v1079.uid + '" data-tt="it:' + _v1079.uid + '" data-craft="' + _v1079.uid + '"><img src="' + Ym(_v1079) + '" alt=""><span class="tg">珠宝</span></div>';
   return _$sJewel.apply(this, arguments);
 };
 var _asJewel = qs;
 qs = function (_v1082, _v1083) {
-  if (_v1082 && _v1082.kind === "jewel") return JewelTooltip(_v1082);
+  if (PortIsExtJewel(_v1082)) return JewelTooltip(_v1082);
   return _asJewel.apply(this, arguments);
 };
 function AdvJewelSocketInfo(_v1084) {
@@ -8490,7 +8503,11 @@ l1 = function () {
   })).name, "✓")).join("")), _v2070);
 };
 qs = function (_v2078, _v2079) {
-  if (_v2078 && _v2078.kind === "jewel") return JewelTooltip(_v2078);
+  /* 官方 v19.2 的 qs 自带珠宝分支（`if(e.kind==="jewel")return Tx(e,t)`），
+     Tx 里有传奇珠宝的转换效果 / 腐化 / 破溃 / 插槽提示等完整信息。
+     这里只接管扩展珠宝，官方珠宝一律交回官方实现。 */
+  if (PortIsExtJewel(_v2078)) return JewelTooltip(_v2078);
+  if (_v2078 && _v2078.kind === "jewel") return _asJewel.apply(this, arguments);
   if (_v2078.kind === "gem") {
     let _v2080 = se[_v2078.gid], _v2081 = ri(_v2078, n.S), _v2082 = ir(_v2078.lvl);
     return {
