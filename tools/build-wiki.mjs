@@ -27,6 +27,13 @@ const BLOCK = path.join(W, "build", "block_v19.js");
 const PLUGIN = path.join(W, "tools", "wiki-exp-plugin.js");
 
 const VER = "2.3.1";
+
+// 产物里的「构建时点」。默认写死为定版值，让 `npm run wiki` 不带任何环境变量
+// 也能与 Release 归档逐字节一致；发版时连同 VER 一起更新这一行。
+// 临时构建（不打算归档的那次）用 EMB_BUILD_AT=... 覆盖。
+// 注意不要改成 base 快照的 mtime：git 不保存 mtime，不同克隆出来的时间不同。
+const BUILT_AT = "2026-11-01T09:20:00.000Z";
+
 const PLUGIN_TAG = "<!-- EMBER-EXP-PLUGIN -->";
 
 const applied = [];
@@ -136,10 +143,9 @@ function main() {
   const EXP = {
     ver: VER,
     baseVer: "v19.2 踏麟 · 真言",
-    // 构建时间会写进产物，是唯一的不可复现来源。
-    // 需要字节级可复现时（CI 比对、与 Release 归档核对）固定它：
-    //   EMB_BUILD_AT=2026-11-01T05:31:44.807Z node tools/build-wiki.mjs
-    builtAt: process.env.EMB_BUILD_AT || new Date().toISOString(),
+    // 构建时点取自上面的 BUILT_AT 定版常量，默认构建即可字节复现；
+    // 需要留一次「真实构建时间」时用 EMB_BUILD_AT=2026-11-01T09:20:00.000Z 覆盖。
+    builtAt: process.env.EMB_BUILD_AT || BUILT_AT,
     mods,
     uniques,
     summary: {

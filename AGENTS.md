@@ -28,7 +28,7 @@ npm run build && npm run verify                        # 3. 期望 ALL OK / ALL 
 ## 工单：编号的唯一来源
 
 - 载体是 **GitHub Issues**（无 Jira 连接器），标题前缀 `EMB-nnn`
-- 编号已用到 **EMB-114**，**下一个从 EMB-115 起**；建单后请同步改这一行
+- 编号已用到 **EMB-115**，**下一个从 EMB-116 起**；建单后请同步改这一行
 - 分支：`feature|bugfix|hotfix/EMB-nnn-<小写连字符 slug>`
 - 提交：`<gitmoji> EMB-nnn: 一句话描述`，一个提交只做一件事
 - **没有工单号，不建分支、不提交、不开 PR。** 缺号就问，不猜、不编
@@ -57,7 +57,8 @@ npm run build && npm run verify                        # 3. 期望 ALL OK / ALL 
 - 画布上排文字要按**屏幕坐标 + 碰撞检测**排：世界坐标里画、字号随缩放变，看着能跑，一密集就压字（EMB-113 的天赋树标签）。改完跑 `npm run verify:atlas`
 - 修改器 `ember-rift-gui.user.js` 挂了事件后要跑 `npm run cheat:test`；**动了面板 CSS 必须 `node cheat/cheat/scripts/extract-css.js`** 重导 `docs/design/panel.css`，否则 `cheat:smoke` 会报「CSS 漂移」
 - 产物字节一变，`npm run assets:check` 就会报 MISMATCH。这不是损坏，是清单滞后：**补丁位版本号 + 新 Release 整套上传**是唯一正解（EMB-114）。只改 sha256 不改版本号，会让同一文件名在不同 Release 里对应两份内容
-- 换 `assets.json` 的 `tag` 时，新 Release 必须把 7 项**全部**重新上传；`fetch-assets.mjs` 不会跨 Release 找文件
+- 换 `assets.json` 的 `tag` 时，新 Release 必须把 7 项**全部**重新上传；`fetch-assets.mjs` 不会跨 Release 找文件。顺序也要对：**先建 Release、再推分支看 CI**，反了的话 CI 的 `assets:pull` 拉不到新 tag，第一次跑必红
+- 三份产物默认命令即可字节复现（`npm run build` / `npm run wiki`）。`build-wiki.mjs` 的构建时点走 `BUILT_AT` 定版常量，**发版时要连同 `VER` 一起改**；别改成 base 快照的 mtime——git 不保存 mtime，克隆时间各不相同，那样反而不可复现（EMB-115）
 
 ## 常用命令
 
