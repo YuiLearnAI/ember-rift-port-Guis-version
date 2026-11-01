@@ -5,7 +5,9 @@
  */
 const fs = require("node:fs");
 const path = require("node:path");
-const { JSDOM } = require("/Users/yu/WorkBuddy/余烬/port/tools/node_modules/jsdom");
+const { JSDOM } = require("jsdom");
+
+const W = path.resolve(__dirname, "..");
 
 const file = process.argv[2];
 const injectHotfix = process.argv.includes("--inject-hotfix");
@@ -96,7 +98,7 @@ const winErr = [];
 window.addEventListener("error", (e) => winErr.push(e.error && e.error.stack ? e.error.stack : e.message));
 
 if (injectHotfix) {
-  const hfPath = path.join("/Users/yu/WorkBuddy/余烬/port", "pack", "余烬裂隙-PoE2内容扩展包v2.0.5", "迁移工具", "hotfix", "hotfix.json");
+  const hfPath = path.join(W, "pack", "余烬裂隙-PoE2内容扩展包v2.0.5", "迁移工具", "hotfix", "hotfix.json");
   window.HOTFIX = JSON.parse(fs.readFileSync(hfPath, "utf8"));
   console.log(">>> [PROBE] window.HOTFIX 已预注入 (模拟 harness 行为)");
 } else {

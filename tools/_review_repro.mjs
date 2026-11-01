@@ -4,9 +4,10 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import * as acorn from "./jstools/node_modules/acorn/dist/acorn.mjs";
 
-const W = "/Users/yu/WorkBuddy/余烬/port";
+const W = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = path.join(W, "base", "v19-online.html");
 const BLOCK = path.join(W, "build", "block_v19.js");
 const EXPOSE = path.join(W, "build", "expose_v19.js");
