@@ -90,5 +90,12 @@ jobs:
       - name: 发布版冒烟
         run: npm run smoke
 
+      # EMB-112：官方内容是否被扩展吞掉的机器闸门（文本层 + 数据层）
+      - name: 珠宝渲染回归
+        run: npm run verify:jewel
+
+      - name: 基底一致性审计
+        run: npm run audit
+
       - name: Wiki 构建与产物校验
         run: npm run wiki
