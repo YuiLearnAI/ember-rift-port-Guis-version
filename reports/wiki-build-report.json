@@ -1,0 +1,62 @@
+{
+  "version": "2.2.0",
+  "builtAt": "2026-11-01T05:31:44.807Z",
+  "out": "build/wiki-异界版-v2.2.0.html",
+  "bytes": 4599845,
+  "counts": {
+    "skills": 1,
+    "supports": 1,
+    "currencies": 1,
+    "runewords": 14,
+    "stars": 17,
+    "jewels": 11,
+    "uniques": 5
+  },
+  "applied": [
+    {
+      "label": "mods/skills.js",
+      "hits": 1
+    },
+    {
+      "label": "mods/supports.js",
+      "hits": 1
+    },
+    {
+      "label": "mods/currencies.js",
+      "hits": 1
+    },
+    {
+      "label": "mods/star_effects.js",
+      "hits": 1
+    },
+    {
+      "label": "mods/runewords.js",
+      "hits": 1
+    },
+    {
+      "label": "mods/jewels.js",
+      "hits": 1
+    },
+    {
+      "label": "block_v19.js 暗金",
+      "hits": 5
+    },
+    {
+      "label": "text:gem-cap-30",
+      "hits": 2
+    },
+    {
+      "label": "title",
+      "hits": 1
+    },
+    {
+      "label": "meta:description",
+      "hits": 1
+    },
+    {
+      "label": "strip:cf-beacon",
+      "hits": 1
+    }
+  ],
+  "failed": []
+}
