@@ -72,9 +72,28 @@ node tools/smoke-v19.cjs "build/余烬裂隙-异界内容扩展-v2.2.0-v19.html"
 node tools/verify_map.mjs                      # 映射目标合法性
 ```
 
-## 本地环境（已配置，仓库根目录可直接跑）
+## 本地环境
 
-依赖已装在 `tools/`（jsdom）、`tools/jstools/`（acorn）、`cheat/cheat/`（jsdom，可选）。
+### 新克隆：三步跑通
+
+```bash
+# 1) 取回大文件资产（base/build 下的 HTML，sha256 校验）
+npm run assets:pull
+
+# 2) 安装依赖（node_modules 不进版本库，必须自己装）
+(cd tools && npm ci)
+(cd tools/jstools && npm ci)
+
+# 3) 出包 + 跑门禁
+npm run build && npm run verify
+```
+
+> 跳过第 2 步会报 `ERR_MODULE_NOT_FOUND: .../jstools/node_modules/acorn/...`；
+> 跳过第 1 步会报「缺少资产」。两条错误信息都会直接告诉你该跑哪条命令。
+> `cheat/cheat/` 的 jsdom 只在跑 `npm run cheat:*` 时需要，可选：`cd cheat/cheat && npm ci`。
+
+### 已装好依赖的本机
+
 在仓库根目录：
 
 ```bash
