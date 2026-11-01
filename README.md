@@ -15,7 +15,7 @@
 port/
 ├─ base/v19-online.html        官方底包快照 v19.2（构建输入，勿改）
 ├─ base/wiki-online.html       官方 Wiki 快照 v19.2（改版 Wiki 的基底，勿改）
-├─ pack/                       原扩展包副本（含 block_new.js 历史快照）
+├─ pack/                       扩展包数据源（mods 六表 / hotfix / port_css / symmap）
 ├─ cheat/                      修改器副本
 ├─ build/
 │   ├─ block_baseline_18.0.3.js   迁移前基线（18.0.3 符号）
