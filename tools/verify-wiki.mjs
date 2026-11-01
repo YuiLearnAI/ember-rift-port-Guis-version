@@ -12,7 +12,30 @@ import { fileURLToPath } from "node:url";
 import { JSDOM, VirtualConsole } from "./node_modules/jsdom/lib/api.js";
 
 const W = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const file = process.argv[2] ? path.resolve(process.argv[2]) : path.join(W, "build", "wiki-异界版-v2.2.0.html");
+/**
+ * 默认验收对象 = 最近一次 wiki:build 的产物。
+ * 直接读 reports/wiki-build-report.json 的 out 字段，避免每次升版都要改这里；
+ * 两者都没有时退回到 build/ 下最新的 wiki-异界版-*.html。
+ */
+function defaultArtifact() {
+  const rep = path.join(W, "reports", "wiki-build-report.json");
+  if (fs.existsSync(rep)) {
+    try {
+      const out = JSON.parse(fs.readFileSync(rep, "utf8")).out;
+      if (out && fs.existsSync(path.join(W, out))) return path.join(W, out);
+    } catch { /* 报告损坏则走兜底 */ }
+  }
+  const dir = path.join(W, "build");
+  const cands = fs.existsSync(dir)
+    ? fs.readdirSync(dir).filter((f) => /^wiki-异界版-.*\.html$/.test(f))
+        .map((f) => ({ f, t: fs.statSync(path.join(dir, f)).mtimeMs }))
+        .sort((a, b) => b.t - a.t)
+    : [];
+  if (!cands.length) return path.join(dir, "wiki-异界版.html");
+  return path.join(dir, cands[0].f);
+}
+
+const file = process.argv[2] ? path.resolve(process.argv[2]) : defaultArtifact();
 
 if (!fs.existsSync(file)) {
   console.error("找不到产物：" + file);
