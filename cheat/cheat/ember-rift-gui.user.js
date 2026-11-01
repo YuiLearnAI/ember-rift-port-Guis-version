@@ -219,6 +219,39 @@
       return (it && it.kind === 'jewel' ? JAFF : AFF)[id];
     }
 
+    /* ---------------- 传奇专属数值（item.ur） ----------------
+       官方 makeUnique（本体 Kt）只写 mods；扩展包把「传奇专属数值」另外写进 item.ur ——
+       一个与 def.sr 等长的数组，def.srt 里的 {0} 就是它（见 build/block_v19.js 里对 Kt / qs
+       的接管）。扩展块在 ur 长度与 sr 不一致时会按 uid 重随，所以写回时只改单格、保持长度。 */
+    function uniqDef(it) {
+      if (!it || it.kind !== 'item' || it.rarity !== 3 || !it.uniq) return null;
+      const d = UNIQ.find(x => x && x.id === it.uniq);
+      if (d) return d;
+      try { return (R.UNIQMAP && R.UNIQMAP[it.uniq]) || null; } catch (e) { return null; }
+    }
+    function uniqRolls(it) {
+      const d = uniqDef(it);
+      if (!d || !Array.isArray(d.sr)) return null;
+      const want = d.sr.length;
+      if (!Array.isArray(it.ur) || it.ur.length !== want) {
+        let got = null;
+        // 优先借扩展块自己的惰性补齐，保证与「掉落时随机到的值」同一套算法
+        try { got = window.__TEMPORALIS_ROLL ? window.__TEMPORALIS_ROLL(it) : null; } catch (e) { got = null; }
+        if (!Array.isArray(got) || got.length !== want) {
+          got = d.sr.map(r => (r ? Math.round((r[0] + r[1]) / 2) : null));
+        }
+        it.ur = got.slice();
+      }
+      return it.ur;
+    }
+    // 传奇数值行模板：把 srt 里的 {0} 去掉，剩下的就是这一行的中文说明
+    function uniqLineLabel(def, i) {
+      const tpl = (def && Array.isArray(def.srt) && def.srt[i]) || (def && Array.isArray(def.st) && def.st[i]) || '';
+      return String(tpl).replace(/\{[^}]*\}/g, '').replace(/\s+/g, ' ').trim() || ('传奇数值 #' + (i + 1));
+    }
+    // 符文插槽上限：官方编辑面板给 0–2 且只放行底材允许的部位，这里放到 6（空槽不影响结算）
+    const RSOCK_MAX = 6;
+
     /* ---------------- 双手武器倍率（与游戏 Nl() / gd() / Bw() 对齐） ---------------- */
     // 是否双手武器：item.base 在 BASEMAP 中且 slot==="W" 且武器类型 wt 属于 TWO_HAND
     function isTwoHand(it) {
@@ -386,11 +419,15 @@
 .er-status b{color:var(--blue);font-weight:600}
 .er-big{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
 .er-big .er-btn{flex:1}
-/* floating：毛玻璃提示条，高度感来自模糊层 */
-.er-toast{font-family:SF Pro Text,system-ui,-apple-system,sans-serif;position:fixed;bottom:20px;right:20px;background:rgba(245,245,247,.9);border:1px solid var(--divide);
-  color:var(--ink);padding:12px 17px;border-radius:18px;z-index:2147483647;font-size:12px;letter-spacing:-.12px;
+/* floating：毛玻璃提示条，高度感来自模糊层。
+   EMB-113：气泡挂到 body 上，不继承 #er-gui 的 CSS 变量；原来写 color:var(--ink) 在面板外
+   取不到变量 → 整条声明失效 → 颜色回退成继承色（游戏页面的浅色），浅字压浅底什么也看不见。
+   所以这里不能用变量，且要压过游戏自身的样式表，配色写死并加 !important。 */
+.er-toast{font-family:SF Pro Text,system-ui,-apple-system,sans-serif;position:fixed;bottom:20px;right:20px;
+  background:rgba(29,29,31,.95)!important;border:1px solid rgba(255,255,255,.22);
+  color:#f5f5f7!important;padding:12px 17px;border-radius:18px;z-index:2147483647;font-size:12px;letter-spacing:-.12px;
   -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
-  opacity:0;transition:opacity .2s ease;max-width:320px;line-height:1.5}
+  opacity:0;transition:opacity .2s ease;max-width:320px;line-height:1.5;pointer-events:none}
 /* 筛选栏 */
 .er-filter{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
 .er-filter .er-sel{width:auto;flex:1;min-width:88px}
@@ -508,8 +545,16 @@
     /* ---------------- 通用组件 ---------------- */
     function toast(msg) {
       let t = document.querySelector('.er-toast');
-      if (!t) { t = document.createElement('div'); t.className = 'er-toast'; document.body.appendChild(t); }
-      t.textContent = msg; t.style.opacity = '1';
+      if (!t) {
+        t = document.createElement('div');
+        t.className = 'er-toast';
+        // 挂在 body 上是为了不被面板的 overflow:hidden 裁掉；配色已在 CSS 里写死，不依赖面板变量
+        t.setAttribute('role', 'status');
+        t.setAttribute('aria-live', 'polite');
+        document.body.appendChild(t);
+      }
+      t.textContent = msg == null ? '' : String(msg);
+      t.style.opacity = '1';
       clearTimeout(t._h);
       t._h = setTimeout(() => t.style.opacity = '0', 1600);
     }
@@ -1323,6 +1368,45 @@
       curItemRef = it;
       const isTH = isTwoHand(it);
 
+      // ---- 传奇专属数值（item.ur）----
+      // 扩展包的 5 件传奇把 sr 随机值存 item.ur，tooltip 里的那几行是从它渲染的；
+      // 只改 mods 不会动它们，所以单独给一块编辑区。
+      const udef = uniqDef(it);
+      const uroll = udef ? uniqRolls(it) : null;
+      let uniqHtml = '';
+      if (udef && uroll) {
+        let rows = '';
+        for (let i = 0; i < uroll.length; i++) {
+          const rng = Array.isArray(udef.sr) ? udef.sr[i] : null;
+          if (!rng) continue;
+          const lo = Math.min(rng[0], rng[1]), hi = Math.max(rng[0], rng[1]);
+          const cur = uroll[i];
+          const oor = cur != null && (cur < lo || cur > hi);
+          rows += `<div class="er-affix">
+            <span class="tx">${esc(uniqLineLabel(udef, i))}<span class="er-sugt" style="margin-left:6px">${lo}~${hi}</span>${oor ? ' <span class="er-sev w" title="超出官方区间">越界</span>' : ''}</span>
+            <input class="er-input" type="text" id="u-${i}" value="${esc(cur == null ? '' : String(cur))}">
+            <button class="er-btn er-mini" data-uset="${i}">改</button>
+          </div>`;
+        }
+        if (rows) {
+          uniqHtml = `<div class="er-grp">传奇数值（${esc(udef.n || udef.id)}）</div>
+            <div class="er-hint">这几行是这件传奇的专属随机值，存在 <code>item.ur</code> 里，与下面的词缀列表互不影响；
+              填多少就显示多少（留空会被拒）。官方区间写在右侧，越界仍会写入但会标出来。</div>${rows}`;
+        }
+      }
+
+      // ---- 符文插槽 ----
+      // 官方编辑面板只给 0–2 且仅限底材允许的部位；这里放到 0–6，加出来的是空符文插槽。
+      // 写入口径与官方 setter 一致：改 rsock 后 runes 只保留前 rsock 个。
+      const rsockNow = Math.max(0, Math.min(RSOCK_MAX, Number(it.rsock) || 0));
+      const sockHtml = `<div class="er-grp">符文插槽</div>
+        <div class="er-row"><label>插槽数量（0–${RSOCK_MAX}）</label>
+          <input class="er-input" type="number" min="0" max="${RSOCK_MAX}" step="1" id="er-rsock" value="${rsockNow}">
+          <button class="er-btn er-mini" id="er-setrsock">改</button>
+        </div>
+        <div class="er-hint">游戏按底材默认给 0～1 个（官方编辑面板最多 2 个）。这里能写到 ${RSOCK_MAX}：
+          <b>加出来的都是空符文插槽</b>，插符文后照常结算；减少时超出的符文会被丢弃（与官方一致）。</div>`;
+
       let html = `<div class="er-big"><button class="er-btn" id="er-back">← 返回列表</button></div>
         <div class="er-item"><div class="nm">${esc(it.name || '(未命名)')}</div>
         <div class="meta">${RARITY[it.rarity] || it.rarity} · 物品等级 ${it.ilvl || '?'}</div></div>
@@ -1340,6 +1424,7 @@
         </div>
         <label class="er-row" style="cursor:pointer"><input type="checkbox" id="er-allslot"> 允许跨部位换基底（已装备时会自动挪到新部位）</label>
         <div class="er-hint">基底决定部位、固有词缀、需求等级与是否为双手武器。<b>换基底会按新底材重算固有词缀</b>，你自己加的词缀保留不变。</div>
+        ${uniqHtml}${sockHtml}
         <div class="er-grp">词缀列表</div>`;
 
       const mods = it.mods || [];
@@ -1428,6 +1513,44 @@
         toast(msg);
         renderItemDetail();
       };
+
+      // 传奇专属数值：只改 item.ur 的单格，长度必须保持与 def.sr 一致
+      body.querySelectorAll('[data-uset]').forEach(b => b.onclick = () => {
+        const i = +b.dataset.uset;
+        const inp = body.querySelector('#u-' + i);
+        const raw = String((inp && inp.value) || '').trim();
+        if (raw === '' || !isFinite(Number(raw))) { toast('请输入有效数字'); return; }
+        const v = Math.round(Number(raw));
+        const def = uniqDef(it);
+        const rolls = uniqRolls(it);
+        if (!def || !rolls) { toast('这件装备没有传奇数值'); return; }
+        snapAuto('改传奇数值前');
+        rolls[i] = v;
+        const rng = Array.isArray(def.sr) ? def.sr[i] : null;
+        const oor = rng && (v < Math.min(rng[0], rng[1]) || v > Math.max(rng[0], rng[1]));
+        refresh(it);
+        toast(oor ? '已修改（数值越界，仍已写入）' : '已修改 → ' + uniqLineLabel(def, i) + ' ' + v);
+        renderItemDetail();
+      });
+
+      // 符文插槽：写 rsock，并按官方 setter 的口径裁剪 runes
+      body.querySelector('#er-setrsock').onclick = () => {
+        const el = body.querySelector('#er-rsock');
+        const raw = String((el && el.value) || '').trim();
+        const n = Math.round(Number(raw));
+        if (raw === '' || !isFinite(n) || n < 0 || n > RSOCK_MAX) { toast('插槽数量需为 0–' + RSOCK_MAX + ' 的整数'); return; }
+        snapAuto('改插槽数前');
+        const before = Math.max(0, Number(it.rsock) || 0);
+        it.rsock = n;
+        it.runes = (Array.isArray(it.runes) ? it.runes : []).slice(0, n);
+        refresh(it);
+        let msg = '符文插槽 → ' + n;
+        if (n < before) msg += '（超出的 ' + (before - n) + ' 个符文已丢弃）';
+        else if (n > before) msg += '（新增 ' + (n - before) + ' 个空槽）';
+        toast(msg);
+        renderItemDetail();
+      };
+
       body.querySelectorAll('[data-mset]').forEach(b => b.onclick = () => {
         const i = +b.dataset.mset;
         const inp = body.querySelector('#m-' + i);
