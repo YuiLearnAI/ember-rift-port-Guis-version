@@ -5,7 +5,7 @@
 - **发布版**：`build/余烬裂隙-异界内容扩展-v2.3.1-v19.html`
 - **改版 Wiki**：`build/wiki-异界版-v2.3.1.html`
 - **核心资产**：`out/symbol_map_19to192.json`（1946 条符号映射，v19.1 → v19.2）；历史：`out/symbol_map_18to19.json`（1697 条）
-- **修改器**：`cheat/cheat/ember-rift-gui.user.js`（已支持 `ember-rift.pages.dev`）
+- **修改器**：`cheat/ember-rift-gui.user.js`（已支持 `ember-rift.pages.dev`）
 
 > 免责声明：本仓库为个人学习用途的同人内容与二次开发工程，与游戏官方无关。游戏本体、原始扩展包版权归各自作者所有。请勿用于商业用途；若权利人提出异议请提 issue，会立即下架相关内容。
 
@@ -51,7 +51,7 @@ port/
 
 ## 大文件资产（必读）
 
-`base/*.html`、`build/*.html`、`cheat/cheat/wiki.html` 等 4MB 级文件**不在版本库里**——它们由 GitHub Release 承载，
+`base/*.html`、`build/*.html`、`cheat/wiki.html` 等 4MB 级文件**不在版本库里**——它们由 GitHub Release 承载，
 以控制仓库体积（详见 [docs/jira-delivery.md](docs/jira-delivery.md) 第十节）。
 
 **干净克隆后第一步**：
@@ -93,7 +93,7 @@ npm run build && npm run verify
 
 > 跳过第 2 步会报 `ERR_MODULE_NOT_FOUND: .../jstools/node_modules/acorn/...`；
 > 跳过第 1 步会报「缺少资产」。两条错误信息都会直接告诉你该跑哪条命令。
-> `cheat/cheat/` 的 jsdom 只在跑 `npm run cheat:*` 时需要，可选：`cd cheat/cheat && npm ci`。
+> `cheat/` 的 jsdom 只在跑 `npm run cheat:*` 时需要，可选：`cd cheat && npm ci`。
 
 ### 已装好依赖的本机
 

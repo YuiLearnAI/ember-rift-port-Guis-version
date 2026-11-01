@@ -30,6 +30,6 @@ npm-debug.log*
 # 干净克隆后执行 npm run assets:pull 取回，清单见 tools/assets.json
 base/*.html
 build/*.html
-cheat/cheat/wiki.html
+cheat/wiki.html
 pack/**/余烬裂隙-异界内容扩展-v2.1.0.html
 

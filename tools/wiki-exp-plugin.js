@@ -265,7 +265,7 @@
       '<div class="tw"><table><tr><th>方式</th><th>做法</th></tr>' +
       '<tr><td style="white-space:nowrap"><b>单文件版</b></td><td>直接打开 <b>余烬裂隙-异界内容扩展-v' + esc(E.ver) + '-v19.html</b>（mods、热修、样式已内联，离线可跑）。</td></tr>' +
       '<tr><td style="white-space:nowrap"><b>本地预览</b></td><td>在仓库执行 <b>npm run dev</b>，访问 <b>http://127.0.0.1:8787/</b>。</td></tr>' +
-      '<tr><td style="white-space:nowrap"><b>线上版 + 修改器</b></td><td>装 Tampermonkey 后导入 <b>cheat/cheat/ember-rift-gui.user.js</b>，打开官方线上版即可出现悬浮面板。</td></tr>' +
+      '<tr><td style="white-space:nowrap"><b>线上版 + 修改器</b></td><td>装 Tampermonkey 后导入 <b>cheat/ember-rift-gui.user.js</b>，打开官方线上版即可出现悬浮面板。</td></tr>' +
       '</table></div>' +
       '<p class="cap">热修说明：' + esc(E.hotfixNotes || '') + '</p>' +
       '<p class="cap">免责声明：本站为个人学习用途的同人内容与二次开发产物，与游戏官方无关；游戏本体与原始扩展包版权归各自作者所有，请勿用于商业用途。若权利人提出异议请提 issue，会立即下架相关内容。</p>' +

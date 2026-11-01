@@ -245,7 +245,7 @@ npm run assets:pull -- --force          # 哈希不符时强制覆盖（本地�
 |---|---|---|
 | `base/v19-online.html` | 上游快照 v19.2（构建输入） | 否，必须保全 |
 | `base/wiki-online.html` | 上游快照 v19.2（Wiki 输入） | 否，必须保全 |
-| `cheat/cheat/wiki.html` | 与上一行同内容的副本 | 否，必须保全 |
+| `cheat/wiki.html` | 与上一行同内容的副本 | 否，必须保全 |
 | `build/test-v19.html` | 构建产物 | ✅ `npm run build` |
 | `build/余烬裂隙-异界内容扩展-v2.3.1-v19.html` | 构建产物 | ✅ `npm run build` |
 | `build/wiki-异界版-v2.3.1.html` | 构建产物 | ✅ `npm run wiki`（默认即字节一致，builtAt 已定版） |
@@ -353,7 +353,7 @@ builtAt: process.env.EMB_BUILD_AT || BUILT_AT,
 
 | 命令 | 检查什么 | 失败含义 |
 |---|---|---|
-| `npm run cheat:test` | `cheat:review`（静态审查：未核对导出键 / 无参 updPlayer / XSS / 存档键）+ `cheat:smoke`（161 条逻辑断言，含「panel.css 与脚本一致」）+ `cheat:ui`（jsdom 里真点面板，69 条界面断言） | 修改器改坏了，或面板 CSS 与 `docs/design/panel.css` 漂移（动 CSS 后必须跑 `node cheat/cheat/scripts/extract-css.js`） |
+| `npm run cheat:test` | `cheat:review`（静态审查：未核对导出键 / 无参 updPlayer / XSS / 存档键）+ `cheat:smoke`（161 条逻辑断言，含「panel.css 与脚本一致」）+ `cheat:ui`（jsdom 里真点面板，69 条界面断言） | 修改器改坏了，或面板 CSS 与 `docs/design/panel.css` 漂移（动 CSS 后必须跑 `node cheat/scripts/extract-css.js`） |
 
 ### 白名单补丁
 
