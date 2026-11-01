@@ -26,6 +26,9 @@ pack/**/迁移工具/out/cur.js
 *.log
 npm-debug.log*
 
+# AI 工具的工作区（会话记忆等），不是项目产物，不参与构建（EMB-119）
+**/.workbuddy/
+
 # 大文件资产（EMB-106）：不进版本库，由 GitHub Release 承载
 # 干净克隆后执行 npm run assets:pull 取回，清单见 tools/assets.json
 base/*.html
