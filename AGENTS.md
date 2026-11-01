@@ -28,7 +28,7 @@ npm run build && npm run verify                        # 3. 期望 ALL OK / ALL 
 ## 工单：编号的唯一来源
 
 - 载体是 **GitHub Issues**（无 Jira 连接器），标题前缀 `EMB-nnn`
-- 编号已用到 **EMB-115**，**下一个从 EMB-116 起**；建单后请同步改这一行
+- 编号已用到 **EMB-116**，**下一个从 EMB-117 起**；建单后请同步改这一行
 - 分支：`feature|bugfix|hotfix/EMB-nnn-<小写连字符 slug>`
 - 提交：`<gitmoji> EMB-nnn: 一句话描述`，一个提交只做一件事
 - **没有工单号，不建分支、不提交、不开 PR。** 缺号就问，不猜、不编
