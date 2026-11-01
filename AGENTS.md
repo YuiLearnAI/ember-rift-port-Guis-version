@@ -28,7 +28,7 @@ npm run build && npm run verify                        # 3. 期望 ALL OK / ALL 
 ## 工单：编号的唯一来源
 
 - 载体是 **GitHub Issues**（无 Jira 连接器），标题前缀 `EMB-nnn`
-- 编号已用到 **EMB-111**，**下一个从 EMB-112 起**；建单后请同步改这一行
+- 编号已用到 **EMB-112**，**下一个从 EMB-113 起**；建单后请同步改这一行
 - 分支：`feature|bugfix|hotfix/EMB-nnn-<小写连字符 slug>`
 - 提交：`<gitmoji> EMB-nnn: 一句话描述`，一个提交只做一件事
 - **没有工单号，不建分支、不提交、不开 PR。** 缺号就问，不猜、不编
@@ -53,12 +53,15 @@ npm run build && npm run verify                        # 3. 期望 ALL OK / ALL 
 - `git filter-branch` 后必须清 `refs/original` + reflog + `gc --prune=now`，否则体积不减
 - 改写历史前先删掉指向旧提交的 tag，否则旧 blob 被钉在远端
 - `package.json` **不得**加 `"type": "module"`，否则 `cheat/cheat/scripts/*.js`（CJS）全废
+- 扩展块与宿主共享作用域，**劫持宿主函数时的判据必须只认扩展自己的数据**。用宽判据（例如 `kind==="jewel"`）会把官方同名类型整类吃掉——EMB-112 就是这么让 v19.2 传奇珠宝在背包里失明的。改完跑 `npm run verify:jewel`
 
 ## 常用命令
 
 ```bash
 npm run dev        # 本地预览 http://127.0.0.1:8787/ （/test /base /wiki）
-npm run verify     # check + 397 条玩法断言 + 发布版冒烟
+npm run verify     # check + 玩法断言 + 冒烟 + 珠宝回归 + 基底一致性两道审计
+npm run audit      # 单独跑基底一致性：逐字节比对 + 运行时数据表比对
+npm run audit:hijack   # 列出扩展对宿主符号的全部接管点（升版复审用，只报不判）
 npm run wiki       # 重建改版 Wiki
 npm run assets:check   # 体检：哪些大文件缺失
 ```
