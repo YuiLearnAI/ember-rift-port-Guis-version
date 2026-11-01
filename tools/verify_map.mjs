@@ -1,7 +1,10 @@
 // 校验 symbol_map 的目标符号是否都真实存在于 v19 顶层声明
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import * as acorn from "./jstools/node_modules/acorn/dist/acorn.mjs";
-const h = fs.readFileSync("../base/v19-online.html", "utf8");
+const W = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const h = fs.readFileSync(path.join(W, "base", "v19-online.html"), "utf8");
 let code = null;
 for (const m of h.matchAll(/<script\b([^>]*)>/gi)) {
   if (/\bsrc\s*=/i.test(m[1])) continue;
@@ -21,7 +24,7 @@ for (const st of iife.body.body) {
   if (st.type === "VariableDeclaration") for (const d of st.declarations) if (d.id.type === "Identifier") top.add(d.id.name);
   if (st.type === "FunctionDeclaration" && st.id) top.add(st.id.name);
 }
-const map = JSON.parse(fs.readFileSync("../out/symbol_map_18to19.json", "utf8")).globals;
+const map = JSON.parse(fs.readFileSync(path.join(W, "out", "symbol_map_18to19.json"), "utf8")).globals;
 const missing = [], bad = [];
 for (const [old, e] of Object.entries(map)) {
   if (!e || !e.new) continue;
