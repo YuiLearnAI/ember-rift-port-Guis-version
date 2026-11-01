@@ -207,8 +207,9 @@ gh api -X PUT repos/YuiLearnAI/ember-rift-port-Guis-version/branches/main/protec
 | v2.3.1 | v19.2 踏麟 · 真言 | 2026-11-01 | EMB-112、EMB-113、EMB-114 | `build/余烬裂隙-异界内容扩展-v2.3.1-v19.html`、`build/wiki-异界版-v2.3.1.html` |
 | v2.3.2 | v19.2 踏麟 · 真言 | 2026-11-01 | EMB-115、EMB-117、EMB-118、EMB-119、EMB-120 | `build/余烬裂隙-异界内容扩展-v2.3.2-v19.html`、`build/wiki-异界版-v2.3.2.html` |
 | v2.3.3 | v19.2 踏麟 · 真言 | 2026-11-01 | EMB-121、EMB-122 | `build/余烬裂隙-异界内容扩展-v2.3.3-v19.html`、`build/wiki-异界版-v2.3.3.html` |
-| v2.3.4 | v19.2 踏麟 · 真言 | 2026-11-01 | EMB-123 | `build/余烬裂隙-异界内容扩展-v2.3.5-v19.html`、`build/wiki-异界版-v2.3.5.html` |
+| v2.3.4 | v19.2 踏麟 · 真言 | 2026-11-01 | EMB-123 | `build/余烬裂隙-异界内容扩展-v2.3.4-v19.html`、`build/wiki-异界版-v2.3.4.html` |
 | v2.3.5 | v19.2 踏麟 · 真言 | 2026-11-01 | EMB-125 | `build/余烬裂隙-异界内容扩展-v2.3.5-v19.html`、`build/wiki-异界版-v2.3.5.html` |
+| v2.3.6 | v19.2 踏麟 · 真言 | 2026-11-02 | EMB-126 | `build/余烬裂隙-异界内容扩展-v2.3.6-v19.html`、`build/wiki-异界版-v2.3.6.html` |
 
 > 版本号规则：**基底升级必换版本号**。同一版本号对应同一个官方基底，否则 `tools/assets.json` 的 sha256
 > 无法同时描述两套产物，Release 归档也会互相覆盖。
@@ -218,6 +219,7 @@ gh api -X PUT repos/YuiLearnAI/ember-rift-port-Guis-version/branches/main/protec
 > v2.3.3 是 EMB-122 腐化词缀扩池带来的补丁位（扩展块新增内容 + 三处修正），
 > v2.3.4 是 EMB-123 把腐化词缀扩池补进游戏内 Wiki 与玩家文档带来的补丁位（build-wiki.mjs / wiki-exp-plugin.js / docs 变更，游戏逻辑未动），
 > v2.3.5 是 EMB-125 传奇专属腐化词缀（献祭之心样板）带来的补丁位（扩展块新增 UNIQUE_POOL + 属性折算 + wiki 解析），
+> v2.3.6 是 EMB-126 传奇腐化「替换原生词缀」修复带来的补丁位（block_v19.js 新增 __uniqueReplace + l9/Dv 劫持 + verify-corrupt 门禁），
 > 目的是让「文件名 ↔ 哈希 ↔ 工单」始终一一对应；沿用旧版本号会让同一个文件名在不同 Release 里对应两份不同内容。
 
 发版时打 tag `v2.2.0`，tag message 引用本表。目标是：**任意一个产物文件，能在 10 分钟内反查到「哪个工单、哪次提交、跑了哪些验证」**。
@@ -247,7 +249,7 @@ npm run assets:pull -- --only wiki      # 只处理路径含 wiki 的条目
 npm run assets:pull -- --force          # 哈希不符时强制覆盖（本地改动会被丢弃）
 ```
 
-当前外置清单（Release `assets-v2.3.5`）：
+当前外置清单（Release `assets-v2.3.6`）：
 
 | 落地路径 | 性质 | 是否可复现 |
 |---|---|---|
@@ -255,17 +257,16 @@ npm run assets:pull -- --force          # 哈希不符时强制覆盖（本地�
 | `base/wiki-online.html` | 上游快照 v19.2（Wiki 输入） | 否，必须保全 |
 | `cheat/wiki.html` | 与上一行同内容的副本 | 否，必须保全 |
 | `build/test-v19.html` | 构建产物 | ✅ `npm run build` |
-| `build/余烬裂隙-异界内容扩展-v2.3.5-v19.html` | 构建产物 | ✅ `npm run build` |
-| `build/wiki-异界版-v2.3.5.html` | 构建产物 | ✅ `npm run wiki`（默认即字节一致，builtAt 已定版） |
+| `build/余烬裂隙-异界内容扩展-v2.3.6-v19.html` | 构建产物 | ✅ `npm run build` |
+| `build/wiki-异界版-v2.3.6.html` | 构建产物 | ✅ `npm run wiki`（默认即字节一致，builtAt 已定版） |
 | `pack/**/余烬裂隙-异界内容扩展-v2.1.0.html` | 历史发行版归档 | 否，仅留档 |
 
-当前 Release 标签：`assets-v2.3.5`。上五版 `assets-v2.3.3`、`assets-v2.3.2`、`assets-v2.3.1`、`assets-v2.3.0`、`assets-v2.2.0` 全部保留，**不要删**——
-它们是回滚 v2.3.2 / v2.3.1 / v2.3.0 / v2.2.0 的唯一来源。
+当前 Release 标签：`assets-v2.3.6`。**历史版本及时清理**：每次发新版，只保留「最新 + 上一版」两个 Release 作为回滚点，其余历史 Release（连同对应 git tag）立即删除。回滚不依赖历史 Release——上游快照随最新 Release 保全，完整历史另有 `backup-ember-pre-filter-20261101.bundle` 兜底。
 
 > 换 tag 时新 Release 必须**整套上传**（3 个上游快照 + 全部产物）：`fetch-assets.mjs` 只认 `assets.json`
 > 里那一个 `tag`，不会跨 Release 找文件。新克隆只有从这一个 tag 能取回全部 7 项。
 
-**不可复现的三个上游快照必须保全**：删了 Release 就真没了，这是本仓库唯一的单点。
+**不可复现的三个上游快照必须保全**：删了 Release 就真没了，这是本仓库唯一的单点。因此清理历史 Release 时，**永远保留最新的 Release**（它承载当前三个上游快照），只删更早的历史版本。
 
 ### 为什么不能只 `git rm`
 
@@ -283,9 +284,9 @@ npm run assets:pull -- --force          # 哈希不符时强制覆盖（本地�
 产物能重建，外置才不丢东西。实测：
 
 ```
-npm run build  → test-v19.html        sha256 7f5ad929…（与 Release 资产一致）
-npm run build  → 发布版 v2.3.5 产物     sha256 3b1fea0b…（与 Release 资产一致）
-npm run wiki   → wiki-异界版-v2.3.5.html sha256 6fcf7c3b…（与 Release 资产一致）
+npm run build  → test-v19.html        sha256 b70894ae…（与 Release 资产一致）
+npm run build  → 发布版 v2.3.6 产物     sha256 111d247d…（与 Release 资产一致）
+npm run wiki   → wiki-异界版-v2.3.6.html sha256 ceef1aaf…（与 Release 资产一致）
 ```
 
 **三条都是默认命令，不需要任何环境变量**（EMB-115）。`build-wiki.mjs` 把构建时点写进产物，

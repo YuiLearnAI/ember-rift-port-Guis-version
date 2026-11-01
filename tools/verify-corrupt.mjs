@@ -298,6 +298,56 @@ const uadded2 = {};
 preFn({ a: { life: 500, lifeInc: 50, mana: 200 }, add: (k, v) => { uadded2[k] = v; }, level: 60 });
 eq(Object.keys(uadded2).length, 0, "没有专属词缀时，stats:pre 不额外加任何属性");
 
+/* ---------- 9. 传奇腐化「替换原生词缀」（EMB-126 修复） ---------- */
+console.log("\n[9] 传奇腐化替换原生词缀（单瓦/双瓦都替换，st 与 mods 都纳入）");
+ok(typeof P.replaceUnique === "function", "replaceUnique 已导出", typeof P.replaceUnique);
+
+// 9.1 替换 st：移除一条固定词缀
+const itSt = { st: ["词缀A", "词缀B", "词缀C"], mods: [] };
+const rSt = P.replaceUnique(itSt);
+ok(!!rSt && rSt.src === "st", "替换命中 st 通道", rSt && JSON.stringify(rSt));
+eq(itSt.st.length, 2, "st 从 3 条减到 2 条");
+
+// 9.2 替换 mods：移除一条随机词缀
+const itMods = { st: [], mods: [{ id: "es", v: [80] }, { id: "life", v: [70] }] };
+const rMods = P.replaceUnique(itMods);
+ok(!!rMods && rMods.src === "mods", "替换命中 mods 通道", rMods && JSON.stringify(rMods));
+eq(itMods.mods.length, 1, "mods 从 2 条减到 1 条");
+
+// 9.3 无可替换词缀时返回 null，不抛错
+const itEmpty = { st: [], mods: [] };
+const rEmpty = P.replaceUnique(itEmpty);
+eq(rEmpty, null, "无可替换词缀时返回 null");
+
+// 9.4 双瓦 Dv up 分支：命中传奇时移除一条原生词缀
+const sbDvR = makeSandbox({
+  Dv: function (item) {
+    // 模拟官版双瓦 up 分支：写 cimpl2
+    if (item.cimpl) item.cimpl2 = { k: "rpgRathCastSpd", v: 6 };
+    else item.cimpl = { k: "rpgRathCastSpd", v: 6 };
+    return { cls: "up", sub: "新增腐化: x", it: item };
+  },
+});
+vm.runInNewContext(srcPool, sbDvR);
+const itemDvR = { kind: "item", uniq: "rathpith_globe", cimpl: { k: "lifeInc", v: 10 }, st: ["固定词缀1", "固定词缀2"], mods: [{ id: "es", v: [80] }] };
+const rDvR = sbDvR.Dv(itemDvR);
+eq(rDvR.cls, "up", "双瓦判定仍是升华");
+eq(itemDvR.st.length + itemDvR.mods.length, 2, "双瓦替换后原生词缀总数 3 → 2（替换了一条）", "st=" + itemDvR.st.length + " mods=" + itemDvR.mods.length);
+ok(/替换原生词缀/.test(rDvR.sub), "双瓦面板文案标注「替换原生词缀」", rDvR.sub);
+
+// 9.5 非传奇装备不触发替换（零泄漏）
+const sbDvPlain = makeSandbox({
+  Dv: function (item) {
+    if (item.cimpl) item.cimpl2 = { k: "rarity", v: 12 };
+    else item.cimpl = { k: "rarity", v: 12 };
+    return { cls: "up", sub: "新增腐化: x", it: item };
+  },
+});
+vm.runInNewContext(srcPool, sbDvPlain);
+const itemPlain = { kind: "item", mods: [{ id: "es", v: [80] }, { id: "life", v: [70] }] };
+sbDvPlain.Dv(itemPlain);
+eq(itemPlain.mods.length, 2, "普通装备双瓦不替换原生词缀（零泄漏）");
+
 /* ---------- 汇总 ---------- */
 function report() {
   console.log("\n" + "=".repeat(52));
