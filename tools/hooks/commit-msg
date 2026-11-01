@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# commit-msg 钩子 —— Jira 锚点 + 提交规范门禁
+# 规范来源：docs/jira-delivery.md
+#
+# 安装：bash tools/hooks/install-hooks.sh
+# 临时绕过：git commit --no-verify
+# 在 main 上提交：默认拦截（EMB_ALLOW_MAIN=1 可放行，不推荐）
+
+set -euo pipefail
+
+message_file="${1:?commit message file is required}"
+branch="$(git rev-parse --abbrev-ref HEAD)"
+subject="$(head -n 1 "$message_file")"
+
+# 合并提交、revert 提交不校验（由 PR 与 revert 流程负责）
+case "$subject" in
+  "Merge "*|Revert\ *|"fixup! "*|"squash! "*) exit 0 ;;
+esac
+
+# 分支校验：feature|bugfix|hotfix/KEY-数字-slug，或 release/x.y.z
+branch_regex='^(feature|bugfix|hotfix)/[A-Z]+-[0-9]+-[a-z0-9-]+$|^release/v?[0-9]+\.[0-9]+\.[0-9]+$'
+# 提交校验：<gitmoji> KEY-数字: 描述
+commit_regex='^(🚀|✨|🐛|♻️|📚|🧪|💄|🔧|📦|⚡|🔥|🚑|🔒) [A-Z]+-[0-9]+: .+$'
+
+if [ "$branch" = "main" ]; then
+  if [ "${EMB_ALLOW_MAIN:-0}" != "1" ]; then
+    cat >&2 <<'EOF'
+✗ 拒绝在 main 上直接提交。
+
+main 是生产就绪基线，只接受 PR。请先建分支：
+
+  git switch -c feature/EMB-101-<slug>      # 新能力
+  git switch -c bugfix/EMB-101-<slug>       # 缺陷修复
+  git switch -c hotfix/EMB-101-<slug>       # 发布版紧急修复
+
+确需直提（不建议）：EMB_ALLOW_MAIN=1 git commit ...
+EOF
+    exit 1
+  fi
+  echo "⚠️  EMB_ALLOW_MAIN=1：正在 main 上提交，请确认这是有意为之。" >&2
+fi
+
+if [ "$branch" != "main" ] && [[ ! "$branch" =~ $branch_regex ]]; then
+  cat >&2 <<EOF
+✗ 分支名不合规：$branch
+
+要求：feature/EMB-<编号>-<slug> | bugfix/... | hotfix/... | release/vX.Y.Z
+slug 用小写字母、数字、连字符。
+
+  git branch -m "$branch" "feature/EMB-<编号>-<slug>"
+EOF
+  exit 1
+fi
+
+if [[ "$branch" != release/* && ! "$subject" =~ $commit_regex ]]; then
+  cat >&2 <<EOF
+✗ 提交信息不合规：$subject
+
+要求：<gitmoji> EMB-<编号>: <描述>
+示例：✨ EMB-103: add wiki expansion build pipeline
+
+可用 gitmoji：🚀 ✨ 🐛 ♻️ 📚 🧪 💄 🔧 📦 ⚡ 🔥 🚑 🔒
+没有对应工单？先去 Jira 建单，不要在提交里编一个编号。
+EOF
+  exit 1
+fi
+
+exit 0
