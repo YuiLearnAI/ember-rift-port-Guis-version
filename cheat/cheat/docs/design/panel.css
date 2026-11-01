@@ -1,0 +1,133 @@
+/* ============================================================
+ * 此文件由 scripts/extract-css.js 从 ember-rift-gui.user.js 生成，请勿手改。
+ * 设计依据: docs/design/apple-DESIGN.md
+ * ============================================================ */
+#er-gui,.er-gui{
+  --canvas:#ffffff; --parchment:#f5f5f7; --pearl:#fafafc; --hairline:#e0e0e0; --divide:rgba(0,0,0,.08);
+  --ink:#1d1d1f; --ink-80:#333333; --ink-64:#6e6e73; --on-dark:#ffffff;
+  --blue:#0066cc; --blue-focus:#0071e3; --blue-on-dark:#2997ff;
+  /* 语义色为 Apple HIG 系统色（systemRed/Orange/Green 的暗色调），登记在 DESIGN.md 的 Project extensions。
+     Impeccable 检测后调整：原 ink-muted-48(#7a7a7a) 在羊皮纸底上仅 3.94:1，未达 WCAG AA，改用 Apple 官网真实 secondary 灰 #6e6e73 */
+  --st-error:#d70015; --st-error-ink:#b00014; --st-warn:#9c2b00; --st-success:#1d6f31;
+  position:fixed;top:16px;right:16px;width:360px;max-height:88vh;z-index:2147483647;
+  background:rgba(255,255,255,.96);color:var(--ink);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  font:14px/1.43 SF Pro Text,system-ui,-apple-system,sans-serif;
+  letter-spacing:-.224px;border:1px solid var(--divide);border-radius:18px;
+  display:flex;flex-direction:column;overflow:hidden}
+#er-gui *,.er-gui *{box-sizing:border-box}
+#er-gui ::-webkit-scrollbar,.er-gui ::-webkit-scrollbar{width:8px;height:8px}
+#er-gui ::-webkit-scrollbar-thumb,.er-gui ::-webkit-scrollbar-thumb{background:var(--hairline);border-radius:9999px}
+#er-gui ::selection,.er-gui ::selection{background:rgba(0,102,204,.16)}
+/* global-nav：纯黑 44px 顶栏，是整套系统里唯一出现纯黑的地方 */
+.er-head{display:flex;align-items:center;gap:8px;min-height:44px;padding:13px 17px;
+  background:#000000;color:var(--on-dark);cursor:move;user-select:none;flex:0 0 auto}
+.er-title{flex:1;font-size:12px;font-weight:400;line-height:1;letter-spacing:-.12px;color:var(--on-dark)}
+.er-btn-min,.er-btn-x{padding:0 6px;cursor:pointer;color:var(--on-dark);opacity:.72;font-size:12px;line-height:1}
+.er-btn-min:active,.er-btn-x:active{transform:scale(.95)}
+.er-btn-min:focus-visible,.er-btn-x:focus-visible{outline:2px solid var(--blue-focus);outline-offset:2px}
+/* sub-nav-frosted：羊皮纸 80% + 毛玻璃， monomers 高度感来自模糊而非阴影 */
+.er-tabs{display:flex;flex:0 0 auto;background:rgba(245,245,247,.8);
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-bottom:1px solid var(--divide)}
+.er-tab{flex:1;text-align:center;padding:11px 0;cursor:pointer;font-size:12px;font-weight:400;
+  letter-spacing:-.12px;color:var(--ink-80);border-bottom:2px solid transparent;transition:color .18s ease}
+.er-tab.on{color:var(--blue);border-bottom-color:var(--blue)}
+.er-tab:active{transform:scale(.95)}
+.er-body{padding:17px;overflow:auto}
+.er-row{display:flex;align-items:center;gap:8px;margin:8px 0}
+.er-row label{flex:1;font-size:14px;color:var(--ink-80);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* search-input：全圆角胶囊输入框 */
+.er-input{width:88px;background:var(--canvas);border:1px solid var(--divide);color:var(--ink);
+  padding:6px 14px;border-radius:9999px;font-size:14px;font-family:inherit;letter-spacing:-.224px}
+.er-input:focus{outline:2px solid var(--blue-focus);outline-offset:1px;border-color:var(--blue-focus)}
+/* button-pearl-capsule：默认行内按钮 */
+.er-btn{background:var(--pearl);color:var(--ink-80);border:3px solid var(--hairline);border-radius:11px;
+  padding:5px 12px;cursor:pointer;font-size:12px;letter-spacing:-.12px;font-family:inherit;transition:transform .12s ease}
+.er-btn:active{transform:scale(.95)}
+.er-btn:focus-visible{outline:2px solid var(--blue-focus);outline-offset:2px}
+/* button-primary：Action Blue 胶囊，唯一的品牌动作信号 */
+.er-btn.go{background:var(--blue);color:var(--on-dark);border:1px solid var(--blue);border-radius:9999px;
+  padding:8px 18px;font-size:14px;letter-spacing:-.224px}
+.er-btn.go:active{transform:scale(.95)}
+.er-mini{padding:3px 10px;font-size:12px}
+.er-grp{margin:17px 0 8px;font-size:12px;font-weight:600;letter-spacing:-.12px;color:var(--ink-80);
+  border-bottom:1px solid var(--divide);padding-bottom:6px}
+/* store-utility-card：白底 + 发丝边框 + 18px 圆角，无阴影 */
+.er-item{background:var(--canvas);border:1px solid var(--hairline);border-radius:18px;
+  padding:12px 17px;margin:8px 0;cursor:pointer;transition:border-color .18s ease}
+.er-item:active{transform:scale(.995)}
+.er-item .nm{font-size:17px;font-weight:600;letter-spacing:-.374px;color:var(--ink)}
+.er-item .meta{color:var(--ink-64);font-size:12px;letter-spacing:-.12px;margin-top:2px}
+.er-affix{display:flex;align-items:center;gap:8px;margin:6px 0;padding:8px 12px;
+  background:var(--parchment);border-radius:8px}
+.er-affix .tx{flex:1;font-size:12px;letter-spacing:-.12px;color:var(--ink-80);line-height:1.4}
+.er-sel{background:var(--canvas);color:var(--ink);border:1px solid var(--divide);border-radius:9999px;
+  padding:6px 14px;font-size:14px;font-family:inherit;letter-spacing:-.224px;width:100%}
+.er-sel:focus{outline:2px solid var(--blue-focus);outline-offset:1px}
+.er-combo{position:relative}
+.er-suggest{position:absolute;left:0;right:0;top:100%;z-index:50;max-height:220px;overflow:auto;
+  background:var(--canvas);border:1px solid var(--hairline);border-radius:18px;margin-top:4px;display:none}
+.er-sug{padding:8px 14px;cursor:pointer;font-size:12px;letter-spacing:-.12px;
+  display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--parchment)}
+.er-sug:last-child{border-bottom:0}
+.er-sug:hover,.er-sug.hl{background:var(--parchment)}
+.er-sugid{color:var(--blue);font-size:12px}
+.er-sugt{margin-left:auto;color:var(--ink-64);font-size:12px}
+.er-hint{color:var(--ink-64);font-size:12px;letter-spacing:-.12px;line-height:1.5;margin:8px 0}
+.er-empty{color:var(--ink-64);text-align:center;padding:32px 0;font-size:14px}
+.er-status b{color:var(--blue);font-weight:600}
+.er-big{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.er-big .er-btn{flex:1}
+/* floating：毛玻璃提示条，高度感来自模糊层 */
+.er-toast{font-family:SF Pro Text,system-ui,-apple-system,sans-serif;position:fixed;bottom:20px;right:20px;background:rgba(245,245,247,.9);border:1px solid var(--divide);
+  color:var(--ink);padding:12px 17px;border-radius:18px;z-index:2147483647;font-size:12px;letter-spacing:-.12px;
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+  opacity:0;transition:opacity .2s ease;max-width:320px;line-height:1.5}
+/* 筛选栏 */
+.er-filter{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.er-filter .er-sel{width:auto;flex:1;min-width:88px}
+.er-filter input.er-sel{flex:1.4}
+/* 审查报告 */
+.er-audit{border:1px solid var(--hairline);border-radius:18px;padding:12px 17px;margin:8px 0;background:var(--canvas)}
+.er-audit.ok{border-color:rgba(36,138,61,.28);background:rgba(36,138,61,.05)}
+.er-audit.bad{border-color:rgba(215,0,21,.28);background:rgba(215,0,21,.05)}
+.er-audit .ti{font-size:14px;font-weight:600;letter-spacing:-.224px;color:var(--ink);margin-bottom:4px}
+.er-audit .li{color:var(--ink-80);font-size:12px;letter-spacing:-.12px;line-height:1.6}
+.er-audit.bad .li{color:var(--st-error-ink)}
+.er-sev{display:inline-block;padding:1px 8px;border-radius:9999px;font-size:12px;letter-spacing:-.12px;
+  margin-right:4px;color:var(--on-dark)}
+.er-sev.e{background:var(--st-error)}
+.er-sev.w{background:var(--st-warn)}
+.er-sev.i{background:var(--blue)}
+.er-sev.th{background:var(--ink)}
+/* 快照条目 */
+.er-snap{display:flex;align-items:center;gap:8px;padding:8px 12px;margin:6px 0;
+  background:var(--parchment);border-radius:8px;font-size:12px;letter-spacing:-.12px}
+.er-snap .tm{flex:1;color:var(--ink-80)}
+/* 状态提示（淡色底，不用粗色边，避免把普通区块伪装成告警） */
+.er-warn{color:var(--st-warn);font-size:12px;letter-spacing:-.12px;line-height:1.5;
+  background:#fcf3f0;padding:8px 12px;margin:8px 0;border-radius:8px}
+.er-ok{color:var(--st-success);font-size:12px;letter-spacing:-.12px}
+/* 通货页：分组卡片沿用 store-utility-card（白底 + 发丝边 + 18px 圆角），分组名取游戏自身 CUR_GRP */
+.er-wgrp{background:var(--canvas);border:1px solid var(--hairline);border-radius:18px;margin:12px 0;overflow:hidden}
+.er-wghead{display:flex;align-items:center;gap:8px;padding:12px 17px;cursor:pointer;background:var(--parchment)}
+.er-wghead:active{background:var(--hairline)}
+.er-wgname{font-size:14px;font-weight:600;letter-spacing:-.224px;color:var(--ink)}
+.er-wgmeta{flex:1;font-size:12px;letter-spacing:-.12px;color:var(--ink-64)}
+.er-wgcaret{font-size:12px;letter-spacing:-.12px;color:var(--blue)}
+.er-wgbody{padding:8px 17px 12px;border-top:1px solid var(--divide)}
+.er-wrow{padding:8px 0}
+.er-wrow+.er-wrow{border-top:1px solid var(--divide)}
+.er-wtop{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.er-wdot{width:8px;height:8px;flex:0 0 8px;border-radius:9999px;background:var(--hairline)}
+.er-wname{flex:1 1 auto;min-width:0;font-size:14px;letter-spacing:-.224px;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.er-wslang{flex:0 0 auto;font-size:12px;letter-spacing:-.12px;color:var(--ink-64)}
+/* 行宽度预算（实测 .er-wgbody 可用 290px）：色点 8 + 名称弹性 + 俗称 + 输入框 64 + 两个按钮 ≤ 89，
+   余量留给最长 6 个汉字的名称（如「完美珠宝匠石」）。这里的按钮比通用按钮略收，避免行被挤到换行。 */
+.er-win{width:64px;flex:0 0 auto;padding:4px 10px;font-size:13px}
+.er-wacts{display:flex;gap:6px;flex:0 0 auto}
+.er-wacts .er-btn{padding:2px 9px;font-size:11px}
+.er-wmeta{margin:6px 0 0;font-size:12px;line-height:1.5;letter-spacing:-.12px;color:var(--ink-64)}
+.er-wlv-note{flex:1;text-align:right;font-size:12px;letter-spacing:-.12px;color:var(--ink-64)}
+.er-btn.on{background:var(--blue);color:var(--on-dark);border-color:var(--blue)}

@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>余烬裂隙修改器 · 使用教程</title>
+<!-- 面板样式真源：由 scripts/extract-css.js 从 ember-rift-gui.user.js 抽取，教程中的图示与游戏内完全一致 -->
+<link rel="stylesheet" href="design/panel.css">
+<style>
+  /* 教程外壳同样遵循项目 DESIGN.md（Apple 设计语言） */
+  :root{--ink:#1d1d1f;--ink-80:#333333;--ink-64:#6e6e73;--parchment:#f5f5f7;--hairline:#e0e0e0;
+    --blue:#0066cc;--st-warn:#9c2b00;--st-success:#1d6f31;--warn-wash:#fcf3f0}
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;color:var(--ink);
+    font:17px/1.47 SF Pro Text,system-ui,-apple-system,sans-serif;letter-spacing:-.374px}
+  .wrap{display:grid;grid-template-columns:232px minmax(0,1fr);gap:48px;max-width:1120px;margin:0 auto;padding:0 24px 96px}
+  /* 侧栏导航 = sticky 浮起，靠背景色而非投影分层 */
+  nav{position:sticky;top:0;align-self:start;padding:32px 0;max-height:100vh;overflow:auto}
+  nav h2{font-size:12px;font-weight:600;letter-spacing:-.12px;color:var(--ink-64);margin:0 0 12px}
+  nav a{display:block;padding:7px 0;color:var(--ink-80);text-decoration:none;font-size:14px;letter-spacing:-.224px;
+    border-left:2px solid transparent;padding-left:12px;transition:color .18s ease}
+  nav a:hover{color:var(--blue)}
+  nav a.on{color:var(--blue);border-left-color:var(--blue)}
+  header{max-width:1440px;margin:0 auto;padding:56px 24px 40px;border-bottom:1px solid var(--hairline)}
+  header .eyebrow{color:var(--blue);font-size:12px;font-weight:600;letter-spacing:-.12px;margin:0 0 8px}
+  h1{font:600 40px/1.1 SF Pro Display,system-ui,-apple-system,sans-serif;letter-spacing:0;margin:0 0 12px}
+  header p{font-size:21px;font-weight:600;line-height:1.4;letter-spacing:.231px;color:var(--ink-64);margin:0;max-width:640px}
+  section{padding-top:56px;scroll-margin-top:24px}
+  h2.sec{font:600 28px/1.14 SF Pro Display,system-ui,-apple-system,sans-serif;letter-spacing:.196px;margin:0 0 8px}
+  h3{font-size:17px;font-weight:600;letter-spacing:-.374px;margin:32px 0 8px}
+  p{margin:0 0 16px}
+  .lead{font-size:17px;color:var(--ink-80)}
+  ol,ul{margin:0 0 16px;padding-left:24px}
+  li{margin:6px 0}
+  code{font:14px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--parchment);
+    padding:2px 6px;border-radius:5px;color:var(--ink-80)}
+  pre{background:var(--parchment);border-radius:11px;padding:17px;overflow:auto;font-size:14px;margin:0 0 16px}
+  pre code{background:none;padding:0}
+  a{color:var(--blue)}
+  /* 示例面板（真 UI）与其图注 */
+  figure{margin:24px 0 32px;display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+  .demo{flex:0 0 360px}
+  .er-gui.er-shot{position:relative!important;top:auto!important;right:auto!important;max-height:none!important}
+  figcaption{flex:1 1 280px;min-width:260px}
+  figcaption b{display:block;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:8px}
+  figcaption ol{margin:0;padding-left:20px;font-size:14px;color:var(--ink-80);line-height:1.6}
+  figcaption ol li{margin:4px 0}
+  /* 教程自身要点卡，遵循 store-utility-card：白底 + 发丝边框 + 18px 圆角，无投影 */
+  .card{border:1px solid var(--hairline);border-radius:18px;padding:24px;margin:24px 0;background:#fff}
+  .card.warn{border-color:rgba(156,43,0,.28);background:var(--warn-wash)}
+  .card h3{margin:0 0 8px;font-size:17px;font-weight:600;letter-spacing:-.374px}
+  kbd{font:12px ui-monospace,Menlo,monospace;background:var(--ink);color:#fff;padding:2px 7px;border-radius:5px}
+  table{width:100%;border-collapse:collapse;margin:0 0 16px;font-size:14px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--hairline);vertical-align:top}
+  th{font-size:12px;font-weight:600;color:var(--ink-64);letter-spacing:-.12px}
+  .tag{display:inline-block;font-size:12px;letter-spacing:-.12px;padding:1px 8px;border-radius:9999px;
+    background:var(--blue);color:#fff;margin-left:6px}
+  .tag.new{background:#1d6f31}
+  footer{border-top:1px solid var(--hairline);margin-top:64px;padding:24px;color:var(--ink-64);font-size:12px;
+    max-width:1440px;margin-left:auto;margin-right:auto}
+  @media (max-width:860px){.wrap{grid-template-columns:1fr;gap:0}nav{position:static;max-height:none;padding-bottom:0}
+    h1{font-size:34px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap" style="padding-bottom:0">
+    <div style="grid-column:2">
+      <p class="eyebrow">使用教程</p>
+      <h1>余烬裂隙 修改器</h1>
+      <p>一个悬浮在游戏页面上的侧边面板，用于修改通货、自定义装备词缀、锁定赌博类操作的结果，并在动手前自动留好退路。</p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap" style="padding-top:0">
+<nav>
+  <h2>目录</h2>
+  <a href="#before">开始之前</a>
+  <a href="#install">安装</a>
+  <a href="#ui">界面导览</a>
+  <a href="#wallet">① 通货</a>
+  <a href="#items">② 装备</a>
+  <a href="#tier">词缀阶层是怎么回事</a>
+  <a href="#twohand">双手武器的 1.5 倍</a>
+  <a href="#base">③ 换基底</a>
+  <a href="#gamble">④ 保底</a>
+  <a href="#audit">⑤ 审查与快照</a>
+  <a href="#faq">常见问题</a>
+  <a href="#limits">已知限制</a>
+  <a href="#design">附录：设计与审查</a>
+</nav>
+
+<main>
+
+<section id="before">
+  <h2 class="sec">开始之前</h2>
+  <p class="lead">它是浏览器里的一个用户脚本，通过读写游戏自己的存档键来工作。先确认三件事，能省掉后面九成的困惑。</p>
+  <div class="card">
+    <h3>它改的是「游戏自己的存档」</h3>
+    <p>通货写入 <code>localStorage['ember-rift-wallet']</code>，角色与背包写入 <code>localStorage['ember-rift-save-v4']</code>（明文 JSON）。面板从不做网络请求，也不需要任何账号。</p>
+  </div>
+  <div class="card">
+    <h3>必须先进角色</h3>
+    <p>脚本靠游戏暴露的 <code>window.__rift</code> 取数据。<b>只有进入某个角色、真正加载到世界之后</b>它才存在。停留在标题界面时，状态页会一直提示未就绪。</p>
+  </div>
+  <div class="card warn">
+    <h3>改之前先看两眼</h3>
+    <p>所有会改动物品的操作都会自动留下快照（<code>localStorage['er-snapshots']</code>，最多 5 份）。真改坏了就去「审查」页还原。但<b>请不要在改完一件装备后立刻切换角色</b>，这是已知最容易丢失改动的场景，详见常见问题。</p>
+  </div>
+</section>
+
+<section id="install">
+  <h2 class="sec">安装</h2>
+  <ol>
+    <li>安装 <b>Tampermonkey</b> 扩展（Chrome 应用商店搜 Tampermonkey，或任选同类的用户脚本管理器）。</li>
+    <li>打开 Tampermonkey 控制面板，选择「添加新脚本」（实用工具页）。</li>
+    <li>把仓库里的 <code>ember-rift-gui.user.js</code> 内容完整粘贴进去，覆盖模板里原有的全部内容。</li>
+    <li><kbd>Ctrl</kbd>+<kbd>S</kbd> 保存，确认开关是启用状态。</li>
+    <li>打开余烬裂隙的游戏页面。<b>脚本注册了两个匹配地址</b>，分别是 itch 的外层页面和实际跑游戏的 <code>html-classic.itch.zone</code> 内层框架，面板会出现在内层页面上。</li>
+    <li>进一个角色，等右上角出现面板即可。</li>
+  </ol>
+  <div class="card warn">
+    <h3>面板没出现怎么办</h3>
+    <p>先确认不是停在主菜单；然后刷新一次页面。<code>window.__rift</code> 是在游戏加载过程中挂上去的，脚本会轮询 8 秒，超时就放弃注入，刷新即可重试。如果依旧没有，去「状态」页看它给出的具体原因。</p>
+  </div>
+</section>
+
+<section id="ui">
+  <h2 class="sec">界面导览</h2>
+  <p class="lead">面板自上而下分三层：黑色标题栏、毛玻璃标签栏、内容区。标签栏固定五个页签。</p>
+  <figure>
+    <div class="demo" data-tpl="tpl-wallet" data-tab="0"></div>
+    <figcaption>
+      <b>图示：通货页</b>
+      <ol>
+        <li><b>标题栏</b>：右侧两个小图标分别是折叠与关闭。拖动标题栏可以移动整个面板。</li>
+        <li><b>标签栏</b>：当前页签下方有一条 Action Blue 指示条。</li>
+        <li><b>内容区</b>：同类控件收在一张发丝边框的圆角卡片里，卡片标题可折叠；标题下方才列具体内容。</li>
+        <li><b>主操作</b>是蓝色胶囊按钮；其余行内小按钮是珍珠白胶囊，两者不会混淆。</li>
+      </ol>
+    </figcaption>
+  </figure>
+  <table>
+    <tr><th>页签</th><th>用来做什么</th></tr>
+    <tr><td>通货</td><td>按游戏自身分组折叠浏览 34 种货币，按官方估值分档补给，或逐行设成任意数量。</td></tr>
+    <tr><td>装备</td><td>浏览背包与身上的装备，改稀有度、换基底、增删改词缀。</td></tr>
+    <tr><td>保底</td><td>让工艺台、瓦尔宝珠、余烬祭坛这些掷骰子的操作，每次都走到最好的那一档。<span class="tag">核心功能</span></td></tr>
+    <tr><td>审查</td><td>体检存档里的非法数据，以及存放、还原快照。<span class="tag">安全网</span></td></tr>
+    <tr><td>状态</td><td>看脚本和游戏的连接状态，用于排查面板没出现等原因。</td></tr>
+  </table>
+</section>
+
+<section id="wallet">
+  <h2 class="sec">① 通货</h2>
+  <p class="lead">34 种通货按<b>游戏自身的分组</b>折叠陈列，想改哪种就展开哪一种；给多少按官方估值分档，不会一次性把所有货币灌到满。</p>
+  <figure>
+    <div class="demo" data-tpl="tpl-wallet" data-tab="0"></div>
+    <figcaption>
+      <b>图示：通货页（默认状态）</b>
+      <ol>
+        <li><b>搜索框</b>：可以搜中文名、俗称（C / D / E / 瓦）、作用描述，也能搜分组名。命中会自动展开对应分组，没命中的分组直接隐藏。</li>
+        <li><b>幅度</b>：少量 / 适中 / 充足，决定下面每个「+N」按钮一次给多少。默认是<b>适中</b>。</li>
+        <li><b>全部补给</b>：按当前幅度给每一种通货补一份，并在动手前自动存快照。</li>
+        <li><b>分组卡</b>：标题右侧写着这一组有几种、一共持有多少；点标题即可展开或收起。首次进入只展开第一组。</li>
+        <li><b>每行</b>：色点是游戏本体里这颗通货自己的颜色，名称右边的灰标是俗称，再右边填数字，「+N」是累加、<b>设</b>是赋值。</li>
+      </ol>
+    </figcaption>
+  </figure>
+
+  <h3>给多少：按官方估值分四档</h3>
+  <p>补给量不是拍脑袋定的，而是用官方资料里<b>每颗通货的估值（以混沌石 c 为单位）</b>分档：越值钱的，一次给得越少。</p>
+  <table>
+    <tr><th>档位</th><th>估值 v</th><th>少量</th><th>适中</th><th>充足</th><th>游戏里的例子</th></tr>
+    <tr><td>常见</td><td>≤ 0.5 c</td><td>10</td><td>40</td><td>120</td><td>蜕变石 0.02 c · 灼热符文 0.5 c · 改造石 0.06 c</td></tr>
+    <tr><td>少见</td><td>≤ 3 c</td><td>5</td><td>15</td><td>60</td><td>混沌石 1 c · 瓦尔宝珠 1.5 c · 苦难精华 2.5 c</td></tr>
+    <tr><td>稀有</td><td>≤ 60 c</td><td>1</td><td>3</td><td>8</td><td>崇高石 12 c · 破溃石 60 c · 三种印记 25 c</td></tr>
+    <tr><td>珍贵</td><td>&gt; 60 c</td><td>1</td><td>2</td><td>5</td><td>神圣石 120 c</td></tr>
+  </table>
+  <p class="cap">三档全部补给的总量参考：<b>少量 205 颗</b>（≈487 c）· <b>适中 764 颗</b>（≈1383 c）· <b>充足 2417 颗</b>（≈4075 c）。数字由 <code>scripts/smoke.js</code> 用 <code>game.html</code> 的真实 CUR 表算出。</p>
+  <div class="card">
+    <h3>还想一次拉满怎么办</h3>
+    <p>面板刻意不再提供「全部拉满 99999」——那会让通货运筹形同虚设。但每行输入框<b>没有上限</b>：填 99999 再点「设」，效果与过去完全一样，只是现在它是你主动的选择。</p>
+  </div>
+
+  <h3>简介模式：把官方资料搬到眼前</h3>
+  <p>点<b>显示简介</b>，每行会多出一行说明：<b>掉落占比 / 获取途径 · 估值 · 这颗通货的作用</b>。</p>
+  <figure>
+    <div class="demo" data-tpl="tpl-wallet-detail" data-tab="0"></div>
+    <figcaption>
+      <b>图示：通货页（简介模式）</b>
+      <ol>
+        <li>掉落占比 = <code>w / Σw</code>，与官方 wiki「全部通货与掉率」页的算法一致：≥10% 取整，否则保留两位小数。</li>
+        <li>没有掉落权重的七种（破溃石、余烬之心、余烬残片、四种印记）改显示官方给的<b>获取途径</b>，例如「T11 以上地图首领」。</li>
+        <li>估值单位是 c（混沌石），方便横向比较哪颗更值钱。</li>
+      </ol>
+    </figcaption>
+  </figure>
+  <p>名称与分组<b>直接取自游戏数据</b>（<code>R.CUR</code> 与 <code>R.CUR_GRP</code>），所以和你在游戏仓库里看到的名字完全一致，不会因为版本更新而对不上。改动会写入 <code>localStorage['ember-rift-wallet']</code>，刷新后仍在。</p>
+</section>
+
+<section id="items">
+  <h2 class="sec">② 装备</h2>
+  <p class="lead">进页是列表，点一件进去是详情。列表支持按名称、部位、稀有度筛选，也能筛「只看身上穿着」。</p>
+  <figure>
+    <div class="demo" data-tpl="tpl-list" data-tab="1"></div>
+    <figcaption>
+      <b>图示：装备列表</b>
+      <ol>
+        <li>每张卡片一行物品，上方是名字，下方是稀有度、所在位置、物品等级。</li>
+        <li><b>位置</b>会明确写清楚是穿着中，还是背包第几格，免得改错对象。</li>
+        <li>点卡片进入详情页。</li>
+      </ol>
+    </figcaption>
+  </figure>
+
+  <h3>详情页能改什么</h3>
+  <figure>
+    <div class="demo" data-tpl="tpl-detail" data-tab="1"></div>
+    <figcaption>
+      <b>图示：装备详情</b>
+      <ol>
+        <li><b>稀有度</b>：普通、魔法、稀有三档可随时切换，右边「改」生效。</li>
+        <li><b>基底</b>：换成同部位的另一种底材，详见下一节。</li>
+        <li><b>词缀列表</b>：每条词缀一个数值输入框，右边「改」写入、「删」移除。</li>
+        <li><b>添加词缀</b>：可以按分类下拉挑选，也可以直接搜中文名或英文 id。</li>
+        <li>选好词缀后依次挑<b>阶层</b>与<b>数值</b>，点蓝色胶囊按钮添加。</li>
+      </ol>
+    </figcaption>
+  </figure>
+  <div class="card">
+    <h3>数值框里填的是「游戏里看到的那个数」</h3>
+    <p>这里最容易出错的地方是：<b>游戏在物品里存的是没乘倍率的基值</b>，显示和结算时才乘上去。面板替你做了换算，<b>你填多少，游戏面板就显示多少</b>，不需要自己做乘法。</p>
+  </div>
+</section>
+
+<section id="tier">
+  <h2 class="sec">词缀阶层是怎么回事</h2>
+  <p class="lead">这是最容易搞错的一处，务必先看这一节。</p>
+  <p>游戏内部把每种词缀的数值范围，按<b>由弱到强</b>排成一个数组：<code>ranges[0]</code> 是最低阶，最后一个才是最强的 T1。这一点在游戏自己的 forge 面板里有明确写法（标签是 <code>"T"+(总数-索引)</code>），而「全部升到 T1」按钮用的正是最后一个索引。</p>
+  <p>因此本面板的下拉按 <b>T1 在上、依次往下</b> 排列，并且<b>默认就停在 T1</b>，也就是最强的一档。</p>
+  <div class="card warn">
+    <h3>曾经犯过的错</h3>
+    <p>早期版本把 <code>ranges[0]</code> 当成了 T1，结果下拉整个反了：看起来叫「T6」的那一项，才真正是 T1 的数值；勾选「升到 T1」实际却写成了最低阶。现已修正，并在自动化测试里加了专门的对拍断言防止复发。</p>
+  </div>
+  <figure>
+    <div class="demo" data-tpl="tpl-detail" data-tab="1"></div>
+    <figcaption>
+      <b>图示：阶层与数值</b>
+      <ol>
+        <li>阶层下拉里 <code>T1 58~70</code> 排在第一个，数值最大。</li>
+        <li>下方数值下拉跟着阶层联动，给出该阶层的可选值。</li>
+        <li>提示行会同时告诉你整体正常区间，以及当前阶层的区间。</li>
+      </ol>
+    </figcaption>
+  </figure>
+</section>
+
+<section id="twohand">
+  <h2 class="sec">双手武器的 1.5 倍</h2>
+  <p class="lead">同数值的一条词缀，装在双手武器上会比单手多一半，这是游戏自身的规则。</p>
+  <p>游戏在<b>显示和结算时</b>才乘 <code>1.5</code>，物品里存的是没乘的基值。触发条件是三样同时成立：物品是<b>双手武器</b>（长棍、法杖、弓、弩）、词缀属于那 11 种伤害类、并且这条词缀<b>不是</b>底材自带的固有词缀。</p>
+  <p>面板会做两件事:</p>
+  <ul>
+    <li>详情页顶部出现注意提示,明确写出这是哪种武器、倍率多少。</li>
+    <li>享受倍率的词缀行右侧标一个 <b>×1.5</b> 小标签,让你一眼分清哪些吃了加成。</li>
+  </ul>
+  <p>换基底时这两个标识会同步更新，因为是否算双手取决于底材的武器类型。</p>
+  <div class="card">
+    <h3>为什么填 100 有时显示 101</h3>
+    <p>基值要先乘 1.5 再取整，某些目标值（整数除三余一的那批）用整数基值恰好够不到。面板遇到这种情况会退回到精确小数存储，保证你填多少就是多少。</p>
+  </div>
+</section>
+
+<section id="base">
+  <h2 class="sec">③ 换基底<span class="tag new">新功能</span></h2>
+  <p class="lead">在详情页可以保留全部自加词缀的前提下，把这件装备换成同部位的另一种底材。</p>
+  <p>基底在游戏里同时决定了四件事：部位、底材自带的<b>固有词缀</b>、需求等级，以及是否算双手武器。游戏的需求等级是实时查表得来的，所以换完 <code>base</code> 之后，其余这些都是自动跟上的。</p>
+  <figure>
+    <div class="demo" data-tpl="tpl-detail" data-tab="1"></div>
+    <figcaption>
+      <b>图示：基底行</b>
+      <ol>
+        <li>下拉默认只列出<b>同部位</b>的底材，并按需求等级从低到高排序。</li>
+        <li>每项后面跟着需求等级，方便判断自己的角色能不能穿。</li>
+        <li>点「换」执行。操作前会自动存快照。</li>
+        <li>需要改成别的部位时，勾选下方的跨部位开关。</li>
+      </ol>
+    </figcaption>
+  </figure>
+  <h3>换基底时会发生什么</h3>
+  <ul>
+    <li><b>固有词缀</b>按新底材重新生成。这是不可避免的，因为固有词缀本来就由底材决定。</li>
+    <li><b>你自己加的词缀全部保留</b>，面板只动 <code>base</code>、<code>slot</code>、<code>impl</code> 三项。</li>
+    <li>名字会跟着更新：普通装备直接跟随底材名，魔法与稀有会重新生成名字，传奇名不动。</li>
+    <li>换完之后如果有个别词缀不属于新部位（游戏会给某些词缀限定部位），提示条会告知条数，去「审查」页可以看到具体是哪几条。</li>
+  </ul>
+  <div class="card warn">
+    <h3>为什么默认不允许跨部位</h3>
+    <p>游戏官方自己的修复逻辑也只在「部位相同」时才敢换底材，这个限制是有依据的。跨部位会让装备槽错位，所以默认锁住。真的需要时勾选开关即可：背包里的物品直接换，<b>已经穿在身上的会自动挪到新部位</b>，新部位如果已经有东西，那件会被移回背包；背包满了则拒绝执行，避免弄丢装备。</p>
+  </div>
+</section>
+
+<section id="gamble">
+  <h2 class="sec">④ 保底：让掷骰子的操作每次都走最好结果</h2>
+  <p class="lead">工艺台、瓦尔宝珠、余烬祭坛的结果在游戏里是随机的，而且随机源写在游戏内部、没有外部入口可以替换。所以这里的做法是：按官方源码把「最好的那个分支」完整复刻一遍，再把原本随机挑选的部分改成由你自己指定。</p>
+  <figure>
+    <div class="demo" data-tpl="tpl-gamble" data-tab="2"></div>
+    <figcaption>
+      <b>图示：保底页</b>
+      <ol>
+        <li>上方筛选并选中目标装备，卡片会显示这件装备当前有几条词缀。</li>
+        <li><b>模拟真实消耗</b>：勾选后会真的扣掉对应的瓦尔宝珠、余烬之心，数量不够就免单。</li>
+        <li><b>① 数值保底</b>：把每条词缀顶到当前阶层的上限，可勾选「顺便升到 T1」。</li>
+        <li><b>② 瓦尔宝珠</b>：腐化结果自选，词缀从池子里挑，数值直接拉满。</li>
+        <li><b>③ 余烬祭坛</b>：锁定为最好的「升华」结果。</li>
+        <li><b>⑤ 一键必胜</b>：按 升 T1 拉满 → 自选腐化词缀 → 祭坛升华 的顺序一步到位。</li>
+      </ol>
+    </figcaption>
+  </figure>
+  <table>
+    <tr><th>原版结果</th><th>保底后</th></tr>
+    <tr><td>瓦尔宝珠：无事发生 / 加一条随机腐化词缀 / 开槽 / 降级</td><td>固定给出腐化词缀，且词缀由你挑、数值拉满</td></tr>
+    <tr><td>余烬祭坛：升华 20% / 无事发生 30% / 失衡 30% / 化为余烬 20%</td><td>锁定升华：追加一条你选的词缀，全部词缀 +10%（可超越 T1）</td></tr>
+    <tr><td>神圣石：数值随机重掷</td><td>直接顶到当前阶层上限，或一步到 T1</td></tr>
+  </table>
+  <div class="card">
+    <h3>珠宝也在这一页：可以腐化，但没有插槽与祭坛</h3>
+    <p>官方对瓦尔宝珠的判定是「装备<b>或珠宝</b>」，所以天赋珠宝同样能腐化、能拉满、能破溃。三处和装备不同，面板会自己切换：</p>
+    <ul>
+      <li><b>没有「+1 符文插槽」</b>。游戏里珠宝走到这一档时会改判成追加腐化词缀，所以面板直接去掉这个选项。</li>
+      <li><b>腐化词缀池少一条</b>。官方会剔除「技能等级」，因为珠宝上它没有意义。</li>
+      <li><b>没有余烬祭坛</b>。祭坛只接受装备，珠宝拿不到第二条腐化词缀；「一键必胜」对珠宝也止步于腐化。</li>
+    </ul>
+    <p>已插入天赋树的珠宝也会出现在目标列表里（游戏插入时会把它从背包移走，存放在天赋树自己的槽位数组里），不需要先拆下来。</p>
+  </div>
+  <div class="card">
+    <h3>维护区：做错了也能退回去</h3>
+    <p>底部还有几个按钮，用来撤销双重腐化、清除全部腐化标记、清除超越标记、清除破溃标记。它们对应的是物品上的几个状态字段，清掉就能重新执行一次操作。</p>
+  </div>
+</section>
+
+<section id="audit">
+  <h2 class="sec">⑤ 审查与快照</h2>
+  <p class="lead">「审查」页做两件事：给存档做体检，以及保管你的退路。</p>
+  <figure>
+    <div class="demo" data-tpl="tpl-audit" data-tab="3"></div>
+    <figcaption>
+      <b>图示：审查页</b>
+      <ol>
+        <li><b>体检报告</b>：检查词缀 id 是否合法、数值是否超出正常区间、稀有度与词缀数量是否匹配、存档结构是否完整。</li>
+        <li>结果用红 / 橙徽章区分错误与提醒。<b>越界数值不影响生效</b>，只是提醒；<b>非法词缀 id 才是真问题</b>。</li>
+        <li><b>快照列表</b>：每次改动自动留下，最多 5 份，短时间内的连续编辑会合并成一份。</li>
+        <li>点某条右边的「还原」即可回到那一刻。也可以随时「立即存快照」。</li>
+      </ol>
+    </figcaption>
+  </figure>
+  <div class="card">
+    <h3>快照只是另一把钥匙</h3>
+    <p>快照存在独立的 localStorage 键里，<b>绝不会去覆盖游戏的存档键</b>，也不会因为清理浏览器数据以外的原因消失。还原采取原地把内容写回的方式，这样游戏内部那个指向当前角色的引用依然有效。</p>
+  </div>
+</section>
+
+<section id="faq">
+  <h2 class="sec">常见问题</h2>
+  <h3>为什么有时候改动会回档？</h3>
+  <p>主要有三种情况：</p>
+  <ul>
+    <li><b>切角色。</b>游戏的读档是把整个玩家对象重新赋值。刚改完就切角色，内存里的改动还没来得及落到磁盘就被覆盖了。<b>改完后在藏身处待一会儿，别紧接着切换。</b></li>
+    <li><b>钱包数量变空。</b>通货那一块的写法和存放位置有关，数量为空时槽位会对不上，出现「改了显示没错，重进却变了」的错位。</li>
+    <li><b>看着像回档，其实是提示没刷新。</b>游戏装备悬浮提示是打开那一刻的快照，你在外部改完 <code>mods</code> 它并不会自己重画。关掉重开，或者刷新页面再看。</li>
+  </ul>
+  <p>这三种里只有前两种是真的丢数据，也正是快照存在的意义。第三种纯属虚惊。</p>
+
+  <h3>为什么地图、兽魂、珠宝的词缀改不了？</h3>
+  <p>它们用的是各自独立的一套词条表，和装备的词缀表并不通用。更关键的是，地图那条统计函数在内部取值时没有空值保护，<b>硬写进去会让游戏读取时直接抛错</b>。所以这三类的词缀只提供只读查看。</p>
+  <p>但<b>「只读」只针对增删词缀</b>：珠宝的腐化、数值拉满、破溃在「保底」页可以照做，因为那几项只往物品上写状态字段，不需要往珠宝里塞装备词缀。地图与兽魂没有这层例外——官方本来就不给它们腐化，面板也不会替你绕过。</p>
+
+  <h3>添加词缀时数值能不能超过区间？</h3>
+  <p>可以。超出区间只会给出越界提示，仍然照写。这类数值通常还是生效的，但要留意个别词条在极端值下的表现。</p>
+
+  <h3>面板找不到刚放下的装备？</h3>
+  <p>列表会遍历穿着中的装备、背包（含地图/兽魂/珠宝），以及<b>已经插进天赋树的珠宝</b>。物品是否进背包受容量限制：背包 160 格，地图袋 120 张，宝石类不占格也不设上限。放不进去时是游戏自己拒绝的，不是面板的问题。</p>
+</section>
+
+<section id="limits">
+  <h2 class="sec">已知限制</h2>
+  <ul>
+    <li>地图、兽魂、珠宝的词缀只读（珠宝仍可在保底页腐化/拉满/破溃）。</li>
+    <li>回档无法百分之百杜绝，只能靠快照把损失降到最低。</li>
+    <li>3 秒内的连续编辑会合并为同一个快照，想分步保留请手动「立即存快照」。</li>
+    <li>游戏内部随机生成的结果无法预知，本面板提供的是「由你指定目标值」而不是改写随机源。</li>
+    <li>背包 160 格、地图袋 120 张的限制来自游戏本体，面板不会绕过。</li>
+  </ul>
+</section>
+
+<section id="design">
+  <h2 class="sec">附录：设计与审查</h2>
+  <p class="lead">界面按 <code>awesome-design-md</code> 里的 Apple 设计语言重做，并用 Impeccable 做了一轮机器审查。</p>
+  <h3>组件怎么对应的</h3>
+  <table>
+    <tr><th>面板部位</th><th>Apple 组件</th><th>关键取值</th></tr>
+    <tr><td>标题栏</td><td>global-nav</td><td>纯黑底、44px 高、12px 白色文字</td></tr>
+    <tr><td>标签栏</td><td>sub-nav-frosted</td><td>羊皮纸 80% + 背景模糊</td></tr>
+    <tr><td>内容卡</td><td>store-utility-card</td><td>白底 + 发丝边框 + 18px 圆角</td></tr>
+    <tr><td>主按钮</td><td>button-primary</td><td>Action Blue 全圆角胶囊</td></tr>
+    <tr><td>行内小按钮</td><td>button-pearl-capsule</td><td>珍珠白底 + 柔环边框</td></tr>
+    <tr><td>输入框</td><td>search-input</td><td>全圆角胶囊</td></tr>
+  </table>
+  <h3>两条铁律</h3>
+  <ul>
+    <li><b>全系统零投影。</b>Apple 整个系统里只有一处阴影，且只给放在台面上的产品图。这里浮层的层次感由背景模糊加 96% 不透明底提供，不用阴影。</li>
+    <li><b>单一强调色。</b>所有可点元素只用 Action Blue，不引入第二个品牌色。语义红橙绿仅用于状态表达。</li>
+  </ul>
+  <h3>Impeccable 审查结论</h3>
+  <p>首轮共报出 39 项问题，集中在两处：次要灰在羊皮纸底上对比度只有 3.9 比 1，以及标题栏纵向缺少内边距。处理如下：</p>
+  <ul>
+    <li>次要文字改用 Apple 官网在用的 secondary 灰 <code>#6e6e73</code>，各处均达到 WCAG AA。</li>
+    <li>语义色加深为 Apple HIG 系统色的暗色调（橙 <code>#9c2b00</code>、绿 <code>#1d6f31</code>），连带把告警区底色上的文字也一起拉过达标线。</li>
+    <li>字体栈严格改成设计文档里的字面定义，去掉了自作主张添加的备选字体。</li>
+    <li>补充的设计 token 全部登记进项目根目录的 <code>DESIGN.md</code>，让检查有据可依。</li>
+  </ul>
+  <p>复检结果：<b>0 anti-patterns，0 advisory</b>。可用 <code>npx impeccable detect docs/design/preview.html</code> 自行复现。</p>
+  <div class="card">
+    <h3>文件都在哪</h3>
+    <ul>
+      <li><code>ember-rift-gui.user.js</code>：用户脚本本体，也是样式的真源。</li>
+      <li><code>DESIGN.md</code>：设计要求文件，Apple 原文加上本项目的扩展 token。</li>
+      <li><code>docs/design/preview.html</code>：面板预览，供 Impeccable 检测与配图。</li>
+      <li><code>scripts/extract-css.js</code>：把脚本里的样式抽成 <code>docs/design/panel.css</code>，保证预览与线上不会走偏。</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer>余烬裂隙修改器 · 使用教程。<code>docs/design/preview.html</code> 中的界面示例与实际注入脚本的结构、样式完全一致。</footer>
+
+<!-- 示例面板的数据模板：与运行时真实结构一致 -->
+<template id="tpl-wallet">
+  <input class="er-sel" type="search" placeholder="搜索名称 / 俗称 / 作用">
+  <div class="er-row">
+    <button class="er-btn er-mini">少量</button>
+    <button class="er-btn er-mini on">适中</button>
+    <button class="er-btn er-mini">充足</button>
+    <span class="er-wlv-note">一次给多少</span>
+  </div>
+  <div class="er-big"><button class="er-btn go">全部补给 · 适中</button></div>
+  <div class="er-row">
+    <button class="er-btn er-mini">展开全部</button>
+    <button class="er-btn er-mini">显示简介</button>
+    <button class="er-btn er-mini">清零</button>
+    <button class="er-btn er-mini">保存</button>
+  </div>
+  <div class="er-hint">补给量按官方估值分档：常见 40 颗 · 少见 15 颗 · 稀有 3 颗 · 珍贵 2 颗。<br>「+N」一次就加 N 颗；要任意数量直接在输入框里改数字后点「设」。</div>
+  <div class="er-wgrp">
+    <div class="er-wghead">
+      <span class="er-wgname">通货</span>
+      <span class="er-wgmeta">15 种 · 持有 342</span>
+      <span class="er-wgcaret">收起</span>
+    </div>
+    <div class="er-wgbody">
+      <div class="er-wrow">
+        <div class="er-wtop">
+          <span class="er-wdot" style="background:#8ab4dc"></span>
+          <span class="er-wname">蜕变石</span>
+          <input class="er-input er-win" type="number" value="128">
+          <span class="er-wacts"><button class="er-btn er-mini">+40</button><button class="er-btn er-mini">设</button></span>
+        </div>
+      </div>
+      <div class="er-wrow">
+        <div class="er-wtop">
+          <span class="er-wdot" style="background:#d4a43c"></span>
+          <span class="er-wname">混沌石</span>
+          <span class="er-wslang">C</span>
+          <input class="er-input er-win" type="number" value="42">
+          <span class="er-wacts"><button class="er-btn er-mini">+15</button><button class="er-btn er-mini">设</button></span>
+        </div>
+      </div>
+      <div class="er-wrow">
+        <div class="er-wtop">
+          <span class="er-wdot" style="background:#fff6dc"></span>
+          <span class="er-wname">神圣石</span>
+          <span class="er-wslang">D</span>
+          <input class="er-input er-win" type="number" value="3">
+          <span class="er-wacts"><button class="er-btn er-mini">+2</button><button class="er-btn er-mini">设</button></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="er-wgrp">
+    <div class="er-wghead">
+      <span class="er-wgname">符文</span>
+      <span class="er-wgmeta">6 种 · 持有 48</span>
+      <span class="er-wgcaret">展开</span>
+    </div>
+  </div>
+  <div class="er-wgrp">
+    <div class="er-wghead">
+      <span class="er-wgname">精华</span>
+      <span class="er-wgmeta">5 种 · 持有 12</span>
+      <span class="er-wgcaret">展开</span>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-wallet-detail">
+  <div class="er-row">
+    <button class="er-btn er-mini">少量</button>
+    <button class="er-btn er-mini on">适中</button>
+    <button class="er-btn er-mini">充足</button>
+    <span class="er-wlv-note">一次给多少</span>
+  </div>
+  <div class="er-wgrp">
+    <div class="er-wghead">
+      <span class="er-wgname">插槽</span>
+      <span class="er-wgmeta">4 种 · 持有 9</span>
+      <span class="er-wgcaret">收起</span>
+    </div>
+    <div class="er-wgbody">
+      <div class="er-wrow">
+        <div class="er-wtop">
+          <span class="er-wdot" style="background:#2ab0e8"></span>
+          <span class="er-wname">高级珠宝匠石</span>
+          <input class="er-input er-win" type="number" value="5">
+          <span class="er-wacts"><button class="er-btn er-mini">+15</button><button class="er-btn er-mini">设</button></span>
+        </div>
+        <div class="er-wmeta">掉落 0.79% · 2 c<br>主动技能宝石的辅助插槽 3 → 4</div>
+      </div>
+      <div class="er-wrow">
+        <div class="er-wtop">
+          <span class="er-wdot" style="background:#c070ff"></span>
+          <span class="er-wname">完美珠宝匠石</span>
+          <input class="er-input er-win" type="number" value="1">
+          <span class="er-wacts"><button class="er-btn er-mini">+3</button><button class="er-btn er-mini">设</button></span>
+        </div>
+        <div class="er-wmeta">掉落 0.13% · 15 c<br>主动技能宝石的辅助插槽 4 → 5</div>
+      </div>
+    </div>
+  </div>
+  <div class="er-wgrp">
+    <div class="er-wghead">
+      <span class="er-wgname">印记</span>
+      <span class="er-wgmeta">4 种 · 持有 0</span>
+      <span class="er-wgcaret">收起</span>
+    </div>
+    <div class="er-wgbody">
+      <div class="er-wrow">
+        <div class="er-wtop">
+          <span class="er-wdot" style="background:#c0b0e0"></span>
+          <span class="er-wname">主教印记</span>
+          <input class="er-input er-win" type="number" value="0">
+          <span class="er-wacts"><button class="er-btn er-mini">+3</button><button class="er-btn er-mini">设</button></span>
+        </div>
+        <div class="er-wmeta">T6+ 骸骨主教 · 25 c<br>骸骨主教(T6+)掉落。集齐四种印记可在地图装置开启裂隙之心</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-list">
+  <div class="er-filter">
+    <input class="er-sel" placeholder="名称搜索">
+    <select class="er-sel"><option>全部部位</option><option selected>武器</option></select>
+    <select class="er-sel"><option selected>全部稀有度</option></select>
+  </div>
+  <div class="er-item"><div class="nm">腐朽之牙</div><div class="meta">稀有 · 装备·武器 · 物品等级 5</div></div>
+  <div class="er-item"><div class="nm">学徒法杖</div><div class="meta">普通 · 背包#3 · 物品等级 12</div></div>
+  <div class="er-item"><div class="nm">秘术胸甲</div><div class="meta">魔法 · 背包#7 · 物品等级 20</div></div>
+</template>
+
+<template id="tpl-detail">
+  <div class="er-big"><button class="er-btn">← 返回列表</button></div>
+  <div class="er-item"><div class="nm">腐朽之牙</div><div class="meta">稀有 · 物品等级 5</div></div>
+  <div class="er-warn">双手武器（法杖）：伤害类词缀效果 ×1.5。下面数值框显示的是倍率后的生效值（与游戏面板一致），直接照你想要的数值填写即可。</div>
+  <div class="er-row"><label>稀有度</label>
+    <select class="er-sel" style="width:auto"><option>普通</option><option>魔法</option><option selected>稀有</option><option>传奇</option></select>
+    <button class="er-btn er-mini">改</button>
+  </div>
+  <div class="er-row"><label>基底</label>
+    <select class="er-sel" style="flex:1"><option selected>学徒法杖（需求等级 1）</option><option>长老法杖（需求等级 55）</option></select>
+    <button class="er-btn er-mini">换</button>
+  </div>
+  <div class="er-row"><label>允许跨部位换基底（已装备时会自动挪到新部位）</label></div>
+  <div class="er-hint">基底决定部位、固有词缀、需求等级与是否为双手武器。<b>换基底会按新底材重算固有词缀</b>，你自己加的词缀保留不变。</div>
+  <div class="er-grp">词缀列表</div>
+  <div class="er-affix"><span class="tx">增加 34 点火焰伤害 <span class="er-sev th">×1.5</span></span><input class="er-input" value="34"><button class="er-btn er-mini">改</button><button class="er-btn er-mini">删</button></div>
+  <div class="er-affix"><span class="tx">法术伤害提高 62%</span><input class="er-input" value="62"><button class="er-btn er-mini">改</button><button class="er-btn er-mini">删</button></div>
+  <div class="er-grp">添加词缀</div>
+  <select class="er-sel"><option>· 按分类选择词缀 ·</option></select>
+  <div class="er-row"><label>或搜索词缀（中文显示名 / 英文 id）</label></div>
+  <input class="er-sel" placeholder="如 魔力回复 / 生命 / 火焰 / life">
+  <div class="er-row"><label>t 级（阶层，T1 最高）</label>
+    <select class="er-sel" style="width:auto"><option selected>T1 58~70</option><option>T2 48~57</option><option>T6 10~19</option></select>
+  </div>
+  <div class="er-row"><label>数值</label><select class="er-sel" style="width:auto"><option selected>70</option><option>64</option><option>58</option></select></div>
+  <div class="er-hint">正常区间 10~70 · 当前 T1 58~70</div>
+  <button class="er-btn go" style="margin-top:6px">＋ 添加词缀</button>
+</template>
+
+<template id="tpl-gamble">
+  <div class="er-filter"><input class="er-sel" placeholder="名称搜索"><select class="er-sel"><option selected>全部部位</option></select></div>
+  <div class="er-item"><div class="nm">幽魂之衣</div><div class="meta">稀有 · 物品等级 1 · 词缀 6 条</div></div>
+  <div class="er-row"><label>模拟真实消耗（扣除瓦尔宝珠 / 余烬之心，不足则免单）</label></div>
+  <div class="er-grp">① 数值保底（替代神圣石）</div>
+  <div class="er-hint">把每条词缀顶到当前阶层上限。游戏里这是完全随机的。双手武器会按 ×1.5 显示。</div>
+  <div class="er-row"><label>顺便把每条词缀升到 T1（最高阶层）</label></div>
+  <button class="er-btn go">数值拉满</button>
+  <div class="er-grp">② 瓦尔宝珠（腐化）</div>
+  <div class="er-row"><label>结果（自选，游戏中随机）</label></div>
+  <select class="er-sel"><option selected>获得腐化词缀（自选 + 拉满）</option></select>
+  <select class="er-sel" style="width:100%;margin-top:6px"><option selected>生命上限提高 12%（池内最大 12）</option></select>
+  <button class="er-btn go" style="margin-top:6px">执行腐化</button>
+  <div class="er-grp">⑤ 一键必胜</div>
+  <div class="er-hint">按顺序：全部词缀升 T1 并拉满，自选腐化词缀，祭坛升华（+10%）。</div>
+  <button class="er-btn go">一键必胜</button>
+</template>
+
+<template id="tpl-audit">
+  <div class="er-audit bad">
+    <div class="ti">发现 2 项（错误 1 · 提醒 1）</div>
+    <div class="li"><span class="er-sev e">错误</span>背包#7 秘术胸甲：未知词缀 id「notExist12」<br><span class="er-sev w">提醒</span>装备·武器 腐朽之牙：addFire 数值 340 超出正常 15~105</div>
+  </div>
+  <div class="er-hint">提示：越界数值不影响生效，只是提醒你填了超出正常区间的值；非法词缀 id 才是真问题。</div>
+  <div class="er-grp">存档快照</div>
+  <div class="er-snap"><span class="tm">手动 · 01:12:33</span><button class="er-btn er-mini">还原</button></div>
+  <div class="er-snap"><span class="tm">换基底前 · 01:09:04</span><button class="er-btn er-mini">还原</button></div>
+  <div class="er-big"><button class="er-btn go">立即存快照</button><button class="er-btn">清空</button></div>
+</template>
+
+<script>
+(function () {
+  var TABS = ['通货', '装备', '保底', '审查', '状态'];
+  var HEAD = '<div class="er-head"><span class="er-title">余烬裂隙 修改器</span>' +
+    '<span class="er-btn-min" title="折叠">&#8211;</span>' +
+    '<span class="er-btn-x" title="关闭">&#10005;</span></div>';
+  Array.prototype.forEach.call(document.querySelectorAll('.demo'), function (host) {
+    var tpl = document.getElementById(host.getAttribute('data-tpl'));
+    if (!tpl) return;
+    var active = parseInt(host.getAttribute('data-tab'), 10) || 0;
+    var tabs = TABS.map(function (t, i) {
+      return '<div class="er-tab' + (i === active ? ' on' : '') + '">' + t + '</div>';
+    }).join('');
+    host.innerHTML = '<div class="er-gui er-shot">' + HEAD +
+      '<div class="er-tabs">' + tabs + '</div>' +
+      '<div class="er-body">' + tpl.innerHTML + '</div></div>';
+  });
+  // 目录高亮随滚动
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav a'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  function sync() {
+    var y = window.scrollY + 120, hit = 0;
+    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) hit = i; });
+    links.forEach(function (a, i) { a.className = i === hit ? 'on' : ''; });
+  }
+  window.addEventListener('scroll', sync, { passive: true });
+  sync();
+})();
+</script>
+</body>
+</html>
