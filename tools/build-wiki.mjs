@@ -9,7 +9,7 @@
  *   tools/wiki-exp-plugin.js                  浏览器端插件（并入数据 + 新增页面）
  *
  * 输出：
- *   build/wiki-异界版-v2.3.4.html             单文件 Wiki（离线可跑）
+ *   build/wiki-异界版-v2.3.5.html             单文件 Wiki（离线可跑）
  *   reports/wiki-build-report.json            构建报告（补丁命中数 / 内容统计）
  *
  * 用法：node tools/build-wiki.mjs [--out <path>]
@@ -26,13 +26,13 @@ const HOTFIX = path.join(PACK, "迁移工具", "hotfix", "hotfix.json");
 const BLOCK = path.join(W, "build", "block_v19.js");
 const PLUGIN = path.join(W, "tools", "wiki-exp-plugin.js");
 
-const VER = "2.3.4";
+const VER = "2.3.5";
 
 // 产物里的「构建时点」。默认写死为定版值，让 `npm run wiki` 不带任何环境变量
 // 也能与 Release 归档逐字节一致；发版时连同 VER 一起更新这一行。
 // 临时构建（不打算归档的那次）用 EMB_BUILD_AT=... 覆盖。
 // 注意不要改成 base 快照的 mtime：git 不保存 mtime，不同克隆出来的时间不同。
-const BUILT_AT = "2026-11-01T22:30:00.000Z";
+const BUILT_AT = "2026-11-01T23:30:00.000Z";
 
 const PLUGIN_TAG = "<!-- EMBER-EXP-PLUGIN -->";
 
@@ -92,12 +92,14 @@ function loadUniques() {
   return arr;
 }
 
-/* ---------- 2b. 从移植块里取出腐化词缀池（EMB-122） ---------- */
+/* ---------- 2b. 从移植块里取出腐化词缀池（EMB-122 / EMB-125） ---------- */
 function loadCorruptPool() {
   const src = read(BLOCK);
   const mark = "/* ===== EMB-122 · 腐化词缀扩池 =====";
   const segStart = src.indexOf(mark);
   if (segStart < 0) throw new Error("在 block_v19.js 中找不到 EMB-122 扩池段");
+
+  // 通用池 POOL
   const pStart = src.indexOf("var POOL = [", segStart);
   if (pStart < 0) throw new Error("在 EMB-122 段中找不到 POOL 数组");
   const open = src.indexOf("[", pStart);
@@ -113,7 +115,44 @@ function loadCorruptPool() {
   if (!Array.isArray(arr) || !arr.length) throw new Error("POOL 解析为空");
   const total = arr.reduce((s, p) => s + (p.w || 0), 0);
   applied.push({ label: "block_v19.js 腐化词缀池", hits: arr.length });
-  return { entries: arr, total };
+
+  // 传奇专属池 UNIQUE_POOL（EMB-125）
+  const uniques = loadUniqueCorruptPools(src, segStart);
+
+  return { entries: arr, total, uniques };
+}
+
+/* 解析 UNIQUE_POOL：{ uniqId: { n, pool: [...], fallbackScale } } */
+function loadUniqueCorruptPools(src, segStart) {
+  const upStart = src.indexOf("var UNIQUE_POOL = {", segStart);
+  if (upStart < 0) return {};
+  const open = src.indexOf("{", upStart);
+  let depth = 0, end = -1;
+  for (let i = open; i < src.length; i++) {
+    const c = src[i];
+    if (c === "{") depth++;
+    else if (c === "}") { depth--; if (depth === 0) { end = i; break; } }
+  }
+  if (end < 0) return {};
+  const literal = src.slice(open, end + 1);
+  try {
+    const obj = new Function("return " + literal + ";")();
+    const out = {};
+    for (const id in obj) {
+      const u = obj[id];
+      out[id] = {
+        n: u.n || id,
+        fallbackScale: u.fallbackScale || 0.5,
+        pool: (u.pool || []).map((p) => ({ k: p.k, a: p.a, b: p.b, w: p.w })),
+      };
+    }
+    const cnt = Object.keys(out).length;
+    if (cnt) applied.push({ label: "block_v19.js 传奇专属腐化池", hits: cnt });
+    return out;
+  } catch (e) {
+    console.warn("[wiki] 解析 UNIQUE_POOL 失败：", e.message);
+    return {};
+  }
 }
 
 /* ---------- 3. 文本补丁（官方文案里被扩展改掉的数值） ---------- */

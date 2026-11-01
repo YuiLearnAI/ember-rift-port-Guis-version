@@ -157,7 +157,11 @@
         manaRegen: '魔力回复速度提高 {v}%', regen: '每秒回复 {v} 生命', projAdd: '投射物技能 +{v} 枚投射物',
         corruptCruel: '暴击伤害 +{v}% · 最大生命总降 6%', corruptGluttony: '物品数量提高 {v}% · 物品稀有度总降 20%',
         corruptEmberBlood: '每秒回复 {v} 生命 · 最大能量护盾总降 10%', corruptBone: '击杀时 {v}% 几率留下 1 片余烬残片',
-        corruptResonance: '每 1 条腐化词缀使伤害提高 {v}%', corruptScorch: '命中时 {v}% 几率使目标点燃'
+        corruptResonance: '每 1 条腐化词缀使伤害提高 {v}%', corruptScorch: '命中时 {v}% 几率使目标点燃',
+        rpgRathCastSpd: '非吟唱法术的施法速度提高 {v}%',
+        rpgRathAilLife: '每 50 点生命上限使非吟唱法术的异常状态强度提高 {v}%',
+        rpgRathCritMana: '每 50 点魔力上限使非吟唱技能的法术暴击几率提高 {v}%',
+        rpgRathDmgMana: '每 50 点魔力上限使非吟唱法术的伤害提高 {v}%'
       };
       var CGRP = {
         skillLvl: 'legacy', lifeInc: 'legacy', critInc: 'legacy', leech: 'legacy', resAll: 'legacy', moveInc: 'legacy',
@@ -199,10 +203,35 @@
       }).join('');
       var jewelCount = cp.entries.filter(function (p) { return p.jewel !== false; }).length;
       var legacyW = cp.entries.filter(function (p) { return CGRP[p.k] === 'legacy'; }).reduce(function (s, p) { return s + (p.w || 0); }, 0);
+
+      // 传奇专属腐化词缀（EMB-125）：有原型的传奇，瓦出专属词缀
+      var uniqueHtml = '';
+      (function () {
+        var up = cp.uniques;
+        if (!up || !Object.keys(up).length) return;
+        var ids = Object.keys(up);
+        uniqueHtml = ids.map(function (id) {
+          var u = up[id];
+          var uw = u.pool.reduce(function (s, p) { return s + (p.w || 0); }, 0);
+          var body = u.pool.map(function (p) {
+            return '<tr><td>' + esc(fmtTxt(p.k, p.a, p.b)) + '</td>' +
+              '<td class="t-num">' + esc(fmtRange(p.a, p.b)) + '</td>' +
+              '<td class="t-num">' + p.w + '</td></tr>';
+          }).join('');
+          return '<h3 style="margin-top:16px;color:#e0904a">' + esc(u.n) + '（专属 ' + u.pool.length + ' 条）</h3>' +
+            '<div class="tw"><table><tr><th>专属词缀</th><th class="t-num">数值区间</th><th class="t-num">权重</th></tr>' +
+            body + '</table></div>' +
+            '<p class="mute" style="font-size:12.5px;margin-top:4px">' + esc(u.n) + ' 腐化时（瓦尔宝珠 / 祭坛双瓦均可），从上述专属词缀中抽取，' +
+            '并保留通用词缀作兜底（专属权重 ' + uw + '，通用池按 ' + Math.round((u.fallbackScale || 0.5) * 100) + '% 权重兜底）。' +
+            '专属词缀只在对应传奇上出现，普通装备与珠宝抽不到。</p>';
+        }).join('');
+      })();
+
       corruptHtml =
         '<p class="cap">共 <b>' + cp.entries.length + '</b> 条 · 总权重 <b>' + total + '</b> · 官版 10 条占池约 <b>' +
         (total ? Math.round(legacyW / total * 100) : 0) + '%</b> · 珠宝可抽 <b>' + jewelCount + '</b> 条（不含技能等级）。</p>' +
         groupHtml +
+        uniqueHtml +
         '<p class="cap" style="margin-top:12px">抽取按权重进行：池子展开成「按权重重复」的数组后等概率抽取，所以高权重词缀更常见（极稀有如额外投射物仅 2 权重）。' +
         '机制型（击杀掉残片 / 共鸣 / 点燃）在多件装备或珠宝同时出现时只生效一次（取上限），不会线性叠加失控。</p>' +
         '<p class="cap">本改版一并修复 3 处官版/历史缺陷：① 技能等级词缀原本显示裸 key「skillLvl 1」，已补中文；' +

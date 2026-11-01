@@ -239,6 +239,65 @@ for (let n = 0; n < 4000; n++) {
 ok(jewelC2 > 800, "珠宝也能双瓦", jewelC2 + "/4000");
 eq(jewelSkill, 0, "珠宝的第二条不会抽到 skillLvl");
 
+/* ---------- 8. 传奇专属腐化词缀（EMB-125） ---------- */
+console.log("\n[8] 传奇专属腐化词缀（献祭之心样板）");
+const uniqKeys = ["rpgRathCastSpd", "rpgRathAilLife", "rpgRathCritMana", "rpgRathDmgMana"];
+ok(!!P.unique && !!P.unique.rathpith_globe, "专属池已挂载（rathpith_globe）");
+eq(aud.uniqueCount, 1, "当前只有 1 件传奇有专属池");
+const rp = P.unique && P.unique.rathpith_globe;
+if (rp) {
+  eq(rp.pool.length, 4, "献祭之心专属池 4 条词缀");
+  eq(rp.pool.filter((p) => uniqKeys.includes(p.k)).length, 4, "4 条专属词缀 key 齐全");
+  eq(aud.missingText.filter((k) => uniqKeys.includes(k)).length, 0, "4 条专属词缀都有中文文案");
+}
+
+// 专属池抽取：献祭之心应能抽到专属词缀，且专属词缀占主导
+const uhits = {};
+const NU = 30000;
+for (let n = 0; n < NU; n++) {
+  const r = P.rollUnique("rathpith_globe", false);
+  uhits[r.k] = (uhits[r.k] || 0) + 1;
+}
+const uAll = uniqKeys.filter((k) => uhits[k]);
+eq(uAll.length, 4, "献祭之心能抽出全部 4 条专属词缀", "命中 " + uAll.join(","));
+const uShare = uniqKeys.reduce((s, k) => s + (uhits[k] || 0), 0) / NU;
+ok(uShare > 0.2 && uShare < 0.35, "专属词缀占主导（约 27% 权重区间）", (uShare * 100).toFixed(1) + "%");
+ok(uhits.skillLvl > 0, "通用词缀仍可作兜底抽出", "skillLvl 抽到 " + uhits.skillLvl + " 次");
+
+// 非传奇装备零泄漏
+const nhits = {};
+for (let n = 0; n < 8000; n++) {
+  const r = P.rollOnce(false);
+  nhits[r.k] = (nhits[r.k] || 0) + 1;
+}
+eq(uniqKeys.filter((k) => nhits[k]).length, 0, "普通装备抽不到专属词缀（零泄漏）");
+
+// 珠宝也不能抽到专属词缀（传奇珠宝另说，本作珠宝无 uniq 专属池）
+const jhits = {};
+for (let n = 0; n < 8000; n++) {
+  const r = P.rollOnce(true);
+  jhits[r.k] = (jhits[r.k] || 0) + 1;
+}
+eq(uniqKeys.filter((k) => jhits[k]).length, 0, "珠宝抽不到专属词缀");
+
+// 跨属性折算（stats:pre）
+const preFn = sb.__events.find((e) => e.ev === "stats:pre").fn;
+const uadded = {};
+preFn({
+  a: { life: 500, lifeInc: 50, mana: 200, rpgRathCastSpd: 6, rpgRathAilLife: 3, rpgRathCritMana: 3, rpgRathDmgMana: 6 },
+  add: (k, v) => { uadded[k] = v; },
+  level: 60,
+});
+eq(uadded.castSpd, 6, "第 1 条：施法速度直接落地", "castSpd=" + uadded.castSpd);
+eq(uadded.ailEff, 96, "第 2 条：每 50 生命 → 异常强度（1635/50=32 → ×3=96）", "ailEff=" + uadded.ailEff);
+eq(uadded.critInc, 33, "第 3 条：每 50 魔力 → 法术暴击（560/50=11 → ×3=33）", "critInc=" + uadded.critInc);
+eq(uadded.spellInc, 66, "第 4 条：每 50 魔力 → 法术伤害（560/50=11 → ×6=66）", "spellInc=" + uadded.spellInc);
+
+// 没有专属词缀时不误伤
+const uadded2 = {};
+preFn({ a: { life: 500, lifeInc: 50, mana: 200 }, add: (k, v) => { uadded2[k] = v; }, level: 60 });
+eq(Object.keys(uadded2).length, 0, "没有专属词缀时，stats:pre 不额外加任何属性");
+
 /* ---------- 汇总 ---------- */
 function report() {
   console.log("\n" + "=".repeat(52));
