@@ -1,8 +1,8 @@
 {
-  "version": "2.3.6",
-  "builtAt": "2026-11-01T16:19:00.000Z",
-  "out": "build/wiki-异界版-v2.3.6.html",
-  "bytes": 4892878,
+  "version": "2.3.7",
+  "builtAt": "2026-11-02T00:42:37.000Z",
+  "out": "build/wiki-异界版-v2.3.7.html",
+  "bytes": 4896133,
   "counts": {
     "skills": 1,
     "supports": 1,
@@ -48,6 +48,10 @@
     {
       "label": "block_v19.js 传奇专属腐化池",
       "hits": 1
+    },
+    {
+      "label": "block_v19.js 法师遗产表",
+      "hits": 14
     },
     {
       "label": "text:gem-cap-30",

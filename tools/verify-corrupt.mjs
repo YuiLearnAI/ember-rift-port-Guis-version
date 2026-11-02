@@ -132,7 +132,8 @@ const evNames = sb.__events.map((e) => e.ev);
 for (const want of ["stats:pre", "stats:post", "kill", "hit:mods", "hit:ailment"]) {
   ok(evNames.includes(want), "已注册 " + want);
 }
-ok(sb.__events.length === 5, "只注册 5 个监听，没有多余副作用");
+// 腐化扩池 IIFE 注册 5 个监听；法师遗产 IIFE（EMB-127）额外注册 1 个 stats:pre
+ok(sb.__events.length === 6, "腐化 5 + 法师遗产 1 = 6 个监听，没有多余副作用", "实际 " + sb.__events.length);
 
 /* ---------- 4. 带代价词缀：收益与代价都到位 ---------- */
 console.log("\n[4] 带代价词缀的属性展开");
@@ -347,6 +348,74 @@ vm.runInNewContext(srcPool, sbDvPlain);
 const itemPlain = { kind: "item", mods: [{ id: "es", v: [80] }, { id: "life", v: [70] }] };
 sbDvPlain.Dv(itemPlain);
 eq(itemPlain.mods.length, 2, "普通装备双瓦不替换原生词缀（零泄漏）");
+
+/* ---------- 10. 法师遗产（EMB-127 法师之血继承词缀） ---------- */
+console.log("\n[10] 法师之血 · 法师遗产继承（固定 4 条 + 重复加成作用于全部）");
+const ML = sb.window.__MAGES_LEGACY;
+ok(!!ML, "法师遗产机制已挂上 __MAGES_LEGACY");
+
+const mlAud = ML.audit();
+eq(mlAud.totalCount, 14, "14 种法师遗产齐全");
+eq(mlAud.activeCount, 10, "10 种可落地结算（跳过闪避/混沌抗/技能速度）");
+eq(mlAud.missingText.length, 0, "所有 active 遗产的 statKey 都有中文文案", mlAud.missingText.join(","));
+eq(mlAud.noDesc.length, 0, "所有遗产都有效果描述", mlAud.noDesc.join(","));
+
+// 10.1 roll 4 条继承：缓存在 item.ml，且不重复 roll
+const mlItem = { uniq: "mageblood" };
+ML.rollLegacy(mlItem);
+ok(Array.isArray(mlItem.ml) && mlItem.ml.length === 4, "法师之血 roll 出 4 条继承", JSON.stringify(mlItem.ml));
+ok(typeof mlItem.mlMult === "number" && mlItem.mlMult >= 25 && mlItem.mlMult <= 50, "重复加成乘数落在 25–50", mlItem.mlMult);
+const mlItemSnapshot = mlItem.ml.slice();
+ML.rollLegacy(mlItem);
+eq(JSON.stringify(mlItem.ml), JSON.stringify(mlItemSnapshot), "已 roll 过则不重复 roll（继承稳定）");
+
+// 10.2 4 条继承都是合法的遗产 id
+let mlAllValid = true;
+for (const id of mlItem.ml) if (!ML.byId[id]) { mlAllValid = false; break; }
+ok(mlAllValid, "4 条继承都是合法遗产 id");
+
+// 10.3 结算：stats:pre 里按继承叠加效果（用独立的 stats:pre 监听）
+const mlPre = sb.__events.filter((e) => e.ev === "stats:pre");
+ok(mlPre.length === 2, "存在两个 stats:pre（腐化 + 法师遗产）", "实际 " + mlPre.length);
+// 法师遗产的 stats:pre 是最后一个注册的
+const mlPreFn = mlPre[mlPre.length - 1].fn;
+// 穿戴法师之血，且 roll 了已知继承
+const beltItem = { uniq: "mageblood", ml: ["diamond", "gold", "ruby", "diamond"], mlMult: 30 };
+const sbML = makeSandbox({ u: { equip: { belt: beltItem }, cur: {} } });
+vm.runInNewContext(srcPool, sbML);
+const mlStatsPre = sbML.__events.filter((e) => e.ev === "stats:pre");
+const mlAdded = {};
+mlStatsPre[mlStatsPre.length - 1].fn({ add: (k, v) => { mlAdded[k] = (mlAdded[k] || 0) + v; } });
+// diamond 出现 2 次（重复），触发重复加成：全部 active 遗产 ×(1+30/100)
+// 继承：diamond(暴击75)、gold(稀有度45)、ruby(火抗60)、diamond(暴击75)
+// 重复 → mult=1.3；每条按 Math.round(v*1.3)
+eq(mlAdded.critInc, Math.round(75 * 1.3) + Math.round(75 * 1.3), "钻石遗产重复：两条暴击都按 1.3 加成", JSON.stringify(mlAdded.critInc));
+eq(mlAdded.rarity, Math.round(45 * 1.3), "黄金遗产按 1.3 加成（重复加成作用于全部）", JSON.stringify(mlAdded.rarity));
+eq(mlAdded.resF, Math.round(60 * 1.3), "红玉遗产按 1.3 加成", JSON.stringify(mlAdded.resF));
+
+// 10.4 无重复时不加成（mult=1）
+const beltNoDup = { uniq: "mageblood", ml: ["diamond", "gold", "ruby", "topaz"], mlMult: 30 };
+const sbML2 = makeSandbox({ u: { equip: { belt: beltNoDup }, cur: {} } });
+vm.runInNewContext(srcPool, sbML2);
+const mlStatsPre2 = sbML2.__events.filter((e) => e.ev === "stats:pre");
+const mlAdded2 = {};
+mlStatsPre2[mlStatsPre2.length - 1].fn({ add: (k, v) => { mlAdded2[k] = (mlAdded2[k] || 0) + v; } });
+eq(mlAdded2.critInc, 75, "无重复时钻石遗产不加成（原值 75）", JSON.stringify(mlAdded2.critInc));
+eq(mlAdded2.resL, 60, "无重复时黄玉遗产不加成（原值 60）", JSON.stringify(mlAdded2.resL));
+
+// 10.5 未穿戴法师之血 / 无 ml 时不结算（零泄漏）
+const sbML3 = makeSandbox({ u: { equip: { belt: { uniq: "headhunter" } }, cur: {} } });
+vm.runInNewContext(srcPool, sbML3);
+const mlStatsPre3 = sbML3.__events.filter((e) => e.ev === "stats:pre");
+const mlAdded3 = {};
+mlStatsPre3[mlStatsPre3.length - 1].fn({ add: (k, v) => { mlAdded3[k] = (mlAdded3[k] || 0) + v; } });
+eq(Object.keys(mlAdded3).length, 0, "未穿戴法师之血时不结算任何遗产（零泄漏）");
+
+// 10.6 inactive 遗产（闪避/混沌抗/技能速度）不参与结算
+eq(ML.byId.jade.active, false, "青玉遗产（闪避）标记 inactive");
+eq(ML.byId.amethyst.active, false, "紫晶遗产（混沌抗）标记 inactive");
+eq(ML.byId.silver.active, false, "白银遗产（技能速度）标记 inactive");
+eq(ML.byId.stibnite.active, false, "黑锑遗产（闪避）标记 inactive");
 
 /* ---------- 汇总 ---------- */
 function report() {
