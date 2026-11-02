@@ -14438,12 +14438,6 @@ window.__SHOP = {
     if (typeof JS === "object" && JS) {
       // 官版池里有 skillLvl 却没有对应文案，抽到会显示裸 key「skillLvl 1」
       if (!JS.skillLvl) JS.skillLvl = "所有技能等级 +{v}";
-      JS.corruptCruel = "暴击伤害 +{v}% · 最大生命总降 6%";
-      JS.corruptGluttony = "物品数量提高 {v}% · 物品稀有度总降 20%";
-      JS.corruptEmberBlood = "每秒回复 {v} 生命 · 最大能量护盾总降 10%";
-      JS.corruptBone = "击杀时 {v}% 几率留下 1 片余烬残片";
-      JS.corruptResonance = "每 1 条腐化词缀使伤害提高 {v}%";
-      JS.corruptScorch = "命中时 {v}% 几率使目标点燃";
       // EMB-125 传奇专属腐化词缀（献祭之心 / rathpith_globe）
       JS.rpgRathCastSpd = "非吟唱法术的施法速度提高 {v}%";
       JS.rpgRathAilLife = "每 50 点生命上限使非吟唱法术的异常状态强度提高 {v}%";
@@ -14451,41 +14445,182 @@ window.__SHOP = {
       JS.rpgRathDmgMana = "每 50 点魔力上限使非吟唱法术的伤害提高 {v}%";
     }
 
-    /* ---------- 2. 池定义 ----------
-     * k=statKey  a/b=取值区间  w=权重  jewel=false 珠宝不抽  cap=机制型叠加上限
+    /* ---------- 2. 池定义（EMB-128 按槽位分库） ----------
+     * k=statKey  a/b=取值区间  w=权重  cap=机制型叠加上限  txt=自定义文案 key
+     * 本作引擎支持的 statKey 全集见 docs/腐化词缀分库设计.md。
+     * 词缀来源：PoE2 编年史（poe2wiki.net）腐化词缀库，仅落地引擎有对应维度的条目。
+     * 无法实现的维度（闪避/混沌抗/抗性上限/属性点/充能/命中/荆棘/护体回血等）已跳过。
      */
-    var POOL = [
-      // 官版 10 条，原样保留
-      { k: "skillLvl",  a: 1,   b: 1,   w: 10, jewel: false },
-      { k: "lifeInc",   a: 8,   b: 12,  w: 10 },
-      { k: "critInc",   a: 20,  b: 30,  w: 10 },
-      { k: "leech",     a: 1,   b: 2,   w: 10 },
-      { k: "resAll",    a: 8,   b: 12,  w: 10 },
-      { k: "moveInc",   a: 5,   b: 8,   w: 10 },
-      { k: "atkSpd",    a: 6,   b: 10,  w: 10 },
-      { k: "castSpd",   a: 6,   b: 10,  w: 10 },
-      { k: "spirit",    a: 10,  b: 20,  w: 10 },
-      { k: "rarity",    a: 10,  b: 15,  w: 10 },
-      // 新增数值型 7 条：key 均已在 JS 有中文且被派生属性 D 消费
-      { k: "critMulti", a: 15,  b: 25,  w: 14 },
-      { k: "ailment",   a: 8,   b: 12,  w: 14 },
-      { k: "armour",    a: 80,  b: 150, w: 13 },
-      { k: "esInc",     a: 12,  b: 18,  w: 12 },
-      { k: "manaRegen", a: 15,  b: 25,  w: 12 },
-      { k: "regen",     a: 2,   b: 4,   w: 11 },
-      { k: "projAdd",   a: 1,   b: 1,   w: 2  },
-      // 新增带代价 3 条：收益吃 {v}，代价固定，在 stats:post 里结算
-      { k: "corruptCruel",      a: 15, b: 25, w: 7 },
-      { k: "corruptGluttony",   a: 8,  b: 12, w: 6 },
-      { k: "corruptEmberBlood", a: 3,  b: 5,  w: 6 },
-      // 新增机制型 3 条：数值固定，cap 保证多来源只生效一次
-      { k: "corruptBone",      a: 4,  b: 4,  w: 3, cap: 4  },
-      { k: "corruptResonance", a: 6,  b: 6,  w: 3, cap: 6  },
-      { k: "corruptScorch",    a: 10, b: 10, w: 3, cap: 10 }
-    ];
+    var SLOT_POOLS = {
+      /* 防具四件：头盔 H / 胸甲 B / 手套 G / 鞋子 F（PoE2 Armour 段） */
+      H: [
+        { k: "armour",   a: 15, b: 25, w: 10 },  // 护甲提高
+        { k: "esInc",    a: 15, b: 25, w: 10 },  // 能量护盾提高
+        { k: "spirit",   a: 20, b: 30, w: 8 },   // 精魂
+        { k: "skillLvl", a: 1,  b: 1,  w: 6 },   // +1 召唤/全技能等级（归 skillLvl）
+        { k: "regen",    a: 15, b: 25, w: 6 },   // 生命回复速度提高
+        { k: "manaRegen",a: 20, b: 30, w: 6 }    // 魔力回复速度提高
+      ],
+      B: [
+        { k: "armour",   a: 15, b: 25, w: 10 },
+        { k: "esInc",    a: 15, b: 25, w: 10 },
+        { k: "life",     a: 30, b: 40, w: 10 },  // 最大生命
+        { k: "resF",     a: 20, b: 25, w: 8 },   // 火抗
+        { k: "resC",     a: 20, b: 25, w: 8 },   // 冰抗
+        { k: "resL",     a: 20, b: 25, w: 8 }    // 电抗
+      ],
+      G: [
+        { k: "armour",   a: 15, b: 25, w: 10 },
+        { k: "esInc",    a: 15, b: 25, w: 10 },
+        { k: "skillLvl", a: 1,  b: 1,  w: 6 },   // +1 近战技能等级
+        { k: "atkSpd",   a: 6,  b: 8,  w: 6 },   // 攻速
+        { k: "ailment",  a: 20, b: 30, w: 6 }    // 元素异常几率
+      ],
+      F: [
+        { k: "armour",   a: 15, b: 25, w: 8 },
+        { k: "esInc",    a: 15, b: 25, w: 8 },
+        { k: "moveInc",  a: 3,  b: 5,  w: 10 },  // 移速
+        { k: "resF",     a: 20, b: 25, w: 7 },
+        { k: "resC",     a: 20, b: 25, w: 7 },
+        { k: "resL",     a: 20, b: 25, w: 7 },
+        { k: "stunInc",  a: 20, b: 30, w: 6 }    // 眩晕阈值
+      ],
+      /* 饰品三件：腰带 L / 戒指 R / 项链 A（PoE2 Jewellery 段） */
+      L: [
+        { k: "life",     a: 30, b: 40, w: 10 },
+        { k: "resF",     a: 20, b: 25, w: 8 },
+        { k: "resC",     a: 20, b: 25, w: 8 },
+        { k: "resL",     a: 20, b: 25, w: 8 },
+        { k: "mana",     a: 20, b: 25, w: 6 }    // 最大魔力
+      ],
+      R: [
+        { k: "resF",     a: 5,  b: 10, w: 8 },
+        { k: "resC",     a: 5,  b: 10, w: 8 },
+        { k: "resL",     a: 5,  b: 10, w: 8 },
+        { k: "resAll",   a: 5,  b: 10, w: 8 },   // 全元素抗性
+        { k: "critInc",  a: 20, b: 30, w: 6 },   // 暴击
+        { k: "lifeInc",  a: 15, b: 25, w: 6 }    // 生命回复速度提高
+      ],
+      A: [
+        { k: "skillLvl", a: 1,  b: 1,  w: 8 },   // +1 全技能等级
+        { k: "rarity",   a: 10, b: 15, w: 6 },   // 稀有度
+        { k: "leech",    a: 2,  b: 3,  w: 6 },   // 物理攻击偷取
+        { k: "spellInc", a: 20, b: 30, w: 6 },   // 法术伤害
+        { k: "resAll",   a: 5,  b: 10, w: 6 }    // 全元素抗性
+      ],
+      /* 副手三件：箭袋 Q / 盾牌 S / 法器 X（PoE2 Offhand 段） */
+      Q: [
+        { k: "regen",    a: 1,  b: 2,  w: 8 },   // 击杀回血（近似）
+        { k: "pierce",   a: 1,  b: 1,  w: 6 },   // 穿透
+        { k: "chainAdd", a: 1,  b: 1,  w: 6 },   // 连锁
+        { k: "critMulti",a: 15, b: 20, w: 6 },   // 暴击伤害加成
+        { k: "projInc",  a: 20, b: 30, w: 6 }    // 投射物伤害
+      ],
+      S: [
+        { k: "block",    a: 20, b: 30, w: 10 },  // 格挡几率
+        { k: "blockHeal",a: 3,  b: 5,  w: 8 },   // 格挡回复
+        { k: "armour",   a: 15, b: 25, w: 8 },
+        { k: "esInc",    a: 15, b: 25, w: 8 }
+      ],
+      X: [
+        { k: "esInc",    a: 15, b: 25, w: 8 },
+        { k: "spellInc", a: 20, b: 30, w: 10 },  // 法术伤害
+        { k: "castSpd",  a: 6,  b: 10, w: 8 },   // 施法速度
+        { k: "mana",     a: 20, b: 25, w: 8 }    // 最大魔力
+      ],
+      /* 胁差 K：近战副手（PoE2 Melee Martial Weapons 段） */
+      K: [
+        { k: "physInc",  a: 15, b: 25, w: 8 },   // 物理伤害
+        { k: "atkSpd",   a: 6,  b: 8,  w: 8 },   // 攻速
+        { k: "eleInc",   a: 20, b: 30, w: 8 },   // 元素伤害
+        { k: "critMulti",a: 10, b: 15, w: 6 }    // 暴击伤害加成
+      ],
+      /* 武器 W：按 wt 细分 9 类（PoE2 Weapons 段） */
+      "W:bow": [
+        { k: "projAdd",  a: 1,  b: 1,  w: 10 },  // 弓攻击额外一支箭
+        { k: "eleInc",   a: 20, b: 30, w: 8 },   // 元素伤害
+        { k: "atkSpd",   a: 6,  b: 8,  w: 8 },   // 攻速
+        { k: "critMulti",a: 10, b: 15, w: 6 },   // 暴击伤害加成
+        { k: "physInc",  a: 15, b: 25, w: 8 }    // 物理伤害
+      ],
+      "W:crossbow": [
+        { k: "projAdd",  a: 1,  b: 1,  w: 10 },  // 弩额外装填
+        { k: "eleInc",   a: 40, b: 50, w: 8 },   // 元素伤害
+        { k: "atkSpd",   a: 6,  b: 8,  w: 8 },
+        { k: "critMulti",a: 10, b: 15, w: 6 },
+        { k: "physInc",  a: 15, b: 25, w: 8 }
+      ],
+      "W:spear": [
+        { k: "eleInc",   a: 20, b: 30, w: 8 },
+        { k: "atkSpd",   a: 6,  b: 8,  w: 8 },
+        { k: "physInc",  a: 15, b: 25, w: 8 },
+        { k: "critMulti",a: 10, b: 15, w: 6 },
+        { k: "stunInc",  a: 20, b: 30, w: 6 }    // 眩晕累积
+      ],
+      "W:qstaff": [
+        { k: "eleInc",   a: 20, b: 30, w: 8 },
+        { k: "atkSpd",   a: 6,  b: 8,  w: 8 },
+        { k: "physInc",  a: 15, b: 25, w: 8 },
+        { k: "critInc",  a: 20, b: 30, w: 6 },
+        { k: "meleeAreaInc", a: 10, b: 20, w: 6 } // 近战范围
+      ],
+      "W:katana": [
+        { k: "physInc",  a: 15, b: 25, w: 8 },
+        { k: "atkSpd",   a: 6,  b: 8,  w: 8 },
+        { k: "eleInc",   a: 20, b: 30, w: 8 },
+        { k: "critMulti",a: 10, b: 15, w: 8 },
+        { k: "sheathe",  a: 15, b: 25, w: 6 }    // 纳刀攻击伤害
+      ],
+      "W:jian": [
+        { k: "physInc",  a: 15, b: 25, w: 8 },
+        { k: "atkSpd",   a: 6,  b: 8,  w: 8 },
+        { k: "eleInc",   a: 20, b: 30, w: 8 },
+        { k: "critInc",  a: 20, b: 30, w: 6 }
+      ],
+      "W:mace": [
+        { k: "physInc",  a: 15, b: 25, w: 8 },
+        { k: "eleInc",   a: 20, b: 30, w: 8 },
+        { k: "stunInc",  a: 20, b: 30, w: 8 },   // 眩晕累积
+        { k: "atkSpd",   a: 6,  b: 8,  w: 6 },
+        { k: "meleeAreaInc", a: 10, b: 20, w: 6 }
+      ],
+      "W:staff": [
+        { k: "spellInc", a: 40, b: 50, w: 8 },   // 法术伤害（双手）
+        { k: "castSpd",  a: 10, b: 15, w: 8 },   // 施法速度
+        { k: "ailment",  a: 20, b: 30, w: 6 },   // 点燃几率
+        { k: "critInc",  a: 20, b: 30, w: 6 },   // 法术暴击
+        { k: "skillLvl", a: 1,  b: 1,  w: 6 }    // +1 元素法术技能
+      ],
+      "W:wand": [
+        { k: "spellInc", a: 20, b: 30, w: 8 },
+        { k: "castSpd",  a: 10, b: 15, w: 8 },
+        { k: "ailment",  a: 20, b: 30, w: 6 },
+        { k: "critInc",  a: 20, b: 30, w: 6 },
+        { k: "skillLvl", a: 1,  b: 1,  w: 6 }
+      ],
+      /* 珠宝 jewel：单独处理（PoE2 Jewels 段，不出 skillLvl） */
+      "jewel": [
+        { k: "resF",     a: 5,  b: 10, w: 8 },
+        { k: "resC",     a: 5,  b: 10, w: 8 },
+        { k: "resL",     a: 5,  b: 10, w: 8 },
+        { k: "resAll",   a: 5,  b: 10, w: 8 },
+        { k: "critInc",  a: 20, b: 30, w: 6 },
+        { k: "lifeInc",  a: 15, b: 25, w: 6 }
+      ]
+    };
 
+    // 兼容旧引用：POOL 现在指向「全库展开后的平铺表」，供门禁 / 兜底读取
+    var POOL = [];
     var TOTAL = 0, i, j;
-    for (i = 0; i < POOL.length; i++) TOTAL += POOL[i].w;
+    (function () {
+      for (var pk in SLOT_POOLS) {
+        var pl = SLOT_POOLS[pk];
+        for (var pi = 0; pi < pl.length; pi++) {
+          POOL.push(pl[pi]);
+          TOTAL += pl[pi].w;
+        }
+      }
+    })();
 
     /* ---------- 2b. 传奇专属腐化词缀（EMB-125） ----------
      * 有原型的传奇装备，腐化时（瓦尔 / 祭坛双瓦都算）额外抽专属池：
@@ -14551,82 +14686,68 @@ window.__SHOP = {
       } catch (e) { return null; }
     }
 
-    /* ---------- 3. 展开并顶替官版 Xu ---------- */
-    if (typeof Xu !== "undefined" && Array.isArray(Xu)) {
-      var expanded = [];
-      for (i = 0; i < POOL.length; i++) {
-        var p = POOL[i];
-        // 每个副本独立建数组，避免宿主日后改写污染其他条目
-        for (j = 0; j < p.w; j++) expanded.push([p.k, [p.a, p.b]]);
+    /* ---------- 3. 按槽位分库定位（EMB-128） ----------
+     * 官版 cp=e=>e&&e.kind==="jewel"?Xu.filter(t=>t[0]!=="skillLvl"):Xu
+     * 现在改为：按 e 的 kind / base(slot+wt) 从 SLOT_POOLS 定位对应库，
+     * 展开成「按权重重复」的 [k,[a,b]] 数组返回，官版 oe() 等概率抽一次 = 加权抽。
+     * 这样 l9 单瓦 / Dv 双瓦无需改动抽取逻辑，自动走分库。
+     */
+    function __poolFor(e) {
+      // 珠宝：单独库
+      if (e && e.kind === "jewel") return SLOT_POOLS.jewel || null;
+      // 装备：按 base 的 slot + wt 定位
+      if (e && e.base && typeof pe === "object" && pe && pe[e.base]) {
+        var b = pe[e.base];
+        if (b.slot === "W" && b.wt) {
+          var wk = "W:" + b.wt;
+          if (SLOT_POOLS[wk]) return SLOT_POOLS[wk];
+          return SLOT_POOLS.W || null;
+        }
+        if (SLOT_POOLS[b.slot]) return SLOT_POOLS[b.slot];
       }
-      Xu.length = 0;
-      for (i = 0; i < expanded.length; i++) Xu.push(expanded[i]);
+      // 兜底：无 base 信息时回退到全库平铺（POOL）
+      return POOL;
+    }
+    function __expand(list) {
+      if (!list || !list.length) return [];
+      var out = [];
+      for (var pi = 0; pi < list.length; pi++) {
+        var p = list[pi];
+        for (var w2 = 0; w2 < (p.w || 1); w2++) out.push([p.k, [p.a, p.b]]);
+      }
+      return out;
     }
 
-    /* ---------- 3b. 劫持 cp：传奇专属腐化词缀（EMB-125） ----------
-     * 官版 cp=e=>e&&e.kind==="jewel"?Xu.filter(t=>t[0]!=="skillLvl"):Xu
-     * 瓦尔 l9 与祭坛 Dv 都调 cp(e)，e 是完整 item（含 uniq）。
-     * 这里在官版结果之上，若 e.uniq 命中专属池，则返回「专属词缀 + 通用兜底」。
-     * 传奇本身不是珠宝，所以跳过官版的珠宝过滤路径，直接拼装。
+    /* ---------- 3b. 劫持 cp：按槽位分库 + 传奇专属（EMB-125/128） ----------
+     * 瓦尔 l9 与祭坛 Dv 都调 cp(e)，e 是完整 item（含 uniq/base）。
+     * 1) 按 e 定位槽位库；2) 若 e.uniq 命中传奇专属池，叠加专属词缀 + 通用兜底。
      */
     if (typeof cp === "function") {
       var __baseCp = cp;
       cp = function (e) {
-        var base = __baseCp.call(this, e);
         try {
+          var slotList = __poolFor(e);
+          var expanded = __expand(slotList);
           if (e && e.uniq && UNIQUE_POOL[e.uniq]) {
             var uexp = UNIQUE_EXPANDED[e.uniq];
-            // 通用兜底：把官版 Xu（已展开的加权数组）按 fallbackScale 抽样压缩权重，
-            // 实现「专属优先、通用兜底」——专属 40 份 vs 通用 ~103 份。
-            var fallback = base || Xu || [];
             var merged = uexp.slice();
-            for (var f = 0; f < fallback.length; f++) {
-              // fallbackScale=0.5：每 2 条通用保留 1 条，权重减半
-              if (f % 2 === 0) merged.push(fallback[f]);
+            for (var f = 0; f < expanded.length; f++) {
+              if (f % 2 === 0) merged.push(expanded[f]);  // 通用兜底权重减半
             }
             return merged;
           }
-        } catch (e2) {}
-        return base;
-      };
-    }
-
-    /* ---------- 4. 机制型状态（只生效一次，不随装备件数叠加） ---------- */
-    var MECH = { bone: 0, resonance: 0, scorch: 0 };
-    var lastJewelCount = 0;
-
-    // 珠宝的腐化词缀条数：ay(e, t) 的 t 就是「已激活」集合，判据只认 cimpl 字段
-    if (typeof ay === "function" && typeof rs !== "undefined" && typeof Fa === "function") {
-      var __baseAy = ay;
-      ay = function (e, t) {
-        try {
-          var set = (t instanceof Set) ? t : new Set(t || []);
-          var n = 0;
-          for (var r = 0; r < rs; r++) {
-            var jb = (e && e.jw) ? e.jw[r] : null;
-            if (!jb || !set.has(Fa(r))) continue;
-            if (jb.cimpl) n++;
-            if (jb.cimpl2) n++;
-          }
-          lastJewelCount = n;
-        } catch (e2) {}
-        return __baseAy.apply(this, arguments);
-      };
-    }
-
-    function corruptCount() {
-      var n = lastJewelCount;
-      try {
-        if (u && u.equip) {
-          for (var s in u.equip) {
-            var it = u.equip[s];
-            if (!it) continue;
-            if (it.cimpl) n++;
-            if (it.cimpl2) n++;
-          }
+          return expanded.length ? expanded : __baseCp.call(this, e);
+        } catch (e2) {
+          return __baseCp.call(this, e);
         }
-      } catch (e) {}
-      return n;
+      };
+    }
+
+    /* ---------- 3c. 展开并顶替官版 Xu（兼容兜底，非传奇/非装备走这里） ---------- */
+    if (typeof Xu !== "undefined" && Array.isArray(Xu)) {
+      var expanded = __expand(POOL);
+      Xu.length = 0;
+      for (i = 0; i < expanded.length; i++) Xu.push(expanded[i]);
     }
 
     /* ---------- 5. 属性展开 ---------- */
@@ -14635,14 +14756,6 @@ window.__SHOP = {
         try {
           var L = p.a;
           if (!L) return;
-          // 带代价的三条：收益转成官版标准属性，代价放到 stats:post
-          if (L.corruptCruel) p.add("critMulti", L.corruptCruel);
-          if (L.corruptGluttony) p.add("quant", L.corruptGluttony);
-          if (L.corruptEmberBlood) p.add("regen", L.corruptEmberBlood);
-          // 机制型：多来源取上限，只生效一次
-          MECH.bone = Math.min(L.corruptBone || 0, 4);
-          MECH.resonance = Math.min(L.corruptResonance || 0, 6);
-          MECH.scorch = Math.min(L.corruptScorch || 0, 10);
           // EMB-125 传奇专属腐化词缀：跨属性折算（按最终生命/魔力上限）
           // 重算 maxLife / maxMana（与宿主 D 的公式一致，见 3771061）
           var lvl = (typeof p.level === "number") ? p.level : 0;
@@ -14656,41 +14769,6 @@ window.__SHOP = {
           if (L.rpgRathCritMana) p.add("critInc", Math.floor(maxMana / 50) * L.rpgRathCritMana);
           // 第 4 条：每 50 魔力上限 → 法术伤害（v=6）
           if (L.rpgRathDmgMana) p.add("spellInc", Math.floor(maxMana / 50) * L.rpgRathDmgMana);
-        } catch (e) {}
-      });
-
-      A("stats:post", function (p) {
-        try {
-          var S = p.S, g = p.g;
-          if (!S || typeof g !== "function") return;
-          if (g("corruptCruel")) S.maxLife *= 0.94;
-          if (g("corruptGluttony")) S.rarity = Math.max(0, S.rarity * 0.8);
-          if (g("corruptEmberBlood")) S.maxES *= 0.9;
-        } catch (e) {}
-      });
-
-      // 烬骨：击杀时按概率留下余烬残片（喂祭坛经济闭环）
-      A("kill", function () {
-        try {
-          if (!MECH.bone) return;
-          if (I() * 100 < MECH.bone) u.cur.ash = (u.cur.ash || 0) + 1;
-        } catch (e) {}
-      });
-
-      // 腐化共鸣：自身每 1 条腐化词缀提高伤害
-      A("hit:mods", function (p) {
-        try {
-          if (!MECH.resonance || p.fixed) return;
-          var n = corruptCount();
-          if (n > 0) p.k *= 1 + MECH.resonance * n / 100;
-        } catch (e) {}
-      });
-
-      // 烬灼：命中时按概率强制点燃
-      A("hit:ailment", function (p) {
-        try {
-          if (!MECH.scorch) return;
-          if (I() * 100 < MECH.scorch) p.forceIgn = true;
         } catch (e) {}
       });
     }
@@ -14739,15 +14817,15 @@ window.__SHOP = {
 
     /* ---------- 7. 导出，供门禁断言读取 ---------- */
     window.__CORRUPT_POOL = {
-      version: "1.1",
+      version: "2.0",
+      slots: SLOT_POOLS,
       pool: POOL,
       weight: TOTAL,
-      cost: ["corruptCruel", "corruptGluttony", "corruptEmberBlood"],
-      mech: ["corruptBone", "corruptResonance", "corruptScorch"],
       unique: UNIQUE_POOL,
       // EMB-126：替换原生词缀（供 l9 单瓦劫持跨 IIFE 调用，与 Dv 双瓦共用同一实现）
       replaceUnique: __uniqueReplace,
       count: function () { return POOL.length; },
+      slotCount: function () { var c = 0; for (var k in SLOT_POOLS) c++; return c; },
       // 自检：只有块内能访问 JS / Xu / cp 这类宿主符号
       audit: function () {
         var missing = [], dup = [], seen = {}, n;
@@ -14769,6 +14847,7 @@ window.__SHOP = {
         }
         return {
           count: POOL.length,
+          slotCount: (function () { var c = 0; for (var k in SLOT_POOLS) c++; return c; })(),
           weight: TOTAL,
           xuLen: (typeof Xu !== "undefined" && Xu) ? Xu.length : -1,
           missingText: missing,
@@ -14779,17 +14858,23 @@ window.__SHOP = {
             : []
         };
       },
-      // 走官版真实抽取路径（cp + oe），用来验权重是否生效
-      rollOnce: function (isJewel) {
-        var fake = { kind: isJewel ? "jewel" : "item" };
-        var list = (typeof cp === "function") ? cp(fake) : Xu;
+      // 走官版真实抽取路径（cp + oe），用来验权重是否生效；slotKey 指定库（如 "H"/"W:bow"/"jewel"）
+      rollOnce: function (slotKey) {
+        var list = null;
+        if (slotKey && SLOT_POOLS[slotKey]) {
+          list = __expand(SLOT_POOLS[slotKey]);
+        } else {
+          var fake = { kind: slotKey === "jewel" ? "jewel" : "item" };
+          list = (typeof cp === "function") ? cp(fake) : Xu;
+        }
         if (!list || !list.length) return null;
         var pick = oe(list);
         return { k: pick[0], v: de(pick[1][0], pick[1][1]) };
       },
-      // 传奇专属池抽取（验专属词缀是否被抽到）
-      rollUnique: function (uniqId, isJewel) {
+      // 传奇专属池抽取（验专属词缀是否被抽到）；base 可选，指定基底（如 "水晶法器"）以走对应槽位库兜底
+      rollUnique: function (uniqId, isJewel, base) {
         var fake = { kind: isJewel ? "jewel" : "item", uniq: uniqId };
+        if (base) fake.base = base;
         var list = (typeof cp === "function") ? cp(fake) : Xu;
         if (!list || !list.length) return null;
         var pick = oe(list);
