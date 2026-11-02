@@ -13336,9 +13336,9 @@ Fe("ds_res", "S", DS_SLOTS, "+{0}% 所有元素抗性", "resAll", [[12, 16], [17
     lv: 55,
     mods: [["flaskEff", [20, 20]]],
     sp: ["mageblood"],
-    st: ["20% 的药剂回复量立即生效", "每拥有一个重复的法师遗产，所有法师遗产效果提高 25–50%"],
+    st: ["20% 的药剂回复量立即生效", "你每拥有一个重复的法师遗产，所有法师遗产效果提高 25–50%"],
     sr: [null, [25, 50]],
-    srt: ["20% 的药剂回复量立即生效", "每拥有一个重复的法师遗产，所有法师遗产效果提高 {0}%"],
+    srt: ["20% 的药剂回复量立即生效", "你每拥有一个重复的法师遗产，所有法师遗产效果提高 {0}%"],
     fl: "力量的河流曾于他们血管中奔涌，如今属于你了。",
     src: "world",
     noDrop: !0
@@ -14794,6 +14794,154 @@ window.__SHOP = {
         if (!list || !list.length) return null;
         var pick = oe(list);
         return { k: pick[0], v: de(pick[1][0], pick[1][1]) };
+      }
+    };
+  } catch (e) {}
+})();
+
+/* ===== EMB-127 · 法师之血「法师遗产继承」词缀 =====
+ * poe2 法师之血（Mageblood）除「20% 药剂回复立即生效」外，还有 4 条
+ * 「法师遗产继承」词缀：每条随机继承 14 种法师遗产之一（紫晶/玄武岩/…/黄玉），
+ * 并有一条「你每拥有一个重复的法师遗产，所有遗产效果提高 (25–50)%」。
+ *
+ * 本作适配口径（已与用户拍板）：
+ *   1) 固定 4 条继承，每条从 14 种遗产随机继承一种；生成时 roll 一次、缓存在
+ *      装备实例 item.ml 上，避免每次结算跳变。
+ *   2) 逐条展示：tooltip 显示「继承 XXX 遗产：具体效果」。
+ *   3) 重复加成作用于全部遗产：4 条里只要出现重复，所有已生效遗产效果
+ *      ×(1 + 25~50%)，乘数 roll 一次缓存在 item.mlMult。
+ *   4) 只落引擎已有属性：跳过闪避(青玉/黑锑)、混沌抗性(紫晶)、技能速度(白银)、
+ *      以及「抗性上限 +5%」这类引擎没有的维度（inactive 遗产保留显示但不结算）。
+ */
+(function () {
+  try {
+    if (window.__magesLegacyHooked) return;
+    window.__magesLegacyHooked = 1;
+
+    /* ---------- 1. 14 种法师遗产数据表 ----------
+     * k: 本作 statKey（结算用）；v: 数值；active: 是否可落地结算；
+     * desc: 效果描述（tooltip 逐条展示用）。
+     * active=false 的是引擎缺失属性的遗产（闪避/混沌抗/技能速度），只展示不结算。
+     */
+    var MAGES_LEGACY = [
+      { id: "amethyst",    n: "紫晶遗产",  k: null,       v: 0,    active: false, desc: "混沌抗性提高 45%" },
+      { id: "basalt",      n: "玄武岩遗产", k: "armour",   v: 150,  active: true,  desc: "护甲提高 150%" },
+      { id: "bismuth",     n: "灰岩遗产",  k: "resAll",   v: 45,   active: true,  desc: "全元素抗性提高 45%" },
+      { id: "diamond",     n: "钻石遗产",  k: "critInc",  v: 75,   active: true,  desc: "暴击率提高 75%" },
+      { id: "gold",        n: "黄金遗产",  k: "rarity",   v: 45,   active: true,  desc: "物品稀有度提高 45%" },
+      { id: "granite",     n: "坚岩遗产",  k: "armour",   v: 2000, active: true,  desc: "护甲 +2000" },
+      { id: "jade",        n: "青玉遗产",  k: null,       v: 0,    active: false, desc: "闪避值 +2000" },
+      { id: "quicksilver", n: "水银遗产",  k: "moveInc",  v: 30,   active: true,  desc: "移动速度提高 30%" },
+      { id: "ruby",        n: "红玉遗产",  k: "resF",     v: 60,   active: true,  desc: "火焰抗性提高 60%" },
+      { id: "sapphire",    n: "蓝玉遗产",  k: "resC",     v: 60,   active: true,  desc: "冰霜抗性提高 60%" },
+      { id: "silver",      n: "白银遗产",  k: null,       v: 0,    active: false, desc: "技能速度提高 30%" },
+      { id: "stibnite",    n: "黑锑遗产",  k: null,       v: 0,    active: false, desc: "闪避值提高 150%" },
+      { id: "sulphur",     n: "硫磺遗产",  k: "eleInc",   v: 60,   active: true,  desc: "元素伤害提高 60%" },
+      { id: "topaz",       n: "黄玉遗产",  k: "resL",     v: 60,   active: true,  desc: "闪电抗性提高 60%" }
+    ];
+    var LEGACY_BY_ID = {};
+    for (var li = 0; li < MAGES_LEGACY.length; li++) LEGACY_BY_ID[MAGES_LEGACY[li].id] = MAGES_LEGACY[li];
+
+    /* ---------- 2. 为法师之血 roll 4 条继承（装备生成时缓存到 item.ml） ---------- */
+    function rollLegacy(item) {
+      try {
+        if (!item || item.uniq !== "mageblood") return;
+        if (item.ml && item.ml.length === 4) return; // 已 roll，不重复
+        var ids = [];
+        for (var r = 0; r < 4; r++) {
+          ids.push(MAGES_LEGACY[Math.floor(I() * MAGES_LEGACY.length)].id);
+        }
+        item.ml = ids;
+        // 重复加成乘数 roll 一次（25–50%）
+        item.mlMult = 25 + Math.floor(I() * 26);
+      } catch (e) {}
+    }
+
+    /* ---------- 3. 劫持 Kt：法师之血生成时 roll 继承 ---------- */
+    if (typeof Kt === "function") {
+      var __baseKtML = Kt;
+      Kt = function (def, ilvl) {
+        var item = __baseKtML.apply(this, arguments);
+        try { rollLegacy(item); } catch (e) {}
+        return item;
+      };
+    }
+
+    /* ---------- 4. 结算：stats:pre 里叠加 4 条继承效果 ---------- */
+    if (typeof A === "function") {
+      A("stats:pre", function (p) {
+        try {
+          var belt = (u && u.equip && u.equip.belt) ? u.equip.belt : null;
+          if (!belt || belt.uniq !== "mageblood") return;
+          if (!belt.ml || belt.ml.length !== 4) return;
+          // 重复加成：4 条里出现重复的遗产 → 全部遗产效果 ×(1 + mlMult/100)
+          var seen = {};
+          var hasDup = false;
+          for (var i = 0; i < belt.ml.length; i++) {
+            var id = belt.ml[i];
+            if (seen[id]) { hasDup = true; break; }
+            seen[id] = 1;
+          }
+          var mult = hasDup ? (1 + (belt.mlMult || 0) / 100) : 1;
+          for (var j = 0; j < belt.ml.length; j++) {
+            var def = LEGACY_BY_ID[belt.ml[j]];
+            if (!def || !def.active) continue;
+            var v = (mult !== 1) ? Math.round(def.v * mult) : def.v;
+            p.add(def.k, v);
+          }
+        } catch (e) {}
+      });
+    }
+
+    /* ---------- 5. 显示：qs tooltip 逐条展示继承效果 ---------- */
+    if (typeof qs === "function") {
+      var __baseQsML = qs;
+      qs = function (item, ctx) {
+        var res = __baseQsML.apply(this, arguments);
+        try {
+          if (item && item.uniq === "mageblood" && res && typeof res.h === "string") {
+            if (!item.ml || item.ml.length !== 4) rollLegacy(item);
+            var rows = "";
+            for (var i = 0; i < (item.ml || []).length; i++) {
+              var def = LEGACY_BY_ID[item.ml[i]];
+              if (!def) continue;
+              var tag = def.active ? "" : '<span class="dim" style="font-size:10px">（本作未实装）</span>';
+              rows += '<div class="sp">继承 ' + def.n + "：" + def.desc + tag + "</div>";
+            }
+            // 把 4 条继承插到风味文本（<div class="fl">）之前，紧跟「重复加成」词缀
+            var flIdx = res.h.indexOf('<div class="fl">');
+            if (flIdx >= 0) {
+              res.h = res.h.slice(0, flIdx) + rows + res.h.slice(flIdx);
+            } else {
+              // 兜底：找不到风味文本就追加到末尾
+              res.h += rows;
+            }
+          }
+        } catch (e) {}
+        return res;
+      };
+    }
+
+    /* ---------- 6. 导出，供门禁断言读取 ---------- */
+    window.__MAGES_LEGACY = {
+      version: "1.0",
+      table: MAGES_LEGACY,
+      byId: LEGACY_BY_ID,
+      rollLegacy: rollLegacy,
+      // 自检：所有 active 遗产的 statKey 是否都有中文文案、desc 非空
+      audit: function () {
+        var missing = [], noDesc = [];
+        for (var i = 0; i < MAGES_LEGACY.length; i++) {
+          var def = MAGES_LEGACY[i];
+          if (!def.desc) noDesc.push(def.id);
+          if (def.active && (typeof JS !== "object" || !JS || !JS[def.k])) missing.push(def.id + ":" + def.k);
+        }
+        return {
+          totalCount: MAGES_LEGACY.length,
+          activeCount: (function () { var n = 0; for (var i = 0; i < MAGES_LEGACY.length; i++) if (MAGES_LEGACY[i].active) n++; return n; })(),
+          missingText: missing,
+          noDesc: noDesc
+        };
       }
     };
   } catch (e) {}

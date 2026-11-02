@@ -9,7 +9,7 @@
  *   tools/wiki-exp-plugin.js                  浏览器端插件（并入数据 + 新增页面）
  *
  * 输出：
- *   build/wiki-异界版-v2.3.6.html             单文件 Wiki（离线可跑）
+ *   build/wiki-异界版-v2.3.7.html             单文件 Wiki（离线可跑）
  *   reports/wiki-build-report.json            构建报告（补丁命中数 / 内容统计）
  *
  * 用法：node tools/build-wiki.mjs [--out <path>]
@@ -26,13 +26,13 @@ const HOTFIX = path.join(PACK, "迁移工具", "hotfix", "hotfix.json");
 const BLOCK = path.join(W, "build", "block_v19.js");
 const PLUGIN = path.join(W, "tools", "wiki-exp-plugin.js");
 
-const VER = "2.3.6";
+const VER = "2.3.7";
 
 // 产物里的「构建时点」。默认写死为定版值，让 `npm run wiki` 不带任何环境变量
 // 也能与 Release 归档逐字节一致；发版时连同 VER 一起更新这一行。
 // 临时构建（不打算归档的那次）用 EMB_BUILD_AT=... 覆盖。
 // 注意不要改成 base 快照的 mtime：git 不保存 mtime，不同克隆出来的时间不同。
-const BUILT_AT = "2026-11-01T16:19:00.000Z";
+const BUILT_AT = "2026-11-02T00:42:37.000Z";
 
 const PLUGIN_TAG = "<!-- EMBER-EXP-PLUGIN -->";
 
@@ -155,6 +155,38 @@ function loadUniqueCorruptPools(src, segStart) {
   }
 }
 
+/* ---------- 2c. 从移植块里取出法师遗产表（EMB-127 法师之血继承） ---------- */
+function loadMagesLegacy() {
+  const src = read(BLOCK);
+  const mark = "/* ===== EMB-127 · 法师之血「法师遗产继承」词缀 =====";
+  const segStart = src.indexOf(mark);
+  if (segStart < 0) return { total: 0, active: 0, list: [] };
+
+  const arrStart = src.indexOf("var MAGES_LEGACY = [", segStart);
+  if (arrStart < 0) return { total: 0, active: 0, list: [] };
+  const open = src.indexOf("[", arrStart);
+  let depth = 0, end = -1;
+  for (let i = open; i < src.length; i++) {
+    const c = src[i];
+    if (c === "[") depth++;
+    else if (c === "]") { depth--; if (depth === 0) { end = i; break; } }
+  }
+  if (end < 0) return { total: 0, active: 0, list: [] };
+  const literal = src.slice(open, end + 1);
+  let arr;
+  try {
+    arr = new Function("return " + literal + ";")();
+  } catch (e) {
+    console.warn("[wiki] 解析 MAGES_LEGACY 失败：", e.message);
+    return { total: 0, active: 0, list: [] };
+  }
+  if (!Array.isArray(arr) || !arr.length) return { total: 0, active: 0, list: [] };
+  const list = arr.map((m) => ({ id: m.id, n: m.n, k: m.k, v: m.v, active: !!m.active, desc: m.desc || "" }));
+  const active = list.filter((m) => m.active).length;
+  applied.push({ label: "block_v19.js 法师遗产表", hits: list.length });
+  return { total: list.length, active, list };
+}
+
 /* ---------- 3. 文本补丁（官方文案里被扩展改掉的数值） ---------- */
 function patchHtml(html) {
   const patch = (needle, repl, label, expect) => {
@@ -202,6 +234,7 @@ function main() {
   const mods = loadMods();
   const uniques = loadUniques();
   const corruptPool = loadCorruptPool();
+  const magesLegacy = loadMagesLegacy();
   const hotfix = JSON.parse(read(HOTFIX));
 
   const EXP = {
@@ -213,6 +246,7 @@ function main() {
     mods,
     uniques,
     corruptPool,
+    magesLegacy,
     summary: {
       skills: mods.skills.length,
       supports: mods.supports.length,

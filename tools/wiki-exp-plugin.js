@@ -238,6 +238,28 @@
         '② 祭坛升华前判空，已有第二条腐化时改为原区间重铸，不再被顶掉；③ 瓦尔宝珠出双瓦后不再写「已献祭」标记，解除被永久锁死在祭坛外的 bug。</p>';
     })();
 
+    /* 法师遗产（EMB-127）：法师之血这件暗金的「4 条法师遗产继承」词缀 */
+    var magesLegacyHtml = '';
+    (function () {
+      var ml = E.magesLegacy;
+      if (!ml || !ml.list || !ml.list.length) return;
+      var body = ml.list.map(function (m) {
+        var tag = m.active
+          ? ''
+          : '<span class="tag" style="background:#2a1a1a;color:#e08080">本作未实装</span>';
+        return '<tr><td><b>' + esc(m.n) + '</b></td><td>' + esc(m.desc || '') + '</td><td>' + tag + '</td></tr>';
+      }).join('');
+      magesLegacyHtml =
+        '<p class="cap">法师之血（万用腰带）除「20% 药剂回复立即生效」外，还固定拥有 <b>4 条「法师遗产继承」</b>词缀：' +
+        '每条随机继承下表 14 种法师遗产之一；当 4 条里出现<b>重复继承同一种遗产</b>时，触发「重复加成」——' +
+        '该腰带上<b>所有</b>已生效遗产效果提高 <b>25–50%</b>（roll 一次全局乘数）。' +
+        '本作只落地引擎已有的属性，闪避 / 混沌抗性 / 技能速度 / 抗性上限因引擎无对应维度而跳过（标记「本作未实装」，仅保留展示）。</p>' +
+        '<div class="tw"><table><tr><th>法师遗产</th><th>效果</th><th>落地状态</th></tr>' +
+        body + '</table></div>' +
+        '<p class="cap" style="margin-top:8px">共 <b>' + ml.total + '</b> 种遗产，其中 <b>' + ml.active + '</b> 种可落地结算（护甲 / 抗性 / 暴击 / 稀有度 / 移动速度 / 元素伤害），' +
+        '4 种因引擎缺失属性暂不结算。</p>';
+    })();
+
     /* 暗金卡片 */
     var uniqCards = (E.uniques || []).map(function (u) {
       var b = R.BASEMAP[u.base] || {};
@@ -337,6 +359,9 @@
 
       secH('exp-corrupt', 'CORRUPTION', '腐化词缀扩池（瓦尔宝珠 · 祭坛双瓦）', '瓦尔宝珠与余烬祭坛双瓦共用同一个词缀池；本改版把它从 10 条扩到 23 条并引入权重。下方数据与游戏内一致（由构建脚本从扩展块实时解析）。') +
       corruptHtml +
+
+      secH('exp-ml', 'ITEMS', '法师之血 · 法师遗产继承', '法师之血这件暗金的专属词缀机制（数据由构建脚本从扩展块实时解析）。') +
+      magesLegacyHtml +
 
       secH('exp-uniq', 'ITEMS', '新增暗金', '基底均取自当前底包，掉落概率写在扩展包的平衡表里。') +
       '<div class="cards">' + uniqCards + '</div>' +
