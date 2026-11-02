@@ -144,65 +144,62 @@
       return '<tr><td style="white-space:nowrap"><b style="color:var(--gold)">' + esc(p.n) + '</b></td><td class="t-num mute">' + esc(p.from) + '</td><td class="t-num"><b style="color:var(--good)">' + esc(p.to) + '</b></td><td>' + esc(p.d) + '</td></tr>';
     }).join('');
 
-    /* 腐化词缀扩池（EMB-122）：数据来自 E.corruptPool，由 build-wiki.mjs 从 block_v19.js 实时解析 */
+    /* 腐化词缀分库（EMB-128）：数据来自 E.corruptPool.slots，由 build-wiki.mjs 从 block_v19.js 实时解析 */
     var corruptHtml = '';
     (function () {
       var cp = E.corruptPool;
-      if (!cp || !cp.entries || !cp.entries.length) return;
+      if (!cp || !cp.slots || !Object.keys(cp.slots).length) return;
       var CORT = {
         skillLvl: '所有技能等级 +{v}', lifeInc: '最大生命提高 {v}%', critInc: '暴击率提高 {v}%',
         leech: '击中偷取 {v}% 伤害为生命', resAll: '+{v}% 所有元素抗性', moveInc: '移动速度提高 {v}%',
         atkSpd: '攻击速度提高 {v}%', castSpd: '施法速度提高 {v}%', spirit: '+{v} 精魂', rarity: '物品稀有度提高 {v}%',
         critMulti: '+{v}% 暴击伤害加成', ailment: '元素异常几率 +{v}%', armour: '+{v} 护甲', esInc: '最大能量护盾提高 {v}%',
         manaRegen: '魔力回复速度提高 {v}%', regen: '每秒回复 {v} 生命', projAdd: '投射物技能 +{v} 枚投射物',
-        corruptCruel: '暴击伤害 +{v}% · 最大生命总降 6%', corruptGluttony: '物品数量提高 {v}% · 物品稀有度总降 20%',
-        corruptEmberBlood: '每秒回复 {v} 生命 · 最大能量护盾总降 10%', corruptBone: '击杀时 {v}% 几率留下 1 片余烬残片',
-        corruptResonance: '每 1 条腐化词缀使伤害提高 {v}%', corruptScorch: '命中时 {v}% 几率使目标点燃',
+        resF: '+{v}% 火焰抗性', resC: '+{v}% 冰霜抗性', resL: '+{v}% 闪电抗性',
+        life: '+{v} 最大生命', mana: '+{v} 最大魔力', physInc: '物理伤害提高 {v}%',
+        eleInc: '元素伤害提高 {v}%', spellInc: '法术伤害提高 {v}%', projInc: '投射物伤害提高 {v}%',
+        pierce: '投射物额外穿透 {v} 个敌人', chainAdd: '投射物与连锁技能额外连锁 {v} 次',
+        block: '+{v}% 格挡几率', blockHeal: '格挡时回复 {v}% 最大生命', stunInc: '晕眩累积提高 {v}%',
+        meleeAreaInc: '近战攻击范围扩大 {v}%', sheathe: '纳刀攻击伤害 +{v}%',
         rpgRathCastSpd: '非吟唱法术的施法速度提高 {v}%',
         rpgRathAilLife: '每 50 点生命上限使非吟唱法术的异常状态强度提高 {v}%',
         rpgRathCritMana: '每 50 点魔力上限使非吟唱技能的法术暴击几率提高 {v}%',
         rpgRathDmgMana: '每 50 点魔力上限使非吟唱法术的伤害提高 {v}%'
       };
-      var CGRP = {
-        skillLvl: 'legacy', lifeInc: 'legacy', critInc: 'legacy', leech: 'legacy', resAll: 'legacy', moveInc: 'legacy',
-        atkSpd: 'legacy', castSpd: 'legacy', spirit: 'legacy', rarity: 'legacy',
-        critMulti: 'num', ailment: 'num', armour: 'num', esInc: 'num', manaRegen: 'num', regen: 'num', projAdd: 'num',
-        corruptCruel: 'cost', corruptGluttony: 'cost', corruptEmberBlood: 'cost',
-        corruptBone: 'mech', corruptResonance: 'mech', corruptScorch: 'mech'
+      // 槽位显示名（与游戏内 Es 一致）
+      var SLOTNAME = {
+        H: '头盔', B: '胸甲', G: '手套', F: '鞋子', L: '腰带', R: '戒指', A: '项链',
+        Q: '箭袋', S: '盾牌', X: '法器', K: '胁差',
+        'W:bow': '弓', 'W:spear': '长矛', 'W:qstaff': '长棍', 'W:katana': '太刀',
+        'W:staff': '法杖', 'W:wand': '短杖', 'W:crossbow': '弩', 'W:mace': '战锤', 'W:jian': '剑',
+        jewel: '珠宝'
       };
-      var GRPLABEL = { legacy: '官版保留', num: '新增数值', cost: '带代价', mech: '机制型' };
-      var GRPORDER = ['legacy', 'num', 'cost', 'mech'];
-      var total = cp.total || cp.entries.reduce(function (s, p) { return s + (p.w || 0); }, 0);
+      var SLOTORDER = ['H', 'B', 'G', 'F', 'L', 'R', 'A', 'Q', 'S', 'X', 'K',
+        'W:bow', 'W:spear', 'W:qstaff', 'W:katana', 'W:staff', 'W:wand', 'W:crossbow', 'W:mace', 'W:jian', 'jewel'];
       var fmtRange = function (a, b) { return (a === b) ? String(a) : (a + '–' + b); };
       var fmtTxt = function (k, a, b) {
         var t = CORT[k];
         if (!t) return k + ' ' + fmtRange(a, b);
         return t.replace(/\{v\}/g, fmtRange(a, b));
       };
-      var byGrp = {};
-      cp.entries.forEach(function (p) {
-        var g = CGRP[p.k] || 'num';
-        (byGrp[g] = byGrp[g] || []).push(p);
-      });
-      var groupHtml = GRPORDER.map(function (g) {
-        var list = byGrp[g] || [];
+      // 每个槽位库独立计算权重占比
+      var slotHtml = SLOTORDER.filter(function (sk) { return cp.slots[sk]; }).map(function (sk) {
+        var list = cp.slots[sk];
+        var st = list.reduce(function (s, p) { return s + (p.w || 0); }, 0);
         var body = list.map(function (p) {
-          var pct = total ? (p.w / total * 100).toFixed(1) : '0';
-          var tags = '';
-          if (p.jewel === false) tags += '<span class="tag" style="background:#3a2a16;color:#e0b070">珠宝禁抽</span>';
-          if (p.cap) tags += '<span class="tag" style="background:#16303a;color:#7fc8e0">多来源不叠加</span>';
+          var pct = st ? (p.w / st * 100).toFixed(1) : '0';
           return '<tr><td>' + esc(fmtTxt(p.k, p.a, p.b)) + '</td>' +
             '<td class="t-num">' + esc(fmtRange(p.a, p.b)) + '</td>' +
             '<td class="t-num">' + p.w + '</td>' +
-            '<td class="t-num">' + pct + '%</td>' +
-            '<td>' + tags + '</td></tr>';
+            '<td class="t-num">' + pct + '%</td></tr>';
         }).join('');
-        return '<h3 style="margin-top:14px;color:var(--gold)">' + esc(GRPLABEL[g]) + '（' + list.length + ' 条）</h3>' +
-          '<div class="tw"><table><tr><th>词缀</th><th class="t-num">数值区间</th><th class="t-num">权重</th><th class="t-num">占池</th><th>标记</th></tr>' +
+        return '<h3 style="margin-top:14px;color:var(--gold)">' + esc(SLOTNAME[sk] || sk) + '（' + list.length + ' 条）</h3>' +
+          '<div class="tw"><table><tr><th>腐化词缀</th><th class="t-num">数值区间</th><th class="t-num">权重</th><th class="t-num">占库</th></tr>' +
           body + '</table></div>';
       }).join('');
-      var jewelCount = cp.entries.filter(function (p) { return p.jewel !== false; }).length;
-      var legacyW = cp.entries.filter(function (p) { return CGRP[p.k] === 'legacy'; }).reduce(function (s, p) { return s + (p.w || 0); }, 0);
+
+      var totalEntries = cp.entries.length;
+      var totalWeight = cp.total;
 
       // 传奇专属腐化词缀（EMB-125）：有原型的传奇，瓦出专属词缀
       var uniqueHtml = '';
@@ -222,20 +219,19 @@
             '<div class="tw"><table><tr><th>专属词缀</th><th class="t-num">数值区间</th><th class="t-num">权重</th></tr>' +
             body + '</table></div>' +
             '<p class="mute" style="font-size:12.5px;margin-top:4px">' + esc(u.n) + ' 腐化时（瓦尔宝珠 / 祭坛双瓦均可），从上述专属词缀中抽取，' +
-            '并保留通用词缀作兜底（专属权重 ' + uw + '，通用池按 ' + Math.round((u.fallbackScale || 0.5) * 100) + '% 权重兜底）。' +
+            '并保留对应槽位通用词缀作兜底（专属权重 ' + uw + '，通用库按 ' + Math.round((u.fallbackScale || 0.5) * 100) + '% 权重兜底）。' +
             '专属词缀只在对应传奇上出现，普通装备与珠宝抽不到。</p>';
         }).join('');
       })();
 
       corruptHtml =
-        '<p class="cap">共 <b>' + cp.entries.length + '</b> 条 · 总权重 <b>' + total + '</b> · 官版 10 条占池约 <b>' +
-        (total ? Math.round(legacyW / total * 100) : 0) + '%</b> · 珠宝可抽 <b>' + jewelCount + '</b> 条（不含技能等级）。</p>' +
-        groupHtml +
+        '<p class="cap">腐化词缀已按<b>装备槽位分库</b>（共 <b>' + Object.keys(cp.slots).length + '</b> 个库 · 合计 ' +
+        totalEntries + ' 条 · 总权重 ' + totalWeight + '）。不同装备类型（头盔 / 胸甲 / 武器九类 / 珠宝等）各自拥有独立词缀库，' +
+        '腐化时只从对应槽位库中抽取。词缀来源对齐 PoE2 编年史腐化词缀库，本作引擎无对应维度的条目（闪避 / 混沌抗 / 抗性上限 / 属性点 / 充能等）已跳过。</p>' +
+        slotHtml +
         uniqueHtml +
-        '<p class="cap" style="margin-top:12px">抽取按权重进行：池子展开成「按权重重复」的数组后等概率抽取，所以高权重词缀更常见（极稀有如额外投射物仅 2 权重）。' +
-        '机制型（击杀掉残片 / 共鸣 / 点燃）在多件装备或珠宝同时出现时只生效一次（取上限），不会线性叠加失控。</p>' +
-        '<p class="cap">本改版一并修复 3 处官版/历史缺陷：① 技能等级词缀原本显示裸 key「skillLvl 1」，已补中文；' +
-        '② 祭坛升华前判空，已有第二条腐化时改为原区间重铸，不再被顶掉；③ 瓦尔宝珠出双瓦后不再写「已献祭」标记，解除被永久锁死在祭坛外的 bug。</p>';
+        '<p class="cap" style="margin-top:12px">抽取按权重进行：库内展开成「按权重重复」的数组后等概率抽取，高权重词缀更常见。' +
+        '珠宝走独立库，不出「所有技能等级」词缀。传奇装备额外叠加专属词缀库。</p>';
     })();
 
     /* 法师遗产（EMB-127）：法师之血这件暗金的「4 条法师遗产继承」词缀 */
@@ -357,7 +353,7 @@
       secH('exp-num', 'BALANCE', '数值与机制改动', '以下改动由扩展包的构建补丁与热修配置落实，官方原版没有。') +
       '<div class="tw"><table><tr><th>项目</th><th class="t-num">官方 v19</th><th class="t-num">异界扩展</th><th>说明</th></tr>' + patchRows + '</table></div>' +
 
-      secH('exp-corrupt', 'CORRUPTION', '腐化词缀扩池（瓦尔宝珠 · 祭坛双瓦）', '瓦尔宝珠与余烬祭坛双瓦共用同一个词缀池；本改版把它从 10 条扩到 23 条并引入权重。下方数据与游戏内一致（由构建脚本从扩展块实时解析）。') +
+      secH('exp-corrupt', 'CORRUPTION', '腐化词缀分库（瓦尔宝珠 · 祭坛双瓦）', '腐化词缀已按装备槽位分库，词缀来源对齐 PoE2 编年史腐化词缀库。下方数据与游戏内一致（由构建脚本从扩展块实时解析）。') +
       corruptHtml +
 
       secH('exp-ml', 'ITEMS', '法师之血 · 法师遗产继承', '法师之血这件暗金的专属词缀机制（数据由构建脚本从扩展块实时解析）。') +

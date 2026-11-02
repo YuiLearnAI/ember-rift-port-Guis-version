@@ -211,6 +211,7 @@ gh api -X PUT repos/YuiLearnAI/ember-rift-port-Guis-version/branches/main/protec
 | v2.3.5 | v19.2 踏麟 · 真言 | 2026-11-01 | EMB-125 | `build/余烬裂隙-异界内容扩展-v2.3.5-v19.html`、`build/wiki-异界版-v2.3.5.html` |
 | v2.3.6 | v19.2 踏麟 · 真言 | 2026-11-02 | EMB-126 | `build/余烬裂隙-异界内容扩展-v2.3.6-v19.html`、`build/wiki-异界版-v2.3.6.html` |
 | v2.3.7 | v19.2 踏麟 · 真言 | 2026-11-02 | EMB-127 | `build/余烬裂隙-异界内容扩展-v2.3.7-v19.html`、`build/wiki-异界版-v2.3.7.html` |
+| v2.3.8 | v19.2 踏麟 · 真言 | 2026-11-02 | EMB-128 | `build/余烬裂隙-异界内容扩展-v2.3.8-v19.html`、`build/wiki-异界版-v2.3.8.html` |
 
 > 版本号规则：**基底升级必换版本号**。同一版本号对应同一个官方基底，否则 `tools/assets.json` 的 sha256
 > 无法同时描述两套产物，Release 归档也会互相覆盖。
@@ -222,6 +223,7 @@ gh api -X PUT repos/YuiLearnAI/ember-rift-port-Guis-version/branches/main/protec
 > v2.3.5 是 EMB-125 传奇专属腐化词缀（献祭之心样板）带来的补丁位（扩展块新增 UNIQUE_POOL + 属性折算 + wiki 解析），
 > v2.3.6 是 EMB-126 传奇腐化「替换原生词缀」修复带来的补丁位（block_v19.js 新增 __uniqueReplace + l9/Dv 劫持 + verify-corrupt 门禁），
 > v2.3.7 是 EMB-127 法师之血「法师遗产继承」词缀带来的补丁位（block_v19.js 新增 MAGES_LEGACY 表 + Kt/qs/stats:pre 三处劫持 + build-wiki 解析 + wiki-exp-plugin 渲染），
+> v2.3.8 是 EMB-128 腐化词缀按槽位分库带来的补丁位（block_v19.js 的 POOL 平铺池改为 SLOT_POOLS 分库表 + cp 按 slot/wt 定位 + 删除 6 条自定义词缀 + build-wiki/wiki-exp-plugin/verify-corrupt 同步），
 > 目的是让「文件名 ↔ 哈希 ↔ 工单」始终一一对应；沿用旧版本号会让同一个文件名在不同 Release 里对应两份不同内容。
 
 发版时打 tag `v2.2.0`，tag message 引用本表。目标是：**任意一个产物文件，能在 10 分钟内反查到「哪个工单、哪次提交、跑了哪些验证」**。
@@ -251,7 +253,7 @@ npm run assets:pull -- --only wiki      # 只处理路径含 wiki 的条目
 npm run assets:pull -- --force          # 哈希不符时强制覆盖（本地改动会被丢弃）
 ```
 
-当前外置清单（Release `assets-v2.3.7`）：
+当前外置清单（Release `assets-v2.3.8`）：
 
 | 落地路径 | 性质 | 是否可复现 |
 |---|---|---|
@@ -259,11 +261,11 @@ npm run assets:pull -- --force          # 哈希不符时强制覆盖（本地�
 | `base/wiki-online.html` | 上游快照 v19.2（Wiki 输入） | 否，必须保全 |
 | `cheat/wiki.html` | 与上一行同内容的副本 | 否，必须保全 |
 | `build/test-v19.html` | 构建产物 | ✅ `npm run build` |
-| `build/余烬裂隙-异界内容扩展-v2.3.7-v19.html` | 构建产物 | ✅ `npm run build` |
-| `build/wiki-异界版-v2.3.7.html` | 构建产物 | ✅ `npm run wiki`（默认即字节一致，builtAt 已定版） |
+| `build/余烬裂隙-异界内容扩展-v2.3.8-v19.html` | 构建产物 | ✅ `npm run build` |
+| `build/wiki-异界版-v2.3.8.html` | 构建产物 | ✅ `npm run wiki`（默认即字节一致，builtAt 已定版） |
 | `pack/**/余烬裂隙-异界内容扩展-v2.1.0.html` | 历史发行版归档 | 否，仅留档 |
 
-当前 Release 标签：`assets-v2.3.7`。**历史版本及时清理**：每次发新版，只保留「最新 + 上一版」两个 Release 作为回滚点，其余历史 Release（连同对应 git tag）立即删除。回滚不依赖历史 Release——上游快照随最新 Release 保全，完整历史另有 `backup-ember-pre-filter-20261101.bundle` 兜底。
+当前 Release 标签：`assets-v2.3.8`。**历史版本及时清理**：每次发新版，只保留「最新 + 上一版」两个 Release 作为回滚点，其余历史 Release（连同对应 git tag）立即删除。回滚不依赖历史 Release——上游快照随最新 Release 保全，完整历史另有 `backup-ember-pre-filter-20261101.bundle` 兜底。
 
 > 换 tag 时新 Release 必须**整套上传**（3 个上游快照 + 全部产物）：`fetch-assets.mjs` 只认 `assets.json`
 > 里那一个 `tag`，不会跨 Release 找文件。新克隆只有从这一个 tag 能取回全部 7 项。
@@ -287,8 +289,8 @@ npm run assets:pull -- --force          # 哈希不符时强制覆盖（本地�
 
 ```
 npm run build  → test-v19.html        sha256 60d829dc…（与 Release 资产一致）
-npm run build  → 发布版 v2.3.7 产物     sha256 77c516e9…（与 Release 资产一致）
-npm run wiki   → wiki-异界版-v2.3.7.html sha256 cb5bb8a6…（与 Release 资产一致）
+npm run build  → 发布版 v2.3.8 产物     sha256 77c516e9…（与 Release 资产一致）
+npm run wiki   → wiki-异界版-v2.3.8.html sha256 cb5bb8a6…（与 Release 资产一致）
 ```
 
 **三条都是默认命令，不需要任何环境变量**（EMB-115）。`build-wiki.mjs` 把构建时点写进产物，

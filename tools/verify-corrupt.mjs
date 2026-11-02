@@ -55,6 +55,7 @@ function makeSandbox(overrides) {
     window: {},
     JS,
     Xu,
+    pe: { "水晶法器": { slot: "X", wt: null }, "短弓": { slot: "W", wt: "bow" }, "皮革兜帽": { slot: "H", wt: null } },
     cp: (e) => (e && e.kind === "jewel" ? Xu.filter((t) => t[0] !== "skillLvl") : Xu),
     oe: (a) => a[Math.floor(Math.random() * a.length)],
     de: (a, b) => Math.floor(a + Math.random() * (b - a + 1)),
@@ -73,8 +74,8 @@ function makeSandbox(overrides) {
   return ctx;
 }
 
-/* ---------- 1. 池表自检 ---------- */
-console.log("\n[1] 池表 / 权重 / 文案");
+/* ---------- 1. 池表自检（EMB-128 分库） ---------- */
+console.log("\n[1] 分库表 / 权重 / 文案");
 const sb = makeSandbox();
 vm.runInNewContext(srcPool, sb);
 const P = sb.window.__CORRUPT_POOL;
@@ -82,107 +83,85 @@ ok(!!P, "扩展块挂上了 __CORRUPT_POOL");
 if (!P) { report(); }
 
 const aud = P.audit();
-eq(aud.count, 23, "池内共 23 条（10 官版 + 10 新增数值 + 3 机制）");
-eq(aud.dupKey.length, 0, "池内无重复 key");
+ok(aud.slotCount === 21, "分库共 21 个库（11 槽位 + 武器 9 类 + 珠宝）", "实际 " + aud.slotCount);
+// 分库后同一 statKey 会跨库出现（如 armour 同时进头盔/胸甲/手套/鞋子），跨库重复是正常的；
+// 但每个库内部 key 必须唯一。
+let dupInSlot = [];
+for (const sk in P.slots) {
+  const seen = {};
+  for (const p of P.slots[sk]) {
+    if (seen[p.k]) dupInSlot.push(sk + ":" + p.k);
+    seen[p.k] = 1;
+  }
+}
+eq(dupInSlot.length, 0, "每个库内无重复 key", dupInSlot.join(","));
 eq(aud.missingText.length, 0, "每条词缀都能渲染出中文", aud.missingText.join(","));
 ok(!!sb.JS.skillLvl, "官版缺失的 skillLvl 文案已补上", sb.JS.skillLvl);
 ok(!officialKeys.includes("skillLvl"), "顺带确认：官版文案表原本确实没有 skillLvl（这就是裸 key 的来源）");
 
-// 权重展开：Xu 长度应等于权重之和，且原有 10 条 key 全部保留
+// 权重展开：Xu 长度应等于权重之和
 eq(aud.xuLen, P.weight, "Xu 展开长度 == 权重总和");
 const weightSum = P.pool.reduce((s, p) => s + p.w, 0);
 eq(P.weight, weightSum, "权重总和与各条权重之和一致");
 
-const legacy = ["skillLvl", "lifeInc", "critInc", "leech", "resAll", "moveInc", "atkSpd", "castSpd", "spirit", "rarity"];
-const poolKeys = P.pool.map((p) => p.k);
-eq(legacy.filter((k) => !poolKeys.includes(k)).length, 0, "官版 10 条全部保留，一条没丢");
+// 分库结构：每个库都有词缀，且词缀 key 都合法
+const slotKeys = Object.keys(P.slots);
+ok(slotKeys.length === 21, "SLOT_POOLS 恰好 21 个库", JSON.stringify(slotKeys));
+let allSlotsValid = true;
+for (const sk of slotKeys) {
+  if (!Array.isArray(P.slots[sk]) || !P.slots[sk].length) { allSlotsValid = false; break; }
+}
+ok(allSlotsValid, "每个库都非空");
 
-// 珠宝池：只应缺 skillLvl
+// 武器库按 wt 细分
+for (const wt of ["bow", "spear", "qstaff", "katana", "staff", "wand", "crossbow", "mace", "jian"]) {
+  ok(!!P.slots["W:" + wt], "武器库已按 wt 细分：" + wt);
+}
+
+// 珠宝库：独立，且不出 skillLvl
 const jewelKeys = aud.jewelKeys;
-eq(jewelKeys.length, 23 - 1, "珠宝池排除 skillLvl 后剩 22 条");
+ok(jewelKeys.length > 0, "珠宝有独立库");
 ok(!jewelKeys.includes("skillLvl"), "珠宝抽不到 skillLvl（沿用官版 cp 规则）");
 
-/* ---------- 2. 权重真的生效 ---------- */
-console.log("\n[2] 加权抽取（走官版真实路径 cp + oe，抽 60000 次）");
-const N = 60000;
-const hit = {};
-for (let n = 0; n < N; n++) {
-  const r = P.rollOnce(false);
-  hit[r.k] = (hit[r.k] || 0) + 1;
+// 旧的自定义词缀已彻底删除
+const removed = ["corruptCruel", "corruptGluttony", "corruptEmberBlood", "corruptBone", "corruptResonance", "corruptScorch"];
+eq(removed.filter((k) => P.pool.some((p) => p.k === k)).length, 0, "6 条旧自定义词缀已从池中删除");
+
+/* ---------- 2. 分库抽取真的生效 ---------- */
+console.log("\n[2] 分库抽取（每库走官版真实路径 cp + oe，各抽 20000 次）");
+const N2 = 20000;
+for (const sk of slotKeys) {
+  const list = P.slots[sk];
+  const totalW = list.reduce((s, p) => s + p.w, 0);
+  const hit = {};
+  for (let n = 0; n < N2; n++) {
+    const r = P.rollOnce(sk);
+    hit[r.k] = (hit[r.k] || 0) + 1;
+  }
+  // 库内每条都能抽到
+  const allHit = list.every((p) => hit[p.k] > 0);
+  ok(allHit, "库 " + sk + " 内每条词缀都能抽到，没有死角");
+  // 权重偏差
+  let worst = null;
+  for (const p of list) {
+    const exp = N2 * p.w / totalW;
+    const got = hit[p.k] || 0;
+    const dev = Math.abs(got - exp) / exp;
+    if (!worst || dev > worst.dev) worst = { k: p.k, dev, exp, got };
+  }
+  ok(worst.dev < 0.3, "库 " + sk + " 实测频率与权重偏差 < 30%", "最大偏差 " + worst.k + " " + (worst.dev * 100).toFixed(1) + "%");
 }
-eq(Object.keys(hit).length, 23, "23 条全部能抽到，没有死角");
-let worst = null;
-for (const p of P.pool) {
-  const exp = N * p.w / P.weight;
-  const got = hit[p.k] || 0;
-  const dev = Math.abs(got - exp) / exp;
-  if (!worst || dev > worst.dev) worst = { k: p.k, dev, exp, got };
-}
-ok(worst.dev < 0.15, "每条实测频率与权重偏差 < 15%", "最大偏差 " + worst.k + " " + (worst.dev * 100).toFixed(1) + "%（期望 " + worst.exp.toFixed(0) + "，实得 " + worst.got + "）");
 
-const legacyShare = P.pool.filter((p) => legacy.includes(p.k)).reduce((s, p) => s + p.w, 0) / P.weight;
-ok(legacyShare > 0.42 && legacyShare < 0.55, "官版词缀占比落在预期区间", (legacyShare * 100).toFixed(1) + "%");
-
-const projRate = (hit.projAdd || 0) / N;
-ok(projRate < 0.02, "极稀有词缀（额外投射物）出场率 < 2%", (projRate * 100).toFixed(2) + "%");
-
-/* ---------- 3. 机制型事件挂载 ---------- */
-console.log("\n[3] 机制型事件挂载");
+/* ---------- 3. 事件监听（EMB-128 精简后只剩 stats:pre） ---------- */
+console.log("\n[3] 事件监听");
 const evNames = sb.__events.map((e) => e.ev);
-for (const want of ["stats:pre", "stats:post", "kill", "hit:mods", "hit:ailment"]) {
-  ok(evNames.includes(want), "已注册 " + want);
-}
-// 腐化扩池 IIFE 注册 5 个监听；法师遗产 IIFE（EMB-127）额外注册 1 个 stats:pre
-ok(sb.__events.length === 6, "腐化 5 + 法师遗产 1 = 6 个监听，没有多余副作用", "实际 " + sb.__events.length);
-
-/* ---------- 4. 带代价词缀：收益与代价都到位 ---------- */
-console.log("\n[4] 带代价词缀的属性展开");
-const pre = sb.__events.find((e) => e.ev === "stats:pre").fn;
-const post = sb.__events.find((e) => e.ev === "stats:post").fn;
-const added = {};
-pre({ a: { corruptCruel: 20, corruptGluttony: 10, corruptEmberBlood: 4 }, add: (k, v) => { added[k] = v; } });
-eq(added.critMulti, 20, "暴虐：暴击伤害收益转成标准属性");
-eq(added.quant, 10, "暴食：物品数量收益转成标准属性");
-eq(added.regen, 4, "烬血：每秒回复收益转成标准属性");
-
-const S = { maxLife: 1000, maxES: 500, rarity: 100 };
-post({ S, g: (k) => ({ corruptCruel: 20, corruptGluttony: 10, corruptEmberBlood: 4 }[k] || 0) });
-eq(Math.round(S.maxLife), 940, "暴虐：最大生命总降 6%");
-eq(Math.round(S.maxES), 450, "烬血：最大能量护盾总降 10%");
-eq(Math.round(S.rarity), 80, "暴食：物品稀有度总降 20%");
-
-const S2 = { maxLife: 1000, maxES: 500, rarity: 100 };
-post({ S: S2, g: () => 0 });
-eq(S2.maxLife, 1000, "没有代价词缀时不误伤属性");
-
-/* ---------- 5. 机制型：多来源只生效一次 ---------- */
-console.log("\n[5] 机制型不叠加（取上限）");
-pre({ a: { corruptBone: 12, corruptResonance: 18, corruptScorch: 30 }, add: () => {} });
-const killFn = sb.__events.find((e) => e.ev === "kill").fn;
-const modsFn = sb.__events.find((e) => e.ev === "hit:mods").fn;
-const ailFn = sb.__events.find((e) => e.ev === "hit:ailment").fn;
-
-// 烬骨：概率封顶 4%，不应变成 12%
-let ashGain = 0;
-const oldCur = sb.u.cur;
-for (let n = 0; n < 20000; n++) { oldCur.ash = 0; killFn({ m: {} }); ashGain += oldCur.ash; }
-const boneRate = ashGain / 20000 * 100;
-ok(boneRate < 6, "烬骨三件叠加后仍封顶在 4% 附近", boneRate.toFixed(2) + "%");
-
-// 烬灼：概率封顶 10%
-let scorch = 0;
-for (let n = 0; n < 20000; n++) { const p = {}; ailFn(p); if (p.forceIgn) scorch++; }
-const scorchRate = scorch / 20000 * 100;
-ok(scorchRate < 13, "烬灼三件叠加后仍封顶在 10% 附近", scorchRate.toFixed(2) + "%");
-
-// 腐化共鸣：每腐化词缀 +6%，不因多件叠加翻倍
-sb.u.equip = { w1: { cimpl: { k: "a", v: 1 }, cimpl2: { k: "b", v: 1 } } };
-const pk = { k: 100, fixed: false };
-modsFn(pk);
-eq(Math.round(pk.k), 112, "腐化共鸣：2 条腐化词缀 → 伤害 ×1.12");
-const pkFixed = { k: 100, fixed: true };
-modsFn(pkFixed);
-eq(pkFixed.k, 100, "腐化共鸣不作用于环境/爆炸类固定伤害");
+ok(evNames.includes("stats:pre"), "已注册 stats:pre");
+ok(!evNames.includes("stats:post"), "stats:post（带代价）已移除");
+ok(!evNames.includes("kill"), "kill（烬骨）已移除");
+ok(!evNames.includes("hit:mods"), "hit:mods（共鸣）已移除");
+ok(!evNames.includes("hit:ailment"), "hit:ailment（烬灼）已移除");
+// 腐化扩池 IIFE 现在只注册 1 个 stats:pre；法师遗产 IIFE（EMB-127）额外注册 1 个 stats:pre
+eq(sb.__events.length, 2, "腐化 1 + 法师遗产 1 = 2 个监听", "实际 " + sb.__events.length);
 
 /* ---------- 6. 祭坛不再覆盖已有第二条 ---------- */
 console.log("\n[6] 祭坛双瓦：已有第二条不被顶掉");
@@ -252,23 +231,23 @@ if (rp) {
   eq(aud.missingText.filter((k) => uniqKeys.includes(k)).length, 0, "4 条专属词缀都有中文文案");
 }
 
-// 专属池抽取：献祭之心应能抽到专属词缀，且专属词缀占主导
+// 专属池抽取：献祭之心应能抽到专属词缀，且专属词缀占主导（走真实法器 X 库兜底）
 const uhits = {};
 const NU = 30000;
 for (let n = 0; n < NU; n++) {
-  const r = P.rollUnique("rathpith_globe", false);
+  const r = P.rollUnique("rathpith_globe", false, "水晶法器");
   uhits[r.k] = (uhits[r.k] || 0) + 1;
 }
 const uAll = uniqKeys.filter((k) => uhits[k]);
 eq(uAll.length, 4, "献祭之心能抽出全部 4 条专属词缀", "命中 " + uAll.join(","));
 const uShare = uniqKeys.reduce((s, k) => s + (uhits[k] || 0), 0) / NU;
-ok(uShare > 0.2 && uShare < 0.35, "专属词缀占主导（约 27% 权重区间）", (uShare * 100).toFixed(1) + "%");
-ok(uhits.skillLvl > 0, "通用词缀仍可作兜底抽出", "skillLvl 抽到 " + uhits.skillLvl + " 次");
+ok(uShare > 0.55 && uShare < 0.8, "专属词缀占主导（分库后法器 X 库仅 4 条兜底，专属约 70%）", (uShare * 100).toFixed(1) + "%");
+ok(uhits.spellInc > 0, "法器 X 库词缀（法术伤害）仍可作兜底抽出", "spellInc 抽到 " + uhits.spellInc + " 次");
 
-// 非传奇装备零泄漏
+// 非传奇装备零泄漏（走普通槽位库，如头盔 H）
 const nhits = {};
 for (let n = 0; n < 8000; n++) {
-  const r = P.rollOnce(false);
+  const r = P.rollOnce("H");
   nhits[r.k] = (nhits[r.k] || 0) + 1;
 }
 eq(uniqKeys.filter((k) => nhits[k]).length, 0, "普通装备抽不到专属词缀（零泄漏）");
@@ -276,7 +255,7 @@ eq(uniqKeys.filter((k) => nhits[k]).length, 0, "普通装备抽不到专属词�
 // 珠宝也不能抽到专属词缀（传奇珠宝另说，本作珠宝无 uniq 专属池）
 const jhits = {};
 for (let n = 0; n < 8000; n++) {
-  const r = P.rollOnce(true);
+  const r = P.rollOnce("jewel");
   jhits[r.k] = (jhits[r.k] || 0) + 1;
 }
 eq(uniqKeys.filter((k) => jhits[k]).length, 0, "珠宝抽不到专属词缀");

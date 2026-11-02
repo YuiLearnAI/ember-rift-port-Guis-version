@@ -26,13 +26,13 @@ const HOTFIX = path.join(PACK, "迁移工具", "hotfix", "hotfix.json");
 const BLOCK = path.join(W, "build", "block_v19.js");
 const PLUGIN = path.join(W, "tools", "wiki-exp-plugin.js");
 
-const VER = "2.3.7";
+const VER = "2.3.8";
 
 // 产物里的「构建时点」。默认写死为定版值，让 `npm run wiki` 不带任何环境变量
 // 也能与 Release 归档逐字节一致；发版时连同 VER 一起更新这一行。
 // 临时构建（不打算归档的那次）用 EMB_BUILD_AT=... 覆盖。
 // 注意不要改成 base 快照的 mtime：git 不保存 mtime，不同克隆出来的时间不同。
-const BUILT_AT = "2026-11-02T00:42:37.000Z";
+const BUILT_AT = "2026-11-02T09:05:00.000Z";
 
 const PLUGIN_TAG = "<!-- EMBER-EXP-PLUGIN -->";
 
@@ -92,34 +92,42 @@ function loadUniques() {
   return arr;
 }
 
-/* ---------- 2b. 从移植块里取出腐化词缀池（EMB-122 / EMB-125） ---------- */
+/* ---------- 2b. 从移植块里取出腐化词缀池（EMB-122 / EMB-125 / EMB-128 分库） ---------- */
 function loadCorruptPool() {
   const src = read(BLOCK);
   const mark = "/* ===== EMB-122 · 腐化词缀扩池 =====";
   const segStart = src.indexOf(mark);
   if (segStart < 0) throw new Error("在 block_v19.js 中找不到 EMB-122 扩池段");
 
-  // 通用池 POOL
-  const pStart = src.indexOf("var POOL = [", segStart);
-  if (pStart < 0) throw new Error("在 EMB-122 段中找不到 POOL 数组");
-  const open = src.indexOf("[", pStart);
+  // 分库表 SLOT_POOLS（EMB-128）：{ slotKey: [ {k,a,b,w}, ... ] }
+  const spStart = src.indexOf("var SLOT_POOLS = {", segStart);
+  if (spStart < 0) throw new Error("在 EMB-122 段中找不到 SLOT_POOLS 表");
+  const open = src.indexOf("{", spStart);
   let depth = 0, end = -1;
   for (let i = open; i < src.length; i++) {
     const c = src[i];
-    if (c === "[") depth++;
-    else if (c === "]") { depth--; if (depth === 0) { end = i; break; } }
+    if (c === "{") depth++;
+    else if (c === "}") { depth--; if (depth === 0) { end = i; break; } }
   }
-  if (end < 0) throw new Error("POOL 数组括号不匹配");
+  if (end < 0) throw new Error("SLOT_POOLS 括号不匹配");
   const literal = src.slice(open, end + 1);
-  const arr = new Function("return " + literal + ";")();
-  if (!Array.isArray(arr) || !arr.length) throw new Error("POOL 解析为空");
+  const slots = new Function("return " + literal + ";")();
+  if (!slots || typeof slots !== "object") throw new Error("SLOT_POOLS 解析为空");
+
+  // 平铺全库（兼容旧引用），并统计
+  const arr = [];
+  for (const key in slots) {
+    const list = slots[key];
+    if (!Array.isArray(list)) continue;
+    for (const p of list) arr.push({ ...p, slot: key });
+  }
   const total = arr.reduce((s, p) => s + (p.w || 0), 0);
-  applied.push({ label: "block_v19.js 腐化词缀池", hits: arr.length });
+  applied.push({ label: "block_v19.js 腐化词缀分库", hits: Object.keys(slots).length });
 
   // 传奇专属池 UNIQUE_POOL（EMB-125）
   const uniques = loadUniqueCorruptPools(src, segStart);
 
-  return { entries: arr, total, uniques };
+  return { slots, entries: arr, total, uniques };
 }
 
 /* 解析 UNIQUE_POOL：{ uniqId: { n, pool: [...], fallbackScale } } */

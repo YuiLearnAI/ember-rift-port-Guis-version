@@ -1,6 +1,6 @@
 {
   "name": "ember-rift-port",
-  "version": "2.3.7",
+  "version": "2.3.8",
   "private": true,
   "description": "余烬裂隙 PoE2 内容扩展包 · v19 迁移与二次开发工程",
   "scripts": {
